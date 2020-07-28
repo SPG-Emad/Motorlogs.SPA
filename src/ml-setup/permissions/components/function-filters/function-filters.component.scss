@@ -1,0 +1,52 @@
+@import url("https://fonts.googleapis.com/css?family=Roboto:400,700&display=swap");
+
+.topbar {
+    background-color: #eaf3fd !important;
+    padding: 5px;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.12);
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16), 0 3px 6px rgba(0, 0, 0, 0.23);
+    height: 48px;
+    width: 100%;
+    position: absolute;
+    top: 0;
+
+    .topbar-ul {
+        li {
+            list-style-type: none;
+            float: left;
+            margin-right: 20px;
+            a {
+                padding: 9px !important;
+                top: unset;
+                font: 400 15px "Roboto" !important;
+                color: #313131;
+                text-transform: unset;
+                text-decoration: none !important;
+                cursor: pointer;
+            }
+            a.active {
+                border-bottom: 2px solid;
+                font: 700 15px "Roboto" !important;
+                border-color: #1d6bcc;
+            }
+        }
+    }
+
+    .customBtn {
+        font-weight: bold;
+        margin: 0px;
+        cursor: pointer;
+        text-decoration: none;
+        background: #176bcc;
+        padding: 9px;
+        height: 36px;
+        border-radius: 5px;
+        color: white;
+        padding-right: 20px;
+        padding-left: 20px;
+        margin-right: 26px;
+        margin-top: 1px;
+    }
+}
+
+

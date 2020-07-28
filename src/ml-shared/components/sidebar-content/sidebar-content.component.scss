@@ -1,0 +1,138 @@
+/* secondary sidebar */
+#sidebar_secondary {
+    position: fixed;
+    right: 0;
+    -webkit-transform: translate3d(0px, 0, 0);
+    transform: translate3d(0px, 0, 0);
+    bottom: 0;
+    width: 569px;
+    background: #fff;
+    overflow: hidden;
+    top: 64px;
+    z-index: 1104;
+    box-shadow: 0 4px 4px rgba(0, 0, 0, 0.14), -2px 4px 8px rgba(0, 0, 0, 0.28);
+    -webkit-transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    transition: all 280ms cubic-bezier(0.4, 0, 0.2, 1);
+    will-change: transform;
+}
+#sidebar_secondary,
+#sidebar_secondary:before,
+#sidebar_secondary:after,
+#sidebar_secondary *,
+#sidebar_secondary *:before,
+#sidebar_secondary *:after {
+    box-sizing: border-box;
+}
+#sidebar_secondary .sidebar_secondary_wrapper {
+    margin: 0;
+}
+.header_double_height #sidebar_secondary {
+    top: 58px;
+}
+#sidebar_secondary .uk-switcher > li {
+    padding: 16px 16px 0;
+}
+#sidebar_secondary .uk-tab {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 10;
+    background: #fff;
+}
+#sidebar_secondary.tabbed_sidebar {
+    padding-top: 44px;
+}
+/*bizmgr sidebar_secondary*/
+#sidebar_secondary .md-card-close {
+    font-size: 24px;
+    line-height: 32px !important;
+    height: 32px !important;
+    color: #727272;
+    border-radius: 50%;
+    cursor: pointer;
+    -webkit-transition: background 280ms ease-out, color 280ms ease-out;
+    transition: background 280ms ease-out, color 280ms ease-out;
+    width: 32px !important;
+    text-align: center;
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+    float: right;
+    color: #fff;
+    margin: 10px 10px 0px 0px;
+    /*margin: 4px 4px 0px 0px; position: fixed; top:6px; right: 6px; z-index: 2; color: #fff; background-color: #2196F3;*/
+}
+#sidebar_secondary .md-card-close:hover,
+#sidebar_secondary .md-card-close:focus,
+#sidebar_secondary .md-card-close:active,
+#sidebar_secondary .md-card-close.active {
+    color: #2196f3;
+    background: rgba(255, 255, 255, 0.85);
+}
+#sidebar_secondary .md-card-close:after {
+    content: "\E14C";
+}
+#sidebar_secondary #data_btn_save {
+    width: 100%;
+    right: 0px;
+    bottom: 0px;
+    padding: 14px;
+    position: fixed;
+    display: block;
+    text-align: left;
+    background: #fff;
+    z-index: 3;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12), 0 1px 2px rgba(0, 0, 0, 0.24);
+}
+#sidebar_secondary #data_btn_save .md-btn {
+    width: 86px;
+}
+#sidebar_secondary #data_btn_save_empty {
+    height: 63px;
+}
+/**/
+
+.sidebar_secondary_active #sidebar_secondary {
+    -webkit-transform: translate3d(0, 0, 0);
+    transform: translate3d(0, 0, 0);
+}
+.sidebar_secondary_active:not(.steps) .sSwitch_right .sSwitchIcon:before,
+.sidebar_secondary_active:not(.steps) .sSwitch_right .sSwitchIcon:after {
+    top: 0 !important;
+}
+.sidebar_secondary_active #header_main .sSwitch.sSwitch_right:before {
+    opacity: 1;
+}
+.sidebar_secondary_active #header_main .sSwitch.sSwitch_right .sSwitchIcon {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+}
+.sidebar_secondary_active
+    #header_main
+    .sSwitch.sSwitch_right
+    .sSwitchIcon:before,
+.sidebar_secondary_active
+    #header_main
+    .sSwitch.sSwitch_right
+    .sSwitchIcon:after {
+    width: 12px;
+}
+.sidebar_secondary_active
+    #header_main
+    .sSwitch.sSwitch_right
+    .sSwitchIcon:before {
+    top: 4px;
+    -webkit-transform: rotate(-35deg);
+    transform: rotate(-35deg);
+    -webkit-transform-origin: right bottom;
+    transform-origin: right bottom;
+}
+.sidebar_secondary_active
+    #header_main
+    .sSwitch.sSwitch_right
+    .sSwitchIcon:after {
+    top: -4px;
+    -webkit-transform: rotate(35deg);
+    transform: rotate(35deg);
+    -webkit-transform-origin: right top;
+    transform-origin: right top;
+}

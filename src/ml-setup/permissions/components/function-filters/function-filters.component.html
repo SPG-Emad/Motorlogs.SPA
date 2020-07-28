@@ -1,0 +1,15 @@
+<div class="topbar">
+    <div fxLayoutAlign="space-between">
+        <ul class="topbar-ul">
+            <li><a [ngClass]="{'active': activeFilter==='Show All'}" (click)="resetColumn()">Show All</a>
+            </li>
+            <li><a [ngClass]="{'active': activeFilter ==='Sales'}" (click)="getSalesColumn()">Sales</a></li>
+            <li><a [ngClass]="{'active': activeFilter==='Arriving'}" (click)="getArrivingColumn()">Arriving</a></li>
+            <li><a [ngClass]="{'active': activeFilter==='delivered'}" (click)="getDeliveredColumn()">Delivered</a></li>
+        </ul>
+        <a class="customBtn" (click)="addColumn()">
+            Add custom
+        </a>
+    </div>
+
+</div>

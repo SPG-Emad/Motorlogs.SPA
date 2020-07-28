@@ -1,0 +1,171 @@
+<table #f="ngForm" [formGroup]="userInitalsForm" class="w-100-p">
+    <tr>
+        <td>
+            <mat-icon matSuffix>group</mat-icon>
+        </td>
+        <td colspan="2">
+            <mat-search-select
+                [data]="roleService.userRole"
+                [defaultValue]="roles.name"
+                (selectedItem)="selectRoles($event)"
+                [flex]="'100'"
+                class="w-100-p"
+                [label]="'User Role'"
+            >
+            </mat-search-select>
+            <mat-error *ngIf="roles.active">
+                Role is <strong>required</strong>
+            </mat-error>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <mat-icon matSuffix>perm_identity</mat-icon>
+        </td>
+        <td>
+            <mat-form-field class="w-100-p" floatLabel="always">
+                <input
+                    (keypress)="onlyCharacters($event)"
+                    matInput
+                    formControlName="firstName"
+                    placeholder="First Name"
+                    required
+                />
+                <mat-error
+                    *ngIf="
+                        userInitalsForm.controls['firstName'].hasError(
+                            'required'
+                        )
+                    "
+                >
+                    First Name is <strong>required</strong>
+                </mat-error>
+                <mat-error
+                    *ngIf="
+                        userInitalsForm.controls['firstName'].hasError(
+                            'maxlength'
+                        ) &&
+                        !userInitalsForm.controls['firstName'].hasError(
+                            'required'
+                        )
+                    "
+                >
+                    Maximum 50 characters <strong>allowed</strong>
+                </mat-error>
+            </mat-form-field>
+        </td>
+        <td>
+            <mat-form-field
+                class="w-100-p"
+                floatLabel="always"
+                style="padding-left: 20px;"
+            >
+                <input
+                    matInput
+                    (keypress)="onlyCharacters($event)"
+                    formControlName="lastName"
+                    placeholder="Last Name"
+                />
+                <mat-error
+                    *ngIf="
+                        userInitalsForm.controls['lastName'].hasError(
+                            'maxlength'
+                        ) &&
+                        !userInitalsForm.controls['lastName'].hasError(
+                            'required'
+                        )
+                    "
+                >
+                    Maximum 50 characters <strong>allowed</strong>
+                </mat-error>
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <mat-icon matSuffix>email</mat-icon>
+        </td>
+        <td colspan="2">
+            <mat-form-field class="w-100-p" floatLabel="always">
+                <input
+                    matInput
+                    formControlName="email"
+                    placeholder="Email"
+                    required
+                />
+                <mat-error
+                    *ngIf="
+                        userInitalsForm.controls['email'].hasError('required')
+                    "
+                >
+                    Email is <strong>required</strong>
+                </mat-error>
+                <mat-error
+                    *ngIf="
+                        userInitalsForm.controls['email'].hasError(
+                            'maxlength'
+                        ) &&
+                        !userInitalsForm.controls['email'].hasError('required')
+                    "
+                >
+                    Maximum 255 characters <strong>allowed</strong>
+                </mat-error>
+                <mat-error
+                    *ngIf="
+                        userInitalsForm.controls['email'].hasError('pattern') &&
+                        !userInitalsForm.controls['email'].hasError(
+                            'maxlength'
+                        ) &&
+                        !userInitalsForm.controls['email'].hasError('required')
+                    "
+                >
+                    Enter a valid <strong>email address</strong>
+                </mat-error>
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <mat-icon matSuffix>phone_android</mat-icon>
+        </td>
+        <td colspan="2">
+            <mat-form-field class="w-100-p" floatLabel="always">
+                <input
+                    (keypress)="onlyNumbers($event)"
+                    matInput
+                    formControlName="mobile"
+                    placeholder="Mobile"
+                />
+                <mat-error
+                    *ngIf="
+                        userInitalsForm.controls['mobile'].hasError('maxlength')
+                    "
+                >
+                    Maximum 15 digits <strong>allowed</strong>
+                </mat-error>
+            </mat-form-field>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <mat-icon matSuffix>phone</mat-icon>
+        </td>
+        <td colspan="2">
+            <mat-form-field class="w-100-p" floatLabel="always">
+                <input
+                    (keypress)="onlyNumbers($event)"
+                    matInput
+                    formControlName="phone"
+                    placeholder="Direct Phone"
+                />
+                <mat-error
+                    *ngIf="
+                        userInitalsForm.controls['phone'].hasError('maxlength')
+                    "
+                >
+                    Maximum 15 digits <strong>allowed</strong>
+                </mat-error>
+            </mat-form-field>
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,27 @@
+<!-- This is the main navigation component which integrates collapsable and item folder components  -->
+
+<ng-container *ngIf="!item.hidden">
+
+    <div class="group-title" [ngClass]="item.classes">
+        <span class="hint-text" [translate]="item.translate">{{ item.title }}</span>
+    </div>
+
+    <div class="group-items">
+        <ng-container *ngFor="let item of item.children">
+
+            <!-- this is useless component -->
+            <fuse-nav-vertical-group 
+            *ngIf="item.type=='group'" [item]="item"></fuse-nav-vertical-group>
+
+            <!-- fuse-nav-vertical-collapsible generates collapsible menu links: ROUTINE  -->
+            <fuse-nav-vertical-collapsable 
+            *ngIf="item.type=='collapsable'" [item]="item"></fuse-nav-vertical-collapsable>
+
+            <!-- fuse-nav-vertical-item generates single non-collapsible menu items: SETUP & OTHER  -->
+            <fuse-nav-vertical-item 
+            *ngIf="item.type=='item'" [item]="item"></fuse-nav-vertical-item>
+
+        </ng-container>
+    </div>
+
+</ng-container>

@@ -1,0 +1,27 @@
+
+<div class="customHeaderContainer">
+  <div class="customHeaderLabel" [ngClass]="{'permissions': params.displayName==='Permissions'}">
+    <p *ngIf="!editName">{{ params.displayName }}</p>
+
+    <input *ngIf="editName" type="text" value="" (blur)="onBlurMethod()" (keyup)="escBtn($event)"  (keyup.enter)="onEditName($event)">
+  </div>
+  <div class="customHeaderMenu" *ngIf="params.enableMenu">
+    <span class="material-icons cursor" [matMenuTriggerFor]="menu">
+        more_vert
+    </span>
+    <mat-menu #menu="matMenu" class="colum-header-container">
+        <!-- <p class="column-header-option" (click)="updateModal()">
+            <span class="material-icons column-setting-icon">
+            settings
+            </span>
+            Column Options
+        </p> -->
+        <p class="column-header-option" (click)="editName = !editName">
+          <span class="material-icons column-setting-icon">
+          settings
+          </span>
+          Edit Name
+      </p>
+    </mat-menu>
+  </div>
+</div>

@@ -1,0 +1,42 @@
+<div fxLayout="row" fxLayoutAlign="space-between">
+    <mat-list>
+        <mat-list-item>
+            <mat-slide-toggle
+                fxFlex
+                class="mat-accent"
+                aria-label="Notifications"
+                labelPosition="before"
+                [checked]="weeklyUserActivityReport"
+                (change)="toggleNotification(1)"
+            >
+                <h2>Weekly user activity report</h2>
+            </mat-slide-toggle>
+        </mat-list-item>
+        <br />
+        <mat-list-item>
+            <mat-slide-toggle
+                fxFlex
+                class="mat-accent"
+                aria-label="Notifications"
+                labelPosition="before"
+                [checked]="dailyDepartmentActivityReport"
+                (change)="toggleNotification(2)"
+            >
+                <h2>Daily department activity report</h2>
+            </mat-slide-toggle>
+        </mat-list-item>
+        <br />
+        <mat-list-item>
+            <mat-slide-toggle
+                fxFlex
+                class="mat-accent"
+                aria-label="Notifications"
+                labelPosition="before"
+                [checked]="dailySalesPersonActivityReport"
+                (change)="toggleNotification(3)"
+            >
+                <h2>Daily salesperson activity report</h2>
+            </mat-slide-toggle>
+        </mat-list-item>
+    </mat-list>
+</div>

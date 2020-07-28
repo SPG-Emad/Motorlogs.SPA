@@ -1,0 +1,51 @@
+<div class="page-layout carded fullwidth inner-scroll" fusePerfectScrollbar>
+    <div class="top-bg accent"></div>
+    <div class="center">
+        <div
+            class="header accent"
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+        >
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <div
+                    fxLayout="column"
+                    fxLayoutAlign="start start"
+                    [@animate]="{
+                        value: '*',
+                        params: { delay: '100ms', x: '-25px' }
+                    }"
+                >
+                    <div class="h2">
+                        My Profile
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-card">
+            <div class="content">
+                <mat-tab-group fxLayout="column" fxFlex>
+                    <mat-tab label="General">
+                        <div class="w-100-p">
+                            <ml-general></ml-general>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Notifications">
+                        <div class="w-100-p">
+                            <ml-notifications></ml-notifications>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Change Email">
+                        <div class="w-100-p">
+                            <ml-change-email></ml-change-email>
+                        </div>
+                    </mat-tab>
+                    <mat-tab label="Change Password">
+                        <div class="w-100-p">
+                            <ml-change-password></ml-change-password>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </div>
+</div>

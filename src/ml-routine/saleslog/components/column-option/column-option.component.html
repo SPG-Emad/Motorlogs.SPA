@@ -1,0 +1,62 @@
+<div class="modal-header" style="margin: 10px !important">
+    <h5 class="modal-title">{{modalTitle}}
+    </h5>
+</div>
+<mat-dialog-content class="mat-typography">
+    <div class="modal-body" *ngIf="!columnLoader">
+        <div fxlayout="column" style="margin: 0px 0px 20px 0px;flex-direction: column; box-sizing: border-box; display: flex; height:450px;overflow-x: auto;">
+            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" >
+
+                <!-- Position Column -->
+                <ng-container matColumnDef="columnName">
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Column Name </th>
+                    <td mat-cell *matCellDef="let element"> {{element.columnName}} </td>
+                </ng-container>
+                
+                <!-- Name Column -->
+                <ng-container matColumnDef="display">
+                    <th mat-header-cell *matHeaderCellDef> Display </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-slide-toggle *ngIf="!element.disabled;else disable" (change)="setColumnVisibility($event,element)" [checked]="element.display"></mat-slide-toggle>
+                        <ng-template #disable>
+                            <span class="material-icons" style="color:#D2D2D2">highlight_off</span>
+                        </ng-template>
+                    </td>
+                </ng-container>
+                
+                <!-- printExport Column -->
+                <ng-container matColumnDef="printExport">
+                    <th mat-header-cell *matHeaderCellDef > Print/Export </th>
+                    <td mat-cell *matCellDef="let element">
+                        <mat-slide-toggle *ngIf="!element.disabled;else disable" (change)="setColumnVisibility($event,element)" [checked]="element.printExport"></mat-slide-toggle>
+                        <ng-template #disable>
+                            <span class="material-icons"  style="color:#D2D2D2">highlight_off</span>
+                        </ng-template>
+                    </td>
+                </ng-container>
+                                
+                
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+
+            </table>
+        </div>
+        <div class="modal-footer" style="flex-direction: row; box-sizing: border-box; display: flex;">
+            <div fxflex="" fxlayoutalign="space-between" style="place-content: stretch space-between; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex; flex: 1 1 0%;">
+                <div>
+                    <button class="reset reset-btn" style="float: left;" (click)="reset()" type="button">RESET</button>
+                </div>
+                <div>
+                    <!-- <div class="loader" *ngIf="loader">
+                        <mat-spinner strokeWidth="3" [diameter]="30"></mat-spinner>
+                    </div> -->
+                    <button class="save save-btn" style="margin-right: 10px;" (click)="submit()" type="button">SAVE</button>
+                    <button class="close close-btn"  mat-dialog-close data-dismiss="modal" type="button">CLOSE</button>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="loader" *ngIf="columnLoader">
+        <mat-spinner strokeWidth="5" [diameter]="100"></mat-spinner>
+    </div>
+</mat-dialog-content>

@@ -1,0 +1,115 @@
+
+.divPermission {
+    width: 100%;
+    font-size: 12px;
+    clear: both;
+}
+
+
+// .ag-row .ag-cell {
+//     display: flex;
+//     justify-content: center; /* align horizontal */
+//     align-items: center;
+// }
+::ng-deep .ag-theme-alpine .ag-cell {
+    line-height: 26px !important;
+}
+
+::ng-deep .ag-header-cell-label{
+    display: flex;
+    justify-content: center; /* align horizontal */
+    align-items: center;
+    justify-content:center;
+    text-align: center;
+}
+
+::ng-deep .ag-theme-alpine .ag-ltr .ag-cell ,.ag-header-cell {
+    /* border: 1px solid #ececec; */
+    border-right: 1px solid #d9d9d9 !important;
+    font-size: 12px !important;
+
+}
+
+.ag-header-cell-text {
+    /* overflow: hidden; */
+    text-overflow: initial;
+    white-space: nowrap;
+    white-space: break-spaces;
+    font-weight: 500;
+    font-size:8px;
+}
+
+::ng-deep .ag-header-cell-label {
+    /* Necessary to allow for text to grow vertically */
+    height: 100%;
+    padding: 0 !important;
+}
+
+::ng-deep .ag-theme-alpine .ag-header-cell, .ag-theme-alpine .ag-header-group-cell {
+    padding-left: 8px !important;
+    padding-right: 8px !important;
+    border-right: 1px solid #c7c7c787;
+}
+
+::ng-deep .permission-column{
+    background: #fff;
+    .ag-cell-label-container{
+        .ag-header-cell-label {
+            span {
+                font-size: 16px !important;
+                color: #a0a2a2 !important;
+                font-weight: 300 !important;
+            }
+        }
+    }
+}
+
+::ng-deep .ag-theme-alpine .ag-select .ag-picker-field-display {
+    text-align: center !important;
+}
+
+::ng-deep .ag-theme-alpine .ag-list-item {
+    display: flex;
+    align-items: center !important;
+    justify-content: center;
+}
+
+::ng-deep .permission-column-text{ 
+    text-align: center;
+}
+
+::ng-deep .ag-header-cell{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+::ng-deep .colum-header-container{
+    min-height: auto !important;
+    .column-header-option{
+        display: flex;
+        align-items: center;
+        padding: 3px 0px;
+        font-size: 11px;
+        margin: 0;
+        cursor: pointer;
+        .column-setting-icon{
+            font-size: 15px !important;
+            margin: 0px 4px !important;
+        }
+    }
+    .column-header-option:hover{
+      background: #f3ecec;
+    }
+}
+
+::ng-deep .cursor{
+    cursor:pointer;
+    font-size: 15px !important;
+}
+
+::ng-deep .customHeaderContainer{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

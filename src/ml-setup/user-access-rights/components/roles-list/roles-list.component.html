@@ -1,0 +1,47 @@
+<br />
+<div style="position: relative;">
+    <loading *ngIf="showLoader" [isGridLoader]="true"></loading>
+    <table mat-table matSort [dataSource]="dataSource" #mytable>
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="rolename">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Role Name</th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.name }}
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="code">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+            <td mat-cell *matCellDef="let element">{{ element.code }}</td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element" class="action-link">
+                <mat-icon
+                    class="secondary-text mat-icon notranslate material-icons mat-icon-no-color deleteImg"
+                    role="img"
+                    aria-hidden="true"
+                    matTooltip="Edit"
+                    (click)="editRole(element)"
+                    >edit</mat-icon
+                >
+                <ng-template [ngIf]="element.deletable">
+                    <delete-confirm
+                        (deleteConfirmed)="removeRole(element)"
+                    >
+                    </delete-confirm>
+                </ng-template>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
+        <tr mat-row *matRowDef="let row; columns: getDisplayedColumns()"></tr>
+    </table>
+</div>
+<mat-paginator
+    [pageSizeOptions]="[5, 10, 20]"
+    [pageSize]="10"
+    showFirstLastButtons
+></mat-paginator>

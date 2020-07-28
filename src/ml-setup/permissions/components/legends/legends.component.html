@@ -1,0 +1,48 @@
+
+  <table class="legend" style="width:100%; margin-top:10px; float: right;">
+    <tbody>
+      <tr>
+        <td style="text-align: right;">
+          <button class=" mat-raised-button mat-warn" color="warn" (click)="toggleShowDiv('divA')" mat-raised-button="">
+          <span class="mat-button-wrapper">Legend <!----><!---->
+            <i *ngIf="animationState === 'in'" class="material-icons" style="color: white;font-size: 20px;">keyboard_arrow_down</i>
+            <i *ngIf="animationState === 'out'" class="material-icons" style="color: white;font-size: 20px;">keyboard_arrow_up</i>
+          </span>
+          <div class="mat-button-ripple mat-ripple" matripple=""></div>
+          <div class="mat-button-focus-overlay"></div></button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+
+
+  <div [@slideInOut]="animationState" id="divLegend" style="margin-top: 20px;">
+    <div class="legend-table">
+        <div class="legend-row" *ngFor="let legend of legends">
+          <div class="legend-row__legend-btn">
+
+            <span *ngIf="legend.name ==='LOCK';else block" class="material-icons legend-block" style="font-size: 16px;background-color:#FAF8F8; color:#ACABAC;">lock</span>
+            <ng-template #block>
+              <span 
+                class="legend-block" 
+                [ngClass]="{
+                'option-on': legend.name ==='ON', 
+                'option-off': legend.name ==='OFF',
+                'option-block': legend.name ==='BLOCK',
+                'tdReportNew': legend.code ==='RPT-U', 
+                'option-edit': legend.code ==='EDIT-U',
+                'option-edit-m-u': legend.code ==='EDIT-M-U',
+                'option-read-only': legend.name ==='READ ONLY',
+                'option-report-only': legend.name ==='REPORT ONLY'
+              }">
+                {{legend.name}} 
+              </span>
+            </ng-template>
+
+          </div>
+          <div class="legend-row__legend-desc" [innerHTML]="legend.details | boldText">
+          </div>
+          {{legend.code}}
+        </div>
+    </div>
+  </div>

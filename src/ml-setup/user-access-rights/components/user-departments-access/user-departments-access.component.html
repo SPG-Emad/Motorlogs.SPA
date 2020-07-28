@@ -1,0 +1,29 @@
+<table #f="ngForm" [formGroup]="userDepartmentForm" class="w-100-p table" style="margin-top: 15px;">
+    <tr>
+        <th class="noBorder"></th>
+        <th
+            matTooltipPosition="above"
+            matTooltip="Check the box to grant access to the Sales Log of the relevant department. Users with this access can control carry overs, cars sold, covered, delivered and trade-ins including their relative profit figures.
+      Suggested user roles: Sales Manager, Sales Person, Accounts Clerk, Stock Controller."
+        >
+            Sales
+        </th>
+        <th
+            matTooltipPosition="above"
+            matTooltip="Check the box to grant access to the Trade-In Log of the relevant department.Users with this access can manage trade-in details for arriving vehicles. This log is synchronized with all sales departments. Suggested user roles:  Used Car Manager, Wholesale Manager, Valuer, Stock Controller, Accounts Clerk."
+        >
+            Trade
+        </th>
+    </tr>
+    <tr *ngFor="let department of departments" formArrayName="{{department.abbr}}">
+        <td class="tdTitle">
+            {{ department.name }}
+        </td>
+        <td class="tdCenter">
+            <mat-checkbox formControlName="sales"  [disabled]="sales"></mat-checkbox>
+        </td>
+        <td class="tdCenter">
+            <mat-checkbox formControlName="trade"  [disabled]="trade"></mat-checkbox>
+        </td>
+    </tr>
+</table>

@@ -1,0 +1,51 @@
+<div class="modal-header" style="margin: 10px !important">
+    <h5 class="modal-title">{{modalTitle}}</h5>
+    <!-- <mat-icon data-dismiss="modal" style="float: right;cursor: pointer;" (click)="dialog.closeAll();">cancel
+    </mat-icon> -->
+</div>
+<mat-dialog-content class="mat-typography">
+    <div class="modal-body">
+        <div class="history-filter">
+            <div class="all-history-filter" *ngIf="searchOption ===1">
+                <div class="all-history-filter__show-history">
+                    <h4>Show history from</h4>
+                    <mat-form-field class="example-full-width">
+                        <mat-select>
+                          <mat-option *ngFor="let item of days" [value]="item.value">
+                            {{item.value}}
+                          </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+    
+                <div class="all-history-filter__checks">
+                    <mat-checkbox class="example-full-width">Exclude my changes</mat-checkbox>
+                    <mat-checkbox class="example-full-width">Exclude new entries</mat-checkbox>
+                </div>
+            </div>
+            <div class="history-filter__search-filter">
+                <mat-form-field floatLabel="never" class="example-full-width">
+                    <mat-label>Search</mat-label>
+                    <input matInput placeholder="">
+                    <mat-icon matSuffix>search</mat-icon>
+                </mat-form-field>
+            </div>
+        </div>
+        <div class="grid">
+            <ag-grid-angular
+            #agGrid
+            style="width: 100%;height: 410px;"
+            id="myGrid"
+            class="ag-theme-alpine"
+            [columnDefs]="columnDefs"
+            [defaultColDef]="defaultColDef"
+            [groupUseEntireRow]="true"
+            [autoGroupColumnDef]="autoGroupColumnDef"
+            [suppressMenuHide]="true"
+    
+            [rowData]="rowData"
+            (gridReady)="onGridReady($event)"
+          ></ag-grid-angular>
+        </div>
+    </div>
+</mat-dialog-content>

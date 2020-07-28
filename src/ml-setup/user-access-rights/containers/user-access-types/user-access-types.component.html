@@ -1,0 +1,70 @@
+<div
+    class="content"
+    fxLayout="row"
+    fxLayout.xs="column"
+    fxFlexFill
+    fxLayoutAlign="space-between"
+>
+    <br />
+    <div fxFlex="40">
+        <button
+            mat-raised-button
+            color="accent"
+            class="ml-20 mr-10"
+            (click)="addNewUserInSidePanel()"
+        >
+            <mat-icon style="margin-top: -3px;">add</mat-icon> ADD USER
+        </button>
+        <button mat-button [matMenuTriggerFor]="menu" class="dropdown" fxHide>
+            MORE
+            <mat-icon style="margin-top: -3px;">arrow_drop_down</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu" color="accent">
+            <button mat-menu-item>Export Activity</button>
+            <button mat-menu-item>Deleted Users</button>
+        </mat-menu>
+    </div>
+
+    <div fxFlex="60">
+        <div fxFlex="35">
+            <mat-search-select
+                [data]="departmentsList"
+                [flex]="'70'"
+                class="w-100-p"
+                [label]="'Department'"
+                [(ngModel)]="department"
+                name="department"
+                (selectedItem)="selectedDepartment($event)"
+                ngDefaultControl 
+            >
+            </mat-search-select>
+        </div>
+        <div fxFlex="35">
+            <mat-search-select
+                [data]="roleService.userRole"
+                [flex]="'70'"
+                class="w-100-p"
+                [label]="'User Role'"
+                [(ngModel)]="roles"
+                name="roles"
+                (selectedItem)="selectedUserRole($event)"
+                ngDefaultControl 
+            >
+            </mat-search-select>
+        </div>
+
+        <div fxFlex="30">
+            <mat-form-field class="w-100-p" floatLabel="always">
+                <input
+                    matInput
+                    placeholder="Search"
+                    [(ngModel)]="names"
+                    name="names"
+                    (keypress)="onlyCharacters($event)"
+                    (keyup)="applyFilter($event.target.value)"
+                    ngDefaultControl 
+                />
+            </mat-form-field>
+        </div>
+    </div>
+</div>

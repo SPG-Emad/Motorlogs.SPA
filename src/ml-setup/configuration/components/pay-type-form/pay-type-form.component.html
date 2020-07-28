@@ -1,0 +1,53 @@
+<form class="w-100-p" #f="ngForm" [formGroup]="payTypeForm" novalidate>
+    <div fxLayout="row" fxLayoutAlign="space-between">
+        <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            fxFlex="30"
+            class="pl-4"
+        >
+            <mat-label>Pay Type</mat-label>
+            <input matInput name="valText" formControlName="valText" required />
+        </mat-form-field>
+        <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            fxFlex="20"
+            class="pl-4"
+        >
+            <mat-label>Code</mat-label>
+            <input matInput name="code" formControlName="code" required />
+        </mat-form-field>
+        <mat-form-field fxFlex="20" class="pl-4" floatLabel="always">
+            <mat-label>Background Color *</mat-label>
+            <span class="color2" [style.background-color]="selectedBackground"></span>
+            <mat-select formControlName="backgrounds" [(ngModel)] = "selectedBackground">
+                <mat-option
+                    *ngFor="let color of backgroundData"
+                    [value]="color"
+                >
+                    <span class="color" [style.background-color]="color"></span>
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        <div fxFlex="20">
+            <button
+                mat-raised-button
+                color="accent"
+                class="ml-20 mr-10"
+                type="submit"
+                (click)="createUpdatePayType()"
+                [disabled]="!myNgForm.valid || loading"
+                [innerText]="buttonText()"
+            ></button>
+            <button
+                mat-raised-button
+                color="primary"
+                type="reset"
+                (click)="resetFormDetails()"
+            >
+                {{ myNgForm.value.id == null ? "CLEAR" : "CANCEL" }}
+            </button>
+        </div>
+    </div>
+</form>

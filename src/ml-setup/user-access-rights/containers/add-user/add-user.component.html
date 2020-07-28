@@ -1,0 +1,147 @@
+<ml-sidebar-content>
+    <div>
+        <div fxLayout="row" fxLayoutAlign="space-between" class="top">
+            <div class="left" style="margin-left: 5px;">
+                <img
+                    *ngIf="userObj.picture; else default"
+                    [src]="userObj.picture"
+                    class="userProfile left"
+                />
+                <ng-template #default>
+                    <img
+                        src="assets/images/dummyImage.png"
+                        class="userProfile left"
+                    />
+                </ng-template>
+                <table style="margin-left: 10px; display: initial;">
+                    <tr>
+                        <td>
+                            <h3 class="m-0">
+                                <ng-container
+                                    *ngIf="
+                                        userObj.username;
+                                        else userNameNotFound
+                                    "
+                                >
+                                    {{ userObj.username }}
+                                </ng-container>
+                                <ng-template #userNameNotFound>
+                                    Add a user
+                                </ng-template>
+                            </h3>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <h4 class="m-0">
+                                <ng-container
+                                    *ngIf="
+                                        userObj.email;
+                                        else userEmailNotFound
+                                    "
+                                >
+                                    {{ userObj.email }}
+                                </ng-container>
+                                <ng-template #userEmailNotFound>
+                                    You can add a user account
+                                </ng-template>
+                            </h4>
+                        </td>
+                    </tr>
+                </table>
+            </div>
+            <mat-icon
+                class="right"
+                (click)="closeSideBar()"
+                style="margin-top: 12px;"
+                >cancel</mat-icon
+            >
+        </div>
+
+        <div class="content">
+            <ml-user-initials
+                #userInitials
+                [data]="data"
+                (rolePrivileges)="rolePrivileges = $event"
+            ></ml-user-initials>
+            <br />
+            <ml-user-checkboxes #userCheckboxes></ml-user-checkboxes>
+
+            <br />
+            <div style="margin-top: 20px;">
+                <mat-accordion>
+                    <mat-expansion-panel
+                        [expanded]="step === 0"
+                        (opened)="setStep(0)"
+                        hideToggle
+                    >
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <mat-icon>account_balance</mat-icon> Department
+                                Access
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <ml-user-departments-access
+                            #userDepartmentAccess
+                            [rolePrivileges]="rolePrivileges"
+                        ></ml-user-departments-access>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel
+                        [expanded]="step === 1"
+                        (opened)="setStep(1)"
+                        hideToggle
+                    >
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <mat-icon>phonelink_setup</mat-icon> Setup
+                                Functions Access
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <ml-user-system-functions-access
+                            #userSysFunction
+                        ></ml-user-system-functions-access>
+                    </mat-expansion-panel>
+
+                    <mat-expansion-panel
+                        *ngIf="showLoginHistoryPanel"
+                        [expanded]="step === 2"
+                        (opened)="setStep(2)"
+                        hideToggle
+                    >
+                        <mat-expansion-panel-header>
+                            <mat-panel-title>
+                                <mat-icon>history</mat-icon> Login History
+                            </mat-panel-title>
+                        </mat-expansion-panel-header>
+
+                        <ml-user-login-history></ml-user-login-history>
+                    </mat-expansion-panel>
+                </mat-accordion>
+            </div>
+            <br />
+            <br />
+            <div class="footerButtons">
+                <button
+                    mat-raised-button
+                    color="accent"
+                    class="ml-20 mr-10"
+                    (click)="createUpdateUser()"
+                    [disabled]="loading"
+                    [innerText]="buttonText()"
+                ></button>
+                <button
+                    mat-raised-button
+                    color="primary"
+                    class="ml-20 mr-10"
+                    (click)="closeSideBar()"
+                    *ngIf="!loading"
+                >
+                    CANCEL
+                </button>
+            </div>
+        </div>
+    </div>
+</ml-sidebar-content>
