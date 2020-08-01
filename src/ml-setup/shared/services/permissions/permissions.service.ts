@@ -9,29 +9,29 @@ const PERMISSION_API = `${GlobalConstants.apiURL}ColValues`;
 
 
 export interface IPermissions {
-    
+
 }
 
 @Injectable()
 export class PermissionsService {
     selectedPermission: IPermissions;
     permissionList: IPermissions[];
-    columnId: number  = null;
-    gridApi:any;
-    gridColumnApi:any;
+    columnId: number = null;
+    gridApi: any;
+    gridColumnApi: any;
 
-   /**
-    * Constructor
-    * 
-    *  @param {HttpClient}
-    * 
-    */
+    /**
+     * Constructor
+     * 
+     *  @param {HttpClient}
+     * 
+     */
     constructor(
         private _http: HttpClient,
     ) { }
 
 
-    fetchAllPermissions(){
+    fetchAllPermissions() {
         return this._http
             .get<IPermissions[]>(PERMISSION_API)
             .map(this.extractData);
@@ -40,19 +40,19 @@ export class PermissionsService {
 
     postPermission(params: IPermissions) {
         return this._http
-            .post(`${PERMISSION_API}/AddCustomColumn`,params)
+            .post(`${PERMISSION_API}/AddCustomColumn`, params)
             .map(this.extractData);
     }
 
     postColumnName(params: IPermissions) {
         return this._http
-            .post(`${PERMISSION_API}/UpdateNameForCustomColumn`,params)
+            .post(`${PERMISSION_API}/UpdateNameForCustomColumn`, params)
             .map(this.extractData);
     }
 
     updatePermission(params) {
         return this._http
-            .post(`${PERMISSION_API}/UpdatePermissions`,params)
+            .post(`${PERMISSION_API}/UpdatePermissions`, params)
             .map(this.extractData);
     }
 
@@ -64,16 +64,16 @@ export class PermissionsService {
     }
 
 
-    deletePermission(id: number){
+    deletePermission(id: number) {
         return this._http
             .delete(`${PERMISSION_API}/${id}`)
             .map((res: IPermissions) => this.extractData(res));
     }
-    
+
 
 
     private extractData(res) {
-        let body = (typeof (res) != 'object')? res.json(): res;  // If response is a JSON use json(), If response is a String use text()
+        let body = (typeof (res) != 'object') ? res.json() : res;  // If response is a JSON use json(), If response is a String use text()
         if (body) {
             return body;
         } else {

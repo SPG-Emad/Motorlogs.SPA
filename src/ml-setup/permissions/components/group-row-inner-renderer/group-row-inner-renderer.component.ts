@@ -58,7 +58,6 @@ export class CustomHeader {
 
     onBlurMethod() {
         this.editName = false;
-
     }
 
     escBtn(event) {
@@ -67,10 +66,9 @@ export class CustomHeader {
 
         if (keyPressed === 27) {
             this.editName = false;
-
         }
     }
-    
+
     onEditName(event) {
         let keyPressed = event.keyCode;
 

@@ -2,7 +2,6 @@
 <div class="customHeaderContainer">
   <div class="customHeaderLabel" [ngClass]="{'permissions': params.displayName==='Permissions'}">
     <p *ngIf="!editName">{{ params.displayName }}</p>
-
     <input *ngIf="editName" type="text" value="" (blur)="onBlurMethod()" (keyup)="escBtn($event)"  (keyup.enter)="onEditName($event)">
   </div>
   <div class="customHeaderMenu" *ngIf="params.enableMenu">

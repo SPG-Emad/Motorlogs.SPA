@@ -75,7 +75,7 @@ export class PermissionsComponent implements OnInit {
         //   loadingMessage: 'One moment please...',
         // };
         this.overlayLoadingTemplate =
-    `
+            `
       <div style="
             display: flex;
             position: relative;
@@ -95,13 +95,13 @@ export class PermissionsComponent implements OnInit {
         let rowData;
         if (this.tabSelected === 0) {
             rowData = this.showAllRowCode.find(el => el.colId === params.colDef.colId && el.permission === params.data.permission);
-        } 
+        }
         else if (this.tabSelected === 1) {
             rowData = this.salesLogdRowCode.find(el => el.colId === params.colDef.colId && el.permission === params.data.permission);
-        } 
+        }
         else if (this.tabSelected === 2) {
             rowData = this.arrivingRowCode.find(el => el.colId === params.colDef.colId && el.permission === params.data.permission);
-        } 
+        }
         else if (this.tabSelected === 3) {
             rowData = this.deliveredRowCode.find(el => el.colId === params.colDef.colId && el.permission === params.data.permission);
         }
@@ -110,38 +110,38 @@ export class PermissionsComponent implements OnInit {
 
         if ((params.value === "EDIT" || params.value === "BLOCK" || params.value === "READ ONLY") && rowData && rowData.rowCode === "EDIT-M-U") {
             return { "backgroundColor": '#dcdcdc36', "color": '#00000063', 'pointer-events': 'none', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-        } 
+        }
         else if ((params.value === "ON" || params.value === "OFF") && rowData && rowData.rowCode === "OFF-U-D") {
             return { "backgroundColor": '#dcdcdc36', "color": '#00000063', 'pointer-events': 'none', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-        } 
+        }
         else {
             if (params.value === "ON") {
                 return { "backgroundColor": '#e6fff1', "color": '#009c47', "fontWeight": 'bold', 'cursor': 'pointer', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-            } 
+            }
             else if (params.value === "OFF") {
                 return { "backgroundColor": '#feedef', "color": '#f16145', "fontWeight": 'bold', 'cursor': 'pointer', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-            } 
+            }
             else if (params.value === "EDIT") {
                 return { "backgroundColor": '#e6fff1', "color": '#009c47', "fontWeight": 'bold', 'cursor': 'pointer', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-            } 
+            }
             else if (params.value === "BLOCK") {
                 return { "backgroundColor": '#feedef', "color": '#f16145', "fontWeight": 'bold', 'cursor': 'pointer', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-            } 
+            }
             else if (params.value === "READ ONLY") {
                 return { "backgroundColor": '#e5faff', "color": '#006ab7', "fontWeight": 'bold', 'cursor': 'pointer', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-            } 
+            }
             else if (params.value === "REPORT ONLY") {
                 return { "backgroundColor": '#e5faff', "color": '#006ab7', "fontWeight": 'bold', 'cursor': 'pointer', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-            } 
+            }
             else if (params.value === "LOCK") {
-                return {"background-image": "url(../../../../assets/images/lockpermission.png);", "font-size": "0px !important;"};
-            } 
+                return { "background-image": "url(../../../../assets/images/lockpermission.png);", "font-size": "0px !important;" };
+            }
             else if (params.value === "Department Master") {
                 return { "backgroundColor": '#006fc8', "color": '#ffff', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-            } 
+            }
             else if (params.value === "User Roles") {
                 return { "backgroundColor": '#006fc8', "color": '#ffff', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
-            } 
+            }
             else if (params.value === undefined) {
                 return { "backgroundColor": '#d2dce6', 'pointer-events': 'none', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
             }
@@ -240,6 +240,7 @@ export class PermissionsComponent implements OnInit {
         const groupState = this.gridColumnApi.getColumnGroupState();
         const sortState = this.gridApi.getSortModel();
         const filterState = this.gridApi.getFilterModel();
+
         console.log('***********************');
         console.log('colState: ', colState);
         console.log('groupState: ', groupState);
@@ -253,9 +254,7 @@ export class PermissionsComponent implements OnInit {
         this.gridColumnApi = params.columnApi;
         this.permissionsService.gridApi = params.api;
         this.permissionsService.gridColumnApi = params.columnApi;
-
         this.gridApi.showLoadingOverlay();
-
         this.generateGrid();
     }
 
@@ -276,11 +275,9 @@ export class PermissionsComponent implements OnInit {
 
             this.showAllColumnData = this.columnData; // =========> SHOW ALL
             this.columnDefs = this.showAllColumnData;
-
             /*---------------------------------*/
 
         });
-
     }
 
     generatePermissionsGrid(viewId) {
@@ -292,9 +289,9 @@ export class PermissionsComponent implements OnInit {
         const column = [];
         const columField = [];
         const rolesPos = this.response['department'].length + 1;
+
         this.columnData = [];
         this.rowCode = [];
-
 
         column.push(
             {
@@ -325,7 +322,7 @@ export class PermissionsComponent implements OnInit {
                         });
                     }
 
-                    console.log('colOption: ', col.colOption , ' type: ', res.type);
+                    console.log('colOption: ', col.colOption, ' type: ', res.type);
 
                     column.push(
                         {
@@ -380,8 +377,6 @@ export class PermissionsComponent implements OnInit {
         });
         /*----------------*/
 
-        // console.log(departmentRow,rolesRow);
-        // console.log(column);
         this.columnData = column;
         this.rolePos = rolesPos;
         return [
@@ -393,6 +388,13 @@ export class PermissionsComponent implements OnInit {
     }
 
     cellEditorSelector(params) {
+
+        console.log('************************');
+        console.log('params.colDef.field: ', params.colDef.field);
+        console.log('params.value.field: ', params.value);
+        console.log('params.rowIndex: ', params.rowIndex);
+        console.log('this.rolePos: ', this.rolePos);
+        console.log('************************');
 
         if (params.colDef.field !== 'permission' &&
             params.value !== undefined &&
@@ -424,8 +426,6 @@ export class PermissionsComponent implements OnInit {
         const headerName = e.colDef.headerName;
         const type = e.colDef.type;
         const viewId = e.colDef.viewId;
-
-
         const rowCode = this.accessList.find(el => el.name === value);
 
         if (rowIndex >= this.rolePos) {
@@ -438,8 +438,8 @@ export class PermissionsComponent implements OnInit {
             };
 
             this.updateRolesRow(param);
-        } else {
-
+        }
+        else {
             const param = {
                 roleId: null,
                 viewId: viewId,
@@ -450,7 +450,6 @@ export class PermissionsComponent implements OnInit {
 
             this.updateDepartmentRow(param);
         }
-
     }
 
     updateDepartmentRow(params: any) {

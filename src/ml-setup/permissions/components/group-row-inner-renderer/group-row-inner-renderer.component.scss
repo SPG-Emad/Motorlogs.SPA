@@ -1,61 +1,61 @@
-::ng-deep .colum-header-container{
-  min-height: auto !important;
-  .column-header-option{
-    display: flex;
-    align-items: center;
-    padding: 5px 0px;
-    font-size: 11px;
-    margin: 0;
-    cursor: pointer;
-    .column-setting-icon{
-        font-size: 15px;
-        margin: 0px 4px;
+::ng-deep .colum-header-container {
+    min-height: auto !important;
+    .column-header-option {
+        display: flex;
+        align-items: center;
+        padding: 5px 0px;
+        font-size: 11px;
+        margin: 0;
+        cursor: pointer;
+        .column-setting-icon {
+            font-size: 15px;
+            margin: 0px 4px;
+        }
+        .column-header-option:hover {
+            background: #c6c6c6;
+        }
     }
-    .column-header-option:hover{
-      background: #c6c6c6;
-    }
-  }
 }
 
-.cursor{
-    cursor:pointer;
+.cursor {
+    cursor: pointer;
     font-size: 15px;
 }
-::ng-deep .customHeaderContainer{
+
+::ng-deep .customHeaderContainer {
     display: flex;
     align-items: center;
     justify-content: center;
     white-space: pre-wrap;
     font-size: 12px;
     font-weight: 700;
-    .customHeaderLabel{
-      text-align: center;
-      input{
-        padding: 0;
-        margin: 0;
-        width: 100%;
-      }
+    .customHeaderLabel {
+        text-align: center;
+        input {
+            padding: 0;
+            margin: 0;
+            width: 100%;
+        }
     }
-    .customHeaderMenu{
-      display: flex;
-      span{
-        color: #717171;
-      }
+    .customHeaderMenu {
+        display: flex;
+        span {
+            color: #717171;
+        }
     }
 }
 
-::ng-deep .permissions{
-  text-align: center;
-  font-size: 20px;
-  display: block;
-  text-align: center;
-  background: #fff;
-  /* padding: 14px; */
-  padding: 6.25px;
-  font-weight: 100;
-  color: #808080;
-
+::ng-deep .permissions {
+    text-align: center;
+    font-size: 20px;
+    display: block;
+    text-align: center;
+    background: #fff;
+    /* padding: 14px; */
+    padding: 6.25px;
+    font-weight: 100;
+    color: #808080;
 }
-::ng-deep .mat-menu-content{
-  padding: 0 !important;
+::ng-deep .mat-menu-content {
+    padding: 0 !important;
 }
