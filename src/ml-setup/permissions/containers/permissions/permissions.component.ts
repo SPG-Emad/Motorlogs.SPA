@@ -90,7 +90,6 @@ export class PermissionsComponent implements OnInit {
     }
 
     cellStyling(params) {
-        console.log(params.data.permission, params.value);
 
         let rowData;
         if (this.tabSelected === 0) {
@@ -106,7 +105,6 @@ export class PermissionsComponent implements OnInit {
             rowData = this.deliveredRowCode.find(el => el.colId === params.colDef.colId && el.permission === params.data.permission);
         }
 
-        console.log("params:", params.value);
 
         if ((params.value === "EDIT" || params.value === "BLOCK" || params.value === "READ ONLY") && rowData && rowData.rowCode === "EDIT-M-U") {
             return { "backgroundColor": '#dcdcdc36', "color": '#00000063', 'pointer-events': 'none', 'display': 'flex', 'justify-content': 'center', 'align-items': 'center', };
@@ -207,14 +205,12 @@ export class PermissionsComponent implements OnInit {
                 }
             }, 1);
             this.gridApi.hideOverlay();
-
         });
 
     }
 
     test() {
         this.gridApi.showLoadingOverlay();
-
     }
 
     GetSortOrder(prop) {
@@ -256,6 +252,10 @@ export class PermissionsComponent implements OnInit {
         this.permissionsService.gridColumnApi = params.columnApi;
         this.gridApi.showLoadingOverlay();
         this.generateGrid();
+
+        console.log('************************');
+        console.log('onGridReady');
+        console.log('************************');
     }
 
     generateGrid() {
@@ -315,14 +315,15 @@ export class PermissionsComponent implements OnInit {
             col.view.map(res => {
                 if (res.viewId === viewId) {
                     const menuSuppress = (col.isEditable) ? false : true;
+                    
+                    console.log('Menu Suppress', menuSuppress);
+
                     if (col.code !== null) {
                         columField.push({
                             headerName: col.columName,
                             field: col.code,
                         });
                     }
-
-                    console.log('colOption: ', col.colOption, ' type: ', res.type);
 
                     column.push(
                         {
@@ -492,7 +493,7 @@ export class PermissionsComponent implements OnInit {
             rowStyle: { border: '1px solid #000' },
             minWidth: 105,
             maxWidth: 105,
-            editable: false,
+            editable: true,
             filter: true,
             suppressMenu: true
             // resizable: true,
