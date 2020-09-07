@@ -1,0 +1,89 @@
+<div id="divDateRange" style="width: 450px; height: 260px;" *ngIf="monthModal">
+        <div style="float:left;border-right: 1px solid #e0e0e0;">
+            <div style=" text-align: center; background-color: #1976D2;color: #ffffff;padding: 8px 4px;">
+                <div class="slider-wrap-year">
+                    <div class="slider-year" id="customYear" style="overflow: hidden;">
+                      <div *ngFor="let item of years" class="mySlides" [ngClass]="{'hide-year': !item.active}" style="width: 100%;">{{item.year}}</div>
+                    </div>
+                    <a class="slider-arrow sa-left-year" href="javascript:void(0)" (click)="previous()">
+                        <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M15.41 7.41L14 6l-6 6 6 6 1.41-1.41L10.83 12z" fill="#ffffff"></path>
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                        </svg>
+                    </a>
+                    <a class="slider-arrow sa-right-year" href="javascript:void(0)" (click)="next()">
+                        <svg height="18" viewBox="0 0 24 24" width="18" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 6L8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z" fill="#ffffff"></path>
+                            <path d="M0 0h24v24H0z" fill="none"></path>
+                        </svg>
+                    </a>
+                </div>
+            </div>
+            <div style="padding: 0px 10px;">
+                <div class="calendarMonthHolder">
+                    <!---->
+                    <div *ngFor="let item of months" class="calendarMonths" 
+                    [ngClass]="{'activeCalendarMonth': item===monthActive}" 
+                    (click)="selectMonth(item)"
+                    > 
+                    {{item}}
+                  </div>
+                </div>
+            </div>
+        </div>
+        <div style="float:left; width: 172px; background-color: #F9F9F9;">
+            <div style="margin-left: 15px;margin-top: 26px;">
+              <mat-radio-group aria-label="Select an option" [(ngModel)]="monthSelected">
+                <mat-radio-button class="calendar-radio-button" value="1">1 month</mat-radio-button>
+                <mat-radio-button class="calendar-radio-button" value="3">Past 3 months</mat-radio-button>
+                <mat-radio-button class="calendar-radio-button" value="6">Past 6 months</mat-radio-button>
+                <mat-radio-button class="calendar-radio-button" value="12">Past 12 months</mat-radio-button>
+              </mat-radio-group>
+            </div>
+        </div>
+        <div style="width: 100%; margin-bottom: 0; display: table; border-top: solid 1px #e1dfdf;">
+            <div style="float: right; display: inline-table;margin-top: 10px;margin-right: 12px;">
+                <div class="btnCancel" (click)="cancelMonthModal()"> Cancel </div>
+                <div class="btnApply" (click)="applyCalenderFilter()"> APPLY </div>
+            </div>
+        </div>
+      </div>
+      <!-- / Calender Ends -->
+  
+      <div style="float: left; padding-right: 50px; padding-left: 10px;">
+          <div class="" id="month-other" (click)="openCalenderPopup()" style="cursor: pointer; display: flex;">
+              <svg height="16" style="margin-top: 0px; margin-right: 5px;" viewBox="0 0 24 24" width="16" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M9 11H7v2h2v-2zm4 0h-2v2h2v-2zm4 0h-2v2h2v-2zm2-7h-1V2h-2v2H8V2H6v2H5c-1.11 0-1.99.9-1.99 2L3 20c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 16H5V9h14v11z" fill="#1976D2"></path>
+                  <path d="M0 0h24v24H0z" fill="none"></path>
+              </svg>
+              <span class="btnpopupmonth" style="color: #727272;font-size: 0.85em;">Other</span>
+          </div>
+      </div>
+  
+      <!-- Months slider Starts -->
+      <div class="slider-wrap">
+        <div
+        ng2-carouselamos
+        [startAt]="sliderIndex"
+        [width]="500"
+        [items]="searchDate"
+        [$item]="itemTemplate"
+        [$prev]="prevTemplate"
+        [$next]="nextTemplate"
+        ></div>
+      
+        <ng-template #prevTemplate>
+          <img src="../../../../assets/icons/left-arrow.png">
+        </ng-template>
+      
+        <ng-template #nextTemplate>
+          <img src="../../../../assets/icons/right-arrow.png">
+        </ng-template>
+      
+        <ng-template let-item let-i="index" #itemTemplate>
+          <div class="items" (click)="selctedMonth(i)">
+            <h3 *ngIf="i === sliderIndex" class="slider-active">{{item.month}}</h3>
+            <h3 *ngIf="i !== sliderIndex">{{item.month}}</h3>
+          </div>
+        </ng-template>
+      </div>

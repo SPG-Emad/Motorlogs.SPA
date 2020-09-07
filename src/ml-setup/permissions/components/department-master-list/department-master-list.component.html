@@ -1,0 +1,40 @@
+<form  [formGroup]="departmentsForm">
+    <ng-template matStepLabel>Departments</ng-template>
+    <!-- <img src="../../../../assets/images/departments.png" /> -->
+    <div class="column-container">
+        <div class="column-container__header">
+            <h4>Departments</h4>
+        </div>
+        <div *ngIf="!loader">
+            <div class="column-list" *ngFor="let item of departments">
+                <div class="column-list__title">
+                   <p>{{item.name}}</p>
+                </div>
+                <div class="column-list__option">
+                    <mat-form-field>
+                        <mat-select formControlName="{{item.abbr}}" #department [ngClass]="{'on-option':department.value==='On','off-option':department.value==='Off','off-option':department.value===undefined}">
+                          <mat-option *ngFor="let option of options" [value]="option">
+                            {{option}}
+                          </mat-option>
+                        </mat-select>
+                    </mat-form-field>
+                </div>
+            </div>
+        </div>
+        <div class="loader" *ngIf="loader">
+          <mat-progress-spinner
+              class="example-margin"
+              [color]="primary"
+              [mode]="mode"
+              [value]="value">
+          </mat-progress-spinner>
+        </div>
+  
+    </div>
+  
+    <div style="float: right;margin-top: 20px;">
+        <button mat-flat-button color="accent" matStepperPrevious
+            style="margin-right: 10px;">Back</button>
+        <button mat-flat-button color="accent" matStepperNext>Next</button>
+    </div>
+  </form>

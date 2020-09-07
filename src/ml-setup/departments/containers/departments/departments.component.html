@@ -1,0 +1,42 @@
+<div class="page-layout carded fullwidth inner-scroll" fusePerfectScrollbar>
+    <div class="top-bg accent"></div>
+    <div class="center">
+        <div
+            class="header accent"
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+        >
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <div
+                    fxLayout="column"
+                    fxLayoutAlign="start start"
+                    [@animate]="{
+                        value: '*',
+                        params: { delay: '100ms', x: '-25px' }
+                    }"
+                >
+                    <div class="h2">
+                        Departments
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-card">
+            <div class="content p-24" fusePerfectScrollbar fxLayout="column">
+                <ml-department-form
+                    (reloadDepartment)="reloadDepartment= $event"
+                    [editValue]="editValue"
+                ></ml-department-form>
+                <search-grid
+                    [toSearch]=""
+                    (searchedFor)="searchedForValue = $event"
+                ></search-grid>
+                <ml-department-list
+                    [searchedForValue]="searchedForValue"
+                    [refreshGrid]="reloadDepartment"
+                    (editValue)="editValue=$event"
+                ></ml-department-list>
+            </div>
+        </div>
+    </div>
+</div>

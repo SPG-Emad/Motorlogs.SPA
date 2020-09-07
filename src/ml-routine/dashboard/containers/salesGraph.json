@@ -1,0 +1,106 @@
+{
+	"seriesData": [{
+			"date": 1,
+			"graphType": "column",
+			"legendName": "Target Profit",
+			"yAxis": 0,
+			"isYAxis": true,
+			"isXAxis": false,
+			"tooltip": {
+				"valuePrefix": " $"
+			},
+			"columnData": [20, 200, 100, 10, 150, 50, 30, 40, 300,350
+			],
+			"color":"rgb(166, 165, 166)",
+			"month":"Feb",
+			"interval":24,
+			"columnDataIndex": 0,
+
+			"splineData": null,
+
+			"splineStyle": null
+
+
+
+		},
+
+		{
+			"date": 1,
+			"graphType": "column",
+			"legendName": "Profit Covered",
+			"yAxis": 0,
+			"isYAxis": true,
+			"isXAxis": false,
+			"tooltip": {
+				"valuePrefix": " $"
+			},
+			"columnData": [210, 250, 300, 150, 180, 80, 50, 140, 400,550
+			],
+			"color":"green",
+			"month":"Feb",
+			"interval":24,
+			"columnDataIndex": 0,
+
+			"splineData": null,
+
+			"splineStyle": null
+
+
+
+		},
+		{
+			"date": 1,
+			"graphType": "spline",
+			"legendName": "Target Order",
+			"yAxis": 1,
+			"isYAxis": true,
+			"isXAxis": false,
+			"tooltip": {
+				"valuePrefix": " $"
+			},
+			"columnData": null,
+		
+			"splineData": [100, 150, 200, 250, 300, 350, 400, 450,500],
+			"month":"Feb",
+			"interval": 24 ,
+
+			"splineDataIndex": 1,
+
+			"splineStyle": {
+				"lineWidth": 2,
+				"lineColor": "Highcharts.getOptions().colors[3]",
+				"fillColor": "white"
+
+			}
+		},
+		{
+			"date": 1,
+			"graphType": "spline",
+			"legendName": "Orders Covered",
+			"yAxis": 1,
+			"isYAxis": true,
+			"isXAxis": false,
+			"tooltip": {
+				"valuePrefix": " $"
+			},
+			"columnData": null,
+
+			"splineData": [200, 220, 250, 280, 300, 320, 350, 380,420],
+			"month":"Feb",
+			"interval": 24 ,
+			"splineDataIndex": 1,
+
+			"splineStyle": {
+				"lineWidth": 2,
+				"lineColor": "Highcharts.getOptions().colors[3]",
+				"fillColor": "white"
+
+			}
+
+
+		}
+
+
+
+	]
+}

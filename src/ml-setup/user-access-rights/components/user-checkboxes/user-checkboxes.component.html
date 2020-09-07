@@ -1,0 +1,17 @@
+<mat-list role="list" #f="ngForm" [formGroup]="userCheckboxesForm">
+    <mat-list-item role="listitem">
+        <mat-slide-toggle formControlName="restrictedAccess">
+            Restricted Access
+        </mat-slide-toggle>
+    </mat-list-item>
+    <mat-list-item role="listitem">
+        <mat-slide-toggle formControlName="canSignInAccessOwnSalesLog">
+            Can sign in and access own Sales Log
+        </mat-slide-toggle>
+    </mat-list-item>
+    <mat-list-item role="listitem">
+        <mat-slide-toggle formControlName="canSeeAllDeliveriesWithinDepartment">
+            Can see all deliveries within their department
+        </mat-slide-toggle>
+    </mat-list-item>
+</mat-list>

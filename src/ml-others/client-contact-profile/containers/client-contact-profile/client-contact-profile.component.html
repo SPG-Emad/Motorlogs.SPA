@@ -1,0 +1,30 @@
+<div class="page-layout carded fullwidth inner-scroll" fusePerfectScrollbar>
+    <div class="top-bg accent"></div>
+    <div class="center">
+        <div
+            class="header accent"
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+        >
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <div
+                    fxLayout="column"
+                    fxLayoutAlign="start start"
+                    [@animate]="{
+                        value: '*',
+                        params: { delay: '100ms', x: '-25px' }
+                    }"
+                >
+                    <div class="h2">
+                        Client Contact Profile
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-card">
+            <div class="content p-24" fusePerfectScrollbar fxLayout="column">
+                <ml-client-list></ml-client-list>
+            </div>
+        </div>
+    </div>
+</div>

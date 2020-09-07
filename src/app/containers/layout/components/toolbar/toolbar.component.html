@@ -1,0 +1,160 @@
+<mat-toolbar class="p-0 mat-elevation-z1">
+    <div fxFlex fxFill fxLayout="row" fxLayoutAlign="start center">
+        <div fxFlex="1 0 auto" fxLayout="row" fxLayoutAlign="start center">
+            <button
+                mat-icon-button
+                class="navbar-toggle-button"
+                *ngIf="!hiddenNavbar && !rightNavbar"
+                (click)="toggleSidebarOpen('navbar')"
+                fxHide.gt-md
+            >
+                <mat-icon class="secondary-text">menu</mat-icon>
+            </button>
+            <div
+                class="toolbar-separator"
+                *ngIf="!hiddenNavbar && !rightNavbar"
+                fxHide.gt-md
+            ></div>
+            <div
+                fxLayout="row"
+                fxLayoutAlign="start center"
+                *ngIf="horizontalNavbar"
+            >
+                <div class="logo ml-16">
+                    <img
+                        class="logo-icon"
+                        src="assets/images/logos/motorlog.svg"
+                    />
+                </div>
+            </div>
+            <div class="px-8 px-md-16">
+                <fuse-shortcuts [navigation]="navigation"></fuse-shortcuts>
+            </div>
+        </div>
+
+        <div
+            class=""
+            fxFlex="0 1 auto"
+            fxLayout="row"
+            fxLayoutAlign="start center"
+        >
+            <button
+                mat-icon-button
+                class="quick-panel-toggle-button"
+                matTooltip="Notifications"
+                (click)="toggleSidebarOpen('quickPanel')"
+                aria-label="Toggle quick panel"
+            >
+                <mat-icon color="basic">notifications</mat-icon>
+            </button>
+            <div class="toolbar-separator"></div>
+            <button
+                mat-icon-button
+                class="quick-panel-toggle-button"
+                matTooltip="Client Contact Profile"
+                (click)="GenerateClientContactProfile()"
+                aria-label="Client Contact Profile"
+            >
+                <mat-icon color="basic">phone</mat-icon>
+            </button>
+            <div class="toolbar-separator"></div>
+
+            <button
+                mat-button
+                [matMenuTriggerFor]="userMenu"
+                class="user-button"
+            >
+                <div fxLayout="row" fxLayoutAlign="center center">
+                    <div *ngIf="(user$ | async)?.picture; else defaultImage">
+                        <img
+                            class="avatar mr-0 mr-sm-16"
+                            [src]="(user$ | async)?.picture"
+                        />
+                    </div>
+                    <ng-template #defaultImage>
+                        <img
+                            class="avatar mr-0 mr-sm-16"
+                            src="assets/images/avatars/profile.jpg"
+                        />
+                    </ng-template>
+                    <span class="username mr-12" fxHide fxShow.gt-sm>{{
+                        (user$ | async)?.firstName
+                    }}</span>
+                    <mat-icon class="s-16" fxHide.xs
+                        >keyboard_arrow_down</mat-icon
+                    >
+                </div>
+            </button>
+            <mat-menu #userMenu="matMenu" [overlapTrigger]="false">
+                <button mat-menu-item routerLink="others/my-profile">
+                    <mat-icon>account_circle</mat-icon>
+                    <span>My Profile</span>
+                </button>
+                <button mat-menu-item class="" (click)="logout()">
+                    <mat-icon>exit_to_app</mat-icon>
+                    <span>Logout</span>
+                </button>
+            </mat-menu>
+        </div>
+    </div>
+</mat-toolbar>
+
+<modal *ngIf="ShowClientContactModal">
+    <h1 class="modal-title">Client Contact Profile</h1>
+    <div class="modal-body">
+        <table class="w-100-p">
+            <tr>
+                <td colspan="2">
+                    <label class="label mt-20 mr-10">Select Department</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <mat-search-select
+                        [data]="departmentsList"
+                        class="w-100-p"
+                        name="department"
+                        (selectedItem)="selectedDepartment($event)"
+                        ngDefaultControl
+                    ></mat-search-select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <loading *ngIf="showLoader" [isGridLoader]="true"></loading>
+                    <label class="label mt-20 mr-10">Select Client</label>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2">
+                    <mat-search-select
+                        [data]="clientsList"
+                        class="w-100-p"
+                        name="department"
+                        (selectedItem)="selectedClient($event)"
+                        ngDefaultControl
+                    ></mat-search-select>
+                </td>
+            </tr>
+            <tr>
+                <td colspan="2"></td>
+            </tr>
+            <tr *ngFor="let key of objectKeys(items)">
+                <td>{{ key }}</td>
+                <td>{{ items[key] }}</td>
+            </tr>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <button
+            mat-raised-button
+            color="primary"
+            (click)="ShowClientContactModal = false"
+        >
+            CLOSE
+        </button>
+    </div>
+</modal>

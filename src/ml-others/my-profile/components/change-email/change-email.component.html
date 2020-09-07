@@ -1,0 +1,54 @@
+ 
+<div class="tab-content" fusePerfectScrollbar>
+    <form #f="ngForm" [formGroup]="emailForm" novalidate>
+        <div fxLayout="row" fxLayoutAlign="start">
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                fxFlex="30"
+                class="pl-4"
+            >
+                <mat-label>New Email Address</mat-label>
+                <input
+                    matInput
+                    name="email"
+                    formControlName="email"
+                    type="email"
+                    required
+                />
+            </mat-form-field>
+
+           
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                fxFlex="30"
+                class="pl-4"
+            >
+                <mat-label>Current Password</mat-label>
+                <input
+                    matInput
+                    name="password"
+                    formControlName="password"
+                    type="password"
+                    required
+                    value=""
+                />
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="start">
+            <button
+                mat-raised-button
+                color="accent"
+                class="ml-20 mr-10"
+                (click)="updateEmailAddress()"
+                [disabled]="!myNgForm.valid || loading"
+            >
+                {{ loading ? "LOADING" : "UPDATE" }}
+            </button>
+            <button mat-raised-button type="reset" color="primary">
+                CLEAR
+            </button>
+        </div>
+    </form>
+</div>

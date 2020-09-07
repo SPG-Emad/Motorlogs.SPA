@@ -1,0 +1,14 @@
+<mat-form-field fxFlex="{{flex}}" class="pl-4 w-100-p" (click)="focus()" floatLabel="always">
+    <mat-label *ngIf="label">{{label}}</mat-label>
+    <mat-select [(ngModel)]="defaultValue" (keydown)="$event.stopPropagation()" (selectionChange)="onSelection($event.value)">
+        <input matInput placeholder="Search Here" class="search"  [(ngModel)]="searchString" (keydown)="$event.stopPropagation()" #search>
+        <mat-option  value="View all">
+            View all
+        </mat-option>
+        <mat-option *ngFor="let element of data | filter : 'description' : searchString; let i = index" [value]="element.code">
+            {{element.description}}
+        </mat-option>
+    </mat-select>
+</mat-form-field>
+
+ 

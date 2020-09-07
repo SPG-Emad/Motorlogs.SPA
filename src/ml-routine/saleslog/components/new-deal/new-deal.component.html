@@ -1,0 +1,47 @@
+<div class="modal-header" style="margin: 15px 10px !important">
+    <h5 class="modal-title">{{modalTitle}}</h5>
+</div>
+<mat-dialog-content class="mat-typography">
+    <div class="modal-body">
+        <form [formGroup]="columnForm" class="example-form">
+
+            <mat-form-field floatLabel="always" class="example-full-width">
+                <mat-label>Order Date</mat-label>
+                <input matInput [matDatepicker]="picker" [(ngModel)]="startDate" formControlName="orderDate">
+                <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+                <mat-datepicker #picker startView="year" [startAt]="startDate"></mat-datepicker>
+                <mat-error *ngIf="columnForm.controls['orderDate'].hasError('required')">
+                    Order Date is <strong>required</strong>
+                </mat-error>
+            </mat-form-field>
+            <br>
+            
+            <mat-form-field floatLabel="always" class="example-full-width">
+                <mat-label>Customer Full Name</mat-label>
+                <input matInput formControlName="customerName" (keypress)="onlyCharacters($event)">
+            </mat-form-field>
+            <br>
+    
+            <mat-form-field floatLabel="always" class="example-full-width">
+                <mat-label>Deal Number</mat-label>
+                <input matInput formControlName="dealNumber" (keypress)="onlyNumbers($event)" >
+            </mat-form-field>
+            <br>
+    
+            <mat-form-field floatLabel="always" class="example-full-width">
+                <mat-label>Stock Number</mat-label>
+                <input matInput formControlName="stockNumber" (keypress)="onlyNumbers($event)" >
+            </mat-form-field>
+            <br>
+            <br>
+
+            <div class="modal-footer">
+                <div class="loader" *ngIf="loader">
+                    <mat-spinner strokeWidth="3" [diameter]="30"></mat-spinner>
+                </div>
+                <button class="apply" type="button" (click)="submit()" [disabled]="loader">APPLY</button>
+                <button class="close" mat-dialog-close type="button" [disabled]="loader">CLOSE</button>
+            </div>
+        </form>
+    </div>
+</mat-dialog-content>

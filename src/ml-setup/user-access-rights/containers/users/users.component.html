@@ -1,0 +1,24 @@
+<div class="tab-content" fusePerfectScrollbar style="position: relative;">
+    <ml-user-access-types
+        (openSidePanelForUsers)="openSidePanelForUsers($event)"
+        (searchFilters)="searchFilters = $event"
+    ></ml-user-access-types>
+
+    <br />
+
+    <ml-user-list 
+    [searchFilters]="searchFilters"
+    [reloadList]="reloadList"
+    (userId)="userId = $event"
+    (openSidePanelForUsers)="openSidePanelForUsers($event)" 
+    ></ml-user-list>
+
+    <ml-add-user
+        *ngIf="openSidePanel"
+        [user]="selectedUser"
+        [userRoles]="userRoles"
+        [userID]="userId"
+        (toggleSidePanel)="toggleSidePanel($event)"
+        (reloadList)="reloadList = $event"
+    ></ml-add-user>
+</div>

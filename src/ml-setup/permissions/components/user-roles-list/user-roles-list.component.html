@@ -1,0 +1,35 @@
+<form  [formGroup]="rolesForm">
+  <ng-template matStepLabel>Users</ng-template>
+  <!-- <img src="../../../../assets/images/userroles.png" /> -->
+
+  <div class="column-container">
+      <div class="column-container__header">
+          <h4>User Roles</h4>
+      </div>
+      <div class="column-list" *ngFor="let item of roles">
+          <div class="column-list__title">
+             <p>{{item.name}}</p>
+          </div>
+          <div class="column-list__option">
+              <mat-form-field>
+                  <mat-select formControlName="{{item.code}}" #role [ngClass]="{'on-option':role.value==='Edit','read-only-option':role.value==='Read Only','offOption':role.value==='BLOCK','offOption':role.value===undefined}">
+                    <mat-option *ngFor="let option of rolesOptions" [value]="option">
+                      {{option}}
+                    </mat-option>
+                  </mat-select>
+              </mat-form-field>
+          </div>
+      </div>
+  </div>
+
+  <div style="display: flex;float: right;margin-top: 20px;">
+    <div class="loader" *ngIf="loader">
+      <mat-spinner strokeWidth="3" [diameter]="30"></mat-spinner>
+    </div>
+      <button [disabled]="loader" mat-flat-button color="accent" matStepperPrevious style="margin-right: 10px;">Back</button>
+      <!-- <button mat-flat-button color="accent" data-dismiss="modal"
+          (click)="addColumn.close()">Finish</button> -->
+        <button mat-flat-button color="accent" data-dismiss="modal"
+        (click)="proceed()" [disabled]="loader">Finish</button>
+  </div>
+</form>

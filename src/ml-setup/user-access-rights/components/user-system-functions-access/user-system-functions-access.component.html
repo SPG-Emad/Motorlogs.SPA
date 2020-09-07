@@ -1,0 +1,13 @@
+<div
+#f="ngForm" [formGroup]="userSysFuncForm"
+fxLayout="row wrap"
+fxLayoutAlign="space-between start"
+fxLayoutGap="50%"
+style="margin-top: 15px;"
+>
+<div *ngFor="let option of options; let i = index">
+    <mat-checkbox [id]="option.id" formControlName="{{option.code}}">
+        {{ option.name }}
+    </mat-checkbox>
+</div>
+</div>

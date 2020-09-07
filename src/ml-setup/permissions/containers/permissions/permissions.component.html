@@ -1,0 +1,41 @@
+<permissions-top-bar (columnFilters)="filterColumns($event)" (refreshGrid)="generateGrid()"></permissions-top-bar>
+
+<div class="page-layout carded fullwidth " style="margin-top: 80px;">
+    <div class="center">
+        <div class="content-card">
+            <div class="content p-24 ">
+                <div class="divPermission">
+                    <!-- Permission' Table Starts-->
+                    <ag-grid-angular
+                        #agGrid
+                        style="max-width: 100%; height: 90vh;"
+                        class="ag-theme-alpine"
+                        [pagination]="false"
+                        [rowData]="rowData"
+                        [columnDefs]="columnDefs"
+                        [rowHeight]="rowHeight"
+                        [defaultColDef]="defaultColDef"
+                        [autoGroupColumnDef]="autoGroupColumnDef"
+                        [unSortIcon]=true
+                        [functionsReadOnly]="false"
+                        [suppressMenuHide]="true"
+                        [frameworkComponents]="frameworkComponents"
+                        [overlayLoadingTemplate]="overlayLoadingTemplate"
+
+                        (onRowClicked)="onRowClicked($event)"
+                        (gridReady)="onGridReady($event)"
+                        (cellValueChanged)="onCellValueChanged($event)">
+                    </ag-grid-angular>
+                    <!-- / Permission' Table Starts-->
+                    <br>
+                    <hr>
+
+                    <!-- legends Starts-->
+                    <ml-legends></ml-legends>
+                    <!-- / legends Ends-->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- <ml-add-custom-column [updateColumnID]="updateColumnID"></ml-add-custom-column> -->

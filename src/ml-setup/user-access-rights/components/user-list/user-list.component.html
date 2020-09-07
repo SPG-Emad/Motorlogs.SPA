@@ -1,0 +1,111 @@
+<br />
+<div style="position: relative;">
+    <loading *ngIf="showLoader" [isGridLoader]="true"></loading>
+    <table mat-table matSort [dataSource]="dataSource" #mytable>
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="selection">
+            <th mat-header-cell *matHeaderCellDef>#</th>
+            <td
+                mat-cell
+                *matCellDef="let element"
+                [ngClass]="{ inActiveRow: !element.isactive }"
+            >
+                <img src="../../../../assets/images/premium.png" width="26px" 
+                matTooltip="This user has access to all the departments and system functions, also this user was used for the data migration from old system to the new."
+                *ngIf="!element.isDeleteable">
+                <mat-icon
+                *ngIf="usersService.uid != element.id && element.isEditable"
+                    class="secondary-text mat-icon notranslate material-icons mat-icon-no-color"
+                    role="img"
+                    aria-hidden="true"
+                    (click)="editUserInSidePanel(element.id)"
+                    matTooltip="VIEW"
+                    >remove_red_eye</mat-icon
+                >
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="image">
+            <th mat-header-cell *matHeaderCellDef>User Image</th>
+            <td
+                mat-cell
+                *matCellDef="let element"
+                [ngClass]="{ inActiveRow: !element.enabled }"
+            >
+                <img *ngIf="element.picture; else default" [src]="element.picture" class="userProfile" />
+                <ng-template #default>
+                    <img src="assets/images/dummyImage.png" class="userProfile" />
+                </ng-template>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>User Name</th>
+            <td
+                mat-cell
+                *matCellDef="let element"
+                [ngClass]="{ inActiveRow: !element.enabled }"
+            >
+                {{ element.firstName+" "+element.lastName }}
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="role">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>User Role</th>
+            <td
+                mat-cell
+                *matCellDef="let element"
+                [ngClass]="{ inActiveRow: !element.enabled }"
+            >
+                {{ element.roleName }}
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="lastlogin">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                Last Login
+            </th>
+            <td
+                mat-cell
+                *matCellDef="let element"
+                [ngClass]="{ inActiveRow: !element.enabled }"
+            >
+                {{ element.lastLogin }}
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="isactive">
+            <th mat-header-cell *matHeaderCellDef>Is Active</th>
+            <td
+                mat-cell
+                *matCellDef="let element"
+                [ngClass]="{ inActiveRow: !element.enabled }"
+            >
+                <mat-checkbox 
+                *ngIf="usersService.uid != element.id && element.isEditable"
+                (change)="changeActive($event,element)" 
+                [checked]="element.enabled"></mat-checkbox>
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td
+                mat-cell
+                *matCellDef="let element"
+                class="action-link"
+                [ngClass]="{ inActiveRow: !element.enabled }"
+            >
+                <delete-confirm
+                *ngIf="usersService.uid != element.id && element.isDeleteable"
+                    (deleteConfirmed)="onRemove(element)"
+                ></delete-confirm>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
+        <tr mat-row *matRowDef="let row; columns: getDisplayedColumns()"></tr>
+    </table>
+</div>
+<mat-paginator
+    [pageSizeOptions]="[25, 50, 100]"
+    [pageSize]="25"
+    showFirstLastButtons
+></mat-paginator>
