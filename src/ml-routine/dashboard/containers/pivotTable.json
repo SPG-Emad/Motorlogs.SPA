@@ -1,0 +1,145 @@
+{
+	"pivotData": {
+            "staticTableHeader": ["Orders","Vehicle Profit","A/Market","Finance","Total"],
+            "dynamicHeader" : {
+                                "groupByHeader": [
+                                    {
+                                    "groupByHeaderName" :  "Department",
+                                    "field" : "Sales Person",
+                                    "tabledata": [
+                                             {
+                                                
+                                                "drillDownData": [
+                                                               { "fieldValues":"Mike","order":10,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787},
+                                                               { "fieldValues":"Tom","order":15,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787}, 
+                                                               { "fieldValues":"Robert","order":25,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787}
+
+                                                              ]  ,
+                                                 "aggregatedOrder" : 50 ,
+                                                 "aggregatedVP":57000,
+                                                 "aggregatedAM":88988,
+                                                 "aggregatedFinance":98898,
+                                                 "total" :788787787 ,
+                                                 "headerId":1,
+                                                 "groupByHeaderValue"  :"Lennock-Hyundai-NEW Cars"      
+                                                },
+                                                {
+                                                
+                                                "drillDownData": [
+                                                                   { "fieldValues":"Mike1","order":10,"Vehicle_Profit":3989,"A/Market":18777,"Finance":9898},
+                                                                   { "fieldValues":"Tom1","order":30,"Vehicle_Profit":8787,"A/Market":87877,"Finance":1441}, 
+                                                                   { "fieldValues":"Robert1","order":50,"Vehicle_Profit":787,"A/Market":9777,"Finance":14341}
+    
+                                                                  ],
+                                                                  "aggregatedOrder" : 90  ,
+                                                                
+                                                                  "aggregatedVP":57000,
+                                                                  "aggregatedAM":88988,
+                                                                  "aggregatedFinance":98898,
+                                                                  "total" :788787787 ,
+                                                                  "headerId":2,
+                                                                  "groupByHeaderValue"  :"Lennock-Nissan-NEW Cars"  
+                                            
+                                                    }
+
+
+
+                                          ]
+
+                                 },
+                                 {
+                                  "groupByHeaderName":  "Department",
+                                 "field" : "VEH Type",
+                                 "tabledata": [
+                                              {
+                                                 
+                                                 "drillDownData": [
+                                                                { "fieldValues":"Elantra","order":10,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787},
+                                                                { "fieldValues":"i30","order":15,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787}, 
+                                                                { "fieldValues":"i20","order":25,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787},
+                                                                { "fieldValues":"tuscon","order":25,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787},
+                                                                { "fieldValues":"kona","order":25,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787},
+                                                                { "fieldValues":"Venue","order":25,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787}
+ 
+                                                               ]  ,
+                                                  "aggregatedOrder" : 50 ,
+                                                  "aggregatedVP":57000,
+                                                  "aggregatedAM":88988,
+                                                  "aggregatedFinance":98898,
+                                                  "total" :788787787 ,
+                                                  "headerId":3,
+                                                  "groupByHeaderValue"  :"Lennoc-Hyundai- NEW CARS"    
+                                                 },
+                                                 {
+                                                 
+                                                 "drillDownData": [
+                                                                    { "fieldValues":"Defender","order":10,"Vehicle_Profit":3989,"A/Market":18777,"Finance":9898},
+                                                                    { "fieldValues":"Disco Sport","order":30,"Vehicle_Profit":8787,"A/Market":87877,"Finance":1441}, 
+                                                                    { "fieldValues":"Discovery","order":50,"Vehicle_Profit":787,"A/Market":9777,"Finance":14341},
+                                                                    { "fieldValues":"RR Sport","order":50,"Vehicle_Profit":787,"A/Market":9777,"Finance":14341},
+                                                                    { "fieldValues":"XE","order":50,"Vehicle_Profit":787,"A/Market":9777,"Finance":14341}
+     
+                                                                   ],
+                                                                   "aggregatedOrder" : 90  ,
+                                                                 
+                                                                   "aggregatedVP":57000,
+                                                                   "aggregatedAM":88988,
+                                                                   "aggregatedFinance":98898,
+                                                                   "total" :788787787 ,
+                                                                   "headerId":4,
+                                                                   "groupByHeaderValue"  :"Lennock Jaguar & Land Rover - New Cars"  
+                                             
+                                                     }
+ 
+ 
+ 
+                                           ]
+ 
+                                  },
+                                  {
+                                    "groupByHeaderName":  "Status",
+                                   "field" : "Department",
+                                   "tabledata": [
+                                                {
+                                                   
+                                                   "drillDownData": [
+                                                                  { "fieldValues":"Lennock Volkswagen - New Cars","order":10,"Vehicle_Profit":190000,"A/Market":9777,"Finance":8787}
+   
+                                                                 ]  ,
+                                                    "aggregatedOrder" : 50 ,
+                                                    "aggregatedVP":57000,
+                                                    "aggregatedAM":88988,
+                                                    "aggregatedFinance":98898,
+                                                    "total" :788787787 ,
+                                                    "headerId":5,
+                                                    "groupByHeaderValue"  :"CV"    
+                                                   },
+                                                   {
+                                                   
+                                                   "drillDownData": [
+                                                                      { "fieldValues":"Lennock Hyundai - New Cars","order":10,"Vehicle_Profit":3989,"A/Market":18777,"Finance":9898},
+                                                                      { "fieldValues":"Lennock Nissan - New Cars","order":30,"Vehicle_Profit":8787,"A/Market":87877,"Finance":1441}, 
+                                                                      { "fieldValues":"Lennock Skoda - New Cars","order":50,"Vehicle_Profit":787,"A/Market":9777,"Finance":14341}
+       
+                                                                     ],
+                                                                     "aggregatedOrder" : 90  ,
+                                                                   
+                                                                     "aggregatedVP":57000,
+                                                                     "aggregatedAM":88988,
+                                                                     "aggregatedFinance":98898,
+                                                                     "total" :788787787 ,
+                                                                     "headerId":6,
+                                                                     "groupByHeaderValue"  :"DEMO"  
+                                               
+                                                       }
+   
+   
+   
+                                             ]
+   
+                                    }
+                                ]   
+                                
+                            }
+                        } 
+                    }

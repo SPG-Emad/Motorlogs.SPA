@@ -1,0 +1,16 @@
+<div class="tab-content" fusePerfectScrollbar>
+    <ml-pay-type-form
+        #payTypeForm
+        [editValue]="editValue"
+        (reloadPayType)="reloadPayType = $event"
+    ></ml-pay-type-form>
+    <search-grid
+        [toSearch]=""
+        (searchedFor)="searchedForValue = $event"
+    ></search-grid>
+    <ml-pay-type-list
+        [searchedForValue]="searchedForValue"
+        [reloadPayType]="reloadPayType"
+        (editValue)="editValue = $event"
+    ></ml-pay-type-list>
+</div>

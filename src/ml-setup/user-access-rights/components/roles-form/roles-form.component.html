@@ -1,0 +1,94 @@
+<form #f="ngForm" class="w-100-p" [formGroup]="roleForm" novalidate>
+    <div
+        class="message-box info"
+        style="margin-bottom: 30px;"
+        *ngIf="!editValue"
+    >
+        <mat-icon
+            style="font-size: 19px; vertical-align: middle; color: #2573d4;"
+            >info</mat-icon
+        >
+        In this screen you can assign a new Role and also you can Select an
+        Existing Role to duplicate its Routine worksheets column permissions on the New Role.
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start">
+        <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            fxFlex="20"
+            class="pl-4 pr-4"
+        >
+            <mat-label>Role Name</mat-label>
+            <input matInput formControlName="name" required />
+            <mat-error *ngIf="roleForm.controls['name'].hasError('required')">
+                Role Name is <strong>required</strong>
+            </mat-error>
+            <mat-error
+                *ngIf="
+                    roleForm.controls['name'].hasError('maxlength') &&
+                    !roleForm.controls['name'].hasError('required')
+                "
+            >
+                Maximum 60 characters are <strong>allowed</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+            appearance="outline"
+            department
+            floatLabel="always"
+            fxFlex="20"
+            class="pl-4"
+        >
+            <mat-label>Code</mat-label>
+            <input matInput formControlName="code" required />
+            <mat-error *ngIf="roleForm.controls['code'].hasError('required')">
+                Code is <strong>required</strong>
+            </mat-error>
+            <mat-error
+                *ngIf="
+                    roleForm.controls['code'].hasError('maxlength') &&
+                    !roleForm.controls['code'].hasError('required')
+                "
+            >
+                Maximum 10 characters are <strong>allowed</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            fxFlex="30"
+            #departments
+            class="pl-4 pr-4"
+            *ngIf="!editValue"
+        >
+            <mat-label>Duplicate Column Permissions From: </mat-label>
+            <mat-select formControlName="roleId">
+                <mat-option *ngFor="let role of rolesList" [value]="role.id">
+                    {{ role.name }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div fxFlex="20">
+            <button
+                mat-raised-button
+                color="accent"
+                class="ml-20 mr-10"
+                type="submit"
+                (click)="createUpdateRole(f)"
+                [disabled]="!myNgForm.valid || loading"
+                [innerText]="buttonText()"
+            ></button>
+            <button
+                mat-raised-button
+                color="primary"
+                type="reset"
+                (click)="resetFormDetails()"
+            >
+                {{ myNgForm.value.id == null ? "CLEAR" : "CANCEL" }}
+            </button>
+        </div>
+    </div>
+</form>

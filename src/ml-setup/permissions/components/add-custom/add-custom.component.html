@@ -1,0 +1,128 @@
+<!-- <ngx-smart-modal #addColumn identifier="addColumn" customClass="modal-content medium-modal" [closable]="false"> -->
+    <div class="modal-header" style="margin: 0px !important">
+        <h5 class="modal-title">{{modalTitle}}
+            <mat-icon data-dismiss="modal" style="float: right;cursor: pointer;" (click)="dialog.closeAll();">cancel
+            </mat-icon>
+        </h5>
+    </div>
+    <mat-dialog-content class="mat-typography">
+        <div class="modal-body">
+            <mat-horizontal-stepper linear class="add-column-modal" #stepper>
+                <mat-step [stepControl]="setupForm" editable="true">
+                    <form [formGroup]="setupForm">
+                        <ng-template matStepLabel>Setup</ng-template>
+                        <table style="margin:10px;">
+                            <tbody>
+                                <tr>
+                                    <td width="50%" style="text-align:right;"></td>
+                                    <td class="area-preview" [ngStyle]="{'min-width.px': value , 'text-align': 'center'}">
+                                        <img src="../../../../assets/images/L-size-new.png"
+                                            style="float:left;margin-top: 4px;margin-bottom: 4px;">
+                                        <label id="colWidth">{{value}} px</label>
+                                        <img src="../../../../assets/images/R-size-new.png"
+                                            style="float:right;margin-top: 4px;margin-bottom: 4px;">
+                                    </td>
+                                    <td width="50%"></td>
+                                </tr>
+                                <tr>
+                                    <td width="50%" class="bg-area-preview-out"></td>
+                                    <td class="area-preview bg-area-preview"
+                                        [ngStyle]="{'min-width.px': value, 'position': 'relative'}">
+                                        <textarea formControlName="colName" id="txtcolName" class="slider-areas slider-areas-preview"
+                                            placeholder="Type Name" onclick="this.select();" onfocus="this.select();"
+                                            [ngStyle]="{'min-width.px': value, 'max-width.px': value}"></textarea>
+                                    </td>
+                                    <td width="50%" class="bg-area-preview-out"></td>
+                                </tr>
+                                <tr class="tr-footer">
+                                    <td width="50%"></td>
+                                    <td class="area-preview td-footer" [ngStyle]="{'min-width.px': value}"></td>
+                                    <td width="50%"></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div class="colname-err-msg" *ngIf="colNameMsg">
+                            <mat-error *ngIf="setupForm.controls['colName'].hasError('required')">
+                                Column Name is <strong>required</strong>
+                            </mat-error>
+                        </div>
+                        <br>
+                        <div class="sliderParent">
+                            <span class="irs-min">Minimum width</span>
+                            <span class="irs-max">Maximum width</span>
+                            <mat-slider max="350" min="100" step="1" style="width: 100%;" formControlName="columnWidth" [(ngModel)]="value" name="value">
+                            </mat-slider>
+                        </div>
+                        <br>
+                        <div>
+                            <mat-form-field fxFlex="100" floatLabel="always">
+                                <mat-label>Cell Type</mat-label>
+                                <mat-select formControlName="cellType" (selectionChange)="onCellTypeSelect($event)">
+                                    <mat-option *ngFor="let type of cellTypes" [value]="type.id">
+                                        {{type.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="setupForm.controls['cellType'].hasError('required')">
+                                    Cell Type is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <br>
+                        <div *ngIf="setupForm.get('dropDownType').status!=='DISABLED'">
+                            <mat-form-field fxFlex="100" floatLabel="always">
+                                <mat-label>Drop-down type</mat-label>
+                                <mat-select formControlName="dropDownType" (selectionChange)="onDropDownTypeSelect($event)">
+                                    <mat-option *ngFor="let type of dropDownType" [value]="type.id">
+                                        {{type.name}}
+                                    </mat-option>
+                                </mat-select>
+                                <mat-error *ngIf="setupForm.controls['dropDownType'].hasError('required')">
+                                    Drop-down type is <strong>required</strong>
+                                </mat-error>
+                            </mat-form-field>
+                        </div>
+                        <div  class="options-container" formArrayName="options" *ngFor="let option of setupFormOption.controls; let i = index;">
+                            <div class="options-container__options-content" [formGroupName]="i">
+                                <mat-form-field class="options-content">
+                                    <mat-label>Option {{i}}</mat-label>
+                                    <input (keypress)="onlyCharacters($event)"  matInput placeholder="Enter Option" value="" formControlName="option">
+                                    <mat-error *ngIf="option.controls['option'].hasError('required')">
+                                        Field is <strong>required</strong>
+                                    </mat-error>
+                                    <!-- <mat-error *ngIf="userInitalsForm.controls['lastName'].hasError('maxlength') && !userInitalsForm.controls['lastName'].hasError('required')">
+                                        Maximum 50 characters <strong>allowed</strong>
+                                    </mat-error> -->
+                                </mat-form-field>
+                            </div>
+                            <div class="add-field-btn" (click)="addRemoveOption(0)" *ngIf="i===(setupFormOption.controls.length -1);else remove">
+                                <span class="material-icons">
+                                    add_box
+                                </span>
+                            </div>
+                            <ng-template #remove>   
+                                <div class="options-container__remove-field-btn" (click)="addRemoveOption(1,i)"  >
+                                    <img alt="remove-icon" src=".././../../../assets/icons/material-icons/remove.png">
+                                </div>                         
+                            </ng-template>
+                        </div>
+                        <div style="float: right;margin-top: 20px;">
+                            <button mat-flat-button color="accent" (click)="proceed()" matStepperNext>Next</button>
+                        </div>
+                    </form>
+                </mat-step>
+                <mat-step [stepControl]="departmentComp.departmentsForm" editable="true">
+                    <ng-template matStepLabel>Departments</ng-template>
+                    <app-department-master-list [updateColumnID]="updateColumnID" #departmentComp></app-department-master-list>
+                </mat-step>
+                <mat-step>
+                    <ng-template matStepLabel>Users</ng-template>    
+                    <app-user-roles-list  [updateColumnID]="updateColumnID" (submit)="createUpdateColumn($event);" #userRolesComp></app-user-roles-list>
+                </mat-step>
+            </mat-horizontal-stepper>
+        </div>
+    </mat-dialog-content>
+    <!-- <mat-dialog-actions align="end">
+
+    </mat-dialog-actions> -->
+
+<!-- </ngx-smart-modal> -->

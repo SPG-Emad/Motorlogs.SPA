@@ -1,0 +1,152 @@
+<mat-spinner *ngIf="loading" style="margin:0 auto;" ></mat-spinner>
+
+<div class="tab-content" [hidden]="loading" fusePerfectScrollbar>
+    <form #f="ngForm" [formGroup]="generalForm" novalidate>
+        <!-- Form Image Section  -->
+        <div class="form-image-wrapper">
+            <div class="form-image-wrapper__header">
+                <label class="sl-Label">Profile Picture</label>
+            </div>
+            <div class="form-image-container">
+                <div class="form-image-container__image">
+                    <input
+                        type="hidden"
+                        [ngModel]="imgDbString"
+                        formControlName="picture"
+                    />
+                    <img [src]="imgURL" *ngIf="imgURL" />
+
+                    <img
+                        src="../../../../assets/images/dummyImage.png"
+                        *ngIf="!imgURL"
+                    />
+                </div>
+
+                <div class="form-image-container__actions">
+                    <div class="form-image-container__actions__delete">
+                        <mat-icon
+                            (click)="removeLoadedImage()"
+                            class="secondary-text mat-icon material-icons mat-icon-no-color deleteImg"
+                            role="img"
+                            title="Remove"
+                            aria-hidden="true"
+                            >delete</mat-icon
+                        >
+                    </div>
+                    <div class="form-image-container__actions__upload">
+                        <label for="upload-img" title="Upload">
+                            <mat-icon
+                                class="secondary-text mat-icon material-icons mat-icon-no-color"
+                                role="img"
+                                aria-hidden="true"
+                                >cloud_upload</mat-icon
+                            >
+                        </label>
+                        <input
+                            id="upload-img"
+                            #file
+                            type="file"
+                            accept="image/*"
+                            (change)="loadImage($event)"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="form-image-wrapper__message">
+                <span style="color: red;" *ngIf="message">{{ message }}</span>
+            </div>
+        </div>
+
+        <!-- / Form Image Section  -->
+        <br /><br />
+
+        <div fxLayout="row" fxLayoutAlign="space-between">
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                fxFlex="30"
+                class="pl-4"
+            >
+                <mat-label>First Name</mat-label>
+                <input
+                    matInput
+                    name="firstName"
+                    formControlName="firstName"
+                    required
+                />
+            </mat-form-field>
+
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                fxFlex="30"
+                class="pl-4"
+            >
+                <mat-label>Last Name</mat-label>
+                <input matInput name="lastName" formControlName="lastName" />
+            </mat-form-field>
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                fxFlex="30"
+                class="pl-4"
+            >
+                <mat-label>Designation</mat-label>
+                <input
+                    matInput
+                    name="designation"
+                    formControlName="designation"
+                    readonly
+                />
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="space-between">
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                fxFlex="30"
+                class="pl-4"
+            >
+                <mat-label>Mobile Phone</mat-label>
+                <input matInput name="mobile" formControlName="mobile" />
+            </mat-form-field>
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                fxFlex="30"
+                class="pl-4"
+            >
+                <mat-label>Direct Phone</mat-label>
+                <input
+                    matInput
+                    name="directPhone"
+                    formControlName="directPhone"
+                />
+            </mat-form-field>
+            <mat-form-field
+                appearance="outline"
+                floatLabel="always"
+                fxFlex="30"
+                class="pl-4"
+            >
+                <mat-label>Email</mat-label>
+                <input matInput name="email" formControlName="email" readonly />
+            </mat-form-field>
+        </div>
+        <div fxLayout="row" fxLayoutAlign="end">
+            <button
+                mat-raised-button
+                color="accent"
+                class="ml-20 mr-10"
+                (click)="updateProfile()"
+                [disabled]="!myNgForm.valid || loading"
+            >
+                {{ loading ? "LOADING" : "UPDATE" }}
+            </button>
+            <button mat-raised-button (click)="resetFields()" color="primary">
+                RESET
+            </button>
+            <br />
+        </div>
+    </form>
+</div>

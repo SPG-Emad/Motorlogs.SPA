@@ -1,0 +1,24 @@
+<mat-icon
+    style="cursor: pointer;"
+    class="secondary-text mat-icon notranslate material-icons mat-icon-no-color deleteImg"
+    role="img"
+    aria-hidden="true"
+    matTooltip="Delete"
+    (click)="show = true"
+    >delete</mat-icon
+>
+
+<modal *ngIf="show">
+    <h1 class="modal-title">Warning</h1>
+    <div class="modal-body">
+        Are you sure you want to delete?
+    </div>
+    <div class="modal-footer">
+        <button mat-raised-button color="primary" (click)="confirmDelete()">
+            Yes
+        </button>
+        <button mat-raised-button color="primary" (click)="show = false">
+            No
+        </button>
+    </div>
+</modal>

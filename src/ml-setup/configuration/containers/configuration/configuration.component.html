@@ -1,0 +1,36 @@
+<div class="page-layout carded fullwidth inner-scroll" fusePerfectScrollbar>
+    <div class="top-bg accent"></div>
+    <div class="center">
+        <div
+            class="header accent"
+            fxLayout="row"
+            fxLayoutAlign="space-between center"
+        >
+            <div fxLayout="row" fxLayoutAlign="start center">
+                <div
+                    fxLayout="column"
+                    fxLayoutAlign="start start"
+                    [@animate]="{
+                        value: '*',
+                        params: { delay: '100ms', x: '-25px' }
+                    }"
+                >
+                    <div class="h2">
+                        Configurations
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="content-card">
+            <div class="content">
+                <mat-tab-group>
+                    <mat-tab label="Define Pay Types">
+                        <div class="w-100-p">
+                            <ml-pay-types></ml-pay-types>
+                        </div>
+                    </mat-tab>
+                </mat-tab-group>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,142 @@
+<form #f="ngForm" [formGroup]="departmentForm" novalidate>
+    <div
+        class="message-box info"
+        style="margin-bottom: 30px;"
+        *ngIf="!editValue"
+    >
+        <mat-icon
+            style="font-size: 19px; vertical-align: middle; color: #2573d4;"
+            >info</mat-icon
+        >
+        In this screen you can assign a new Department and also you can Select an
+        Existing Department to duplicate its Routine worksheets column permissions on
+        the New Department.
+    </div>
+    <div fxLayout="row" fxLayoutAlign="start">
+        <!-- Form Image Section  -->
+        <div class="form-image-wrapper">
+            <div class="form-image-wrapper__header">
+                <label class="sl-Label">Department Logo</label>
+            </div>
+            <div class="form-image-container">
+                <div class="form-image-container__image">
+                    <input
+                        type="hidden"
+                        [ngModel]="imgDbString"
+                        formControlName="picture"
+                    />
+                    <img [src]="imgURL" *ngIf="imgURL" />
+
+                    <img
+                        src="../../../../assets/images/dummyImage.png"
+                        *ngIf="!imgURL"
+                    />
+                </div>
+
+                <div class="form-image-container__actions">
+                    <div class="form-image-container__actions__delete">
+                        <mat-icon
+                            (click)="removeLoadedImage()"
+                            class="secondary-text mat-icon material-icons mat-icon-no-color deleteImg"
+                            role="img"
+                            title="Remove"
+                            aria-hidden="true"
+                            >delete</mat-icon
+                        >
+                    </div>
+                    <div class="form-image-container__actions__upload">
+                        <label for="upload-img" title="Upload">
+                            <mat-icon
+                                class="secondary-text mat-icon material-icons mat-icon-no-color"
+                                role="img"
+                                aria-hidden="true"
+                                >cloud_upload</mat-icon
+                            >
+                        </label>
+                        <input
+                            id="upload-img"
+                            #file
+                            type="file"
+                            accept="image/*"
+                            (change)="loadImage($event)"
+                        />
+                    </div>
+                </div>
+            </div>
+            <div class="form-image-wrapper__message">
+                <span style="color: red;" *ngIf="message">{{ message }}</span>
+            </div>
+        </div>
+
+        <!-- / Form Image Section  -->
+
+        <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            fxFlex="30"
+            class="pl-4 pr-4"
+        >
+            <mat-label>Department Name *</mat-label>
+            <input matInput formControlName="name" />
+            <mat-error
+                *ngIf="departmentForm.controls['name'].hasError('required')"
+            >
+                Department Name is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            fxFlex="20"
+            class="pl-4 pr-4"
+        >
+            <mat-label>Abbreviation *</mat-label>
+            <input matInput formControlName="abbr" />
+            <mat-error
+                *ngIf="departmentForm.controls['abbr'].hasError('required')"
+            >
+                Abbr is <strong>required</strong>
+            </mat-error>
+        </mat-form-field>
+
+        <mat-form-field
+            appearance="outline"
+            floatLabel="always"
+            fxFlex="30"
+            #departments
+            class="pl-4 pr-4"
+            *ngIf="!editValue"
+        >
+            <mat-label>Duplicate Departments Permission From:</mat-label>
+            <mat-select formControlName="deptId">
+                <mat-option
+                    *ngFor="let department of departmentsList"
+                    [value]="department.id"
+                >
+                    {{ department.description }}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+        <div fxFlex="20">
+            <button
+                mat-raised-button
+                color="accent"
+                class="ml-20 mr-10"
+                type="submit"
+                (click)="createUpdateDepartment()"
+                [disabled]="!myNgForm.valid || loading"
+                [innerText]="buttonText()"
+            ></button>
+            <button
+                mat-raised-button
+                color="primary"
+                type="reset"
+                (click)="resetFormDetails()"
+            >
+                {{ pageType == "new" ? "CLEAR" : "CANCEL" }}
+            </button>
+        </div>
+    </div>
+</form>

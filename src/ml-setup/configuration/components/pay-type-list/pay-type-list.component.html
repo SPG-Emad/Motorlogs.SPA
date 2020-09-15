@@ -1,0 +1,55 @@
+<br />
+<div style="position: relative;">
+    <loading *ngIf="showLoader" [isGridLoader]="true"></loading>
+    <table mat-table matSort [dataSource]="dataSource" #mytable>
+        <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>ID</th>
+            <td mat-cell *matCellDef="let element">{{ element.id }}</td>
+        </ng-container>
+        <ng-container matColumnDef="paytype">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Pay Type</th>
+            <td mat-cell *matCellDef="let element">
+                {{ element.valText }}
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="code">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Code</th>
+            <td mat-cell *matCellDef="let element">{{ element.code }}</td>
+        </ng-container>
+        <ng-container matColumnDef="background">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header>Background Color</th>
+            <td mat-cell *matCellDef="let element">
+                <span
+                    class="color"
+                    [style.background-color]="parseJson(element.details).background"
+                ></span>
+              
+            </td>
+        </ng-container>
+        <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>Action</th>
+            <td mat-cell *matCellDef="let element" class="action-link">
+                <mat-icon
+                    class="pointer secondary-text mat-icon notranslate material-icons mat-icon-no-color deleteImg"
+                    role="img"
+                    aria-hidden="true"
+                    title="Edit"
+                    (click)="editPayType(element)"
+                    style="cursor: pointer;"
+                    >edit</mat-icon
+                >
+                <delete-confirm
+                    (deleteConfirmed)="removePayType(element)"
+                ></delete-confirm>
+            </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="getDisplayedColumns()"></tr>
+        <tr mat-row *matRowDef="let row; columns: getDisplayedColumns()"></tr>
+    </table>
+</div>
+<mat-paginator
+    [pageSizeOptions]="[5, 10, 20]"
+    [pageSize]="10"
+    showFirstLastButtons
+></mat-paginator>

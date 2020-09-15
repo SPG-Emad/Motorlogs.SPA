@@ -1,0 +1,840 @@
+<!-- <ng-container *ngIf="isGroupDashboard; else elseTemplate">
+    Group Dashboard
+</ng-container>
+<ng-template #elseTemplate>
+    Dashboard
+    {{ decryptedDepartmentId }}
+</ng-template> -->
+
+<div class="page-layout carded fullwidth " style="height: 100%;margin: 30px auto;background: #fff;">
+    <div class="center main-card">
+        <div id="divDashboard" class="ng-scope">
+            <div id="divDashboardTop">
+                <div id="divGBLogo"><img src="../../../../assets/images/LennockLogo.png"><img src=""></div>
+                <div id="divMonth">
+                    <div id="title-month" class="ng-binding">June - 2020</div>
+                    <div id="title-name" class="ng-binding">Lennock Nissan - New Cars</div>
+                    <div id="mode-name" class="ng-binding"></div>
+                </div>
+            </div>
+            <div id="divDashboardMiddle" class="divDashboardMiddleNormal">
+                <div id="divDashboardTab">
+                    <div id="divddl" class="divddlNormal"  *ngIf="tab===1">
+                        <ng-select 
+                        [options]="options" 
+                        [displayKey]="displayKey" 
+                        [disable]="isDisable" 
+                        [styleGuide]="styleGuide" 
+                        [isDatalist]="isDataList" 
+                        [searchKeys]="searchKeys" 
+                        [(ngModel)]="dataValue" 
+                        (onChange)="filterChange($event)"
+                        >
+                        </ng-select>
+        
+                        <ng-select 
+                        [options]="orderOptions" 
+                        [displayKey]="displayKey" 
+                        [disable]="isDisable" 
+                        [styleGuide]="styleGuide" 
+                        [isDatalist]="isDataList" 
+                        [searchKeys]="searchKeys" 
+                        [(ngModel)]="orderValue" 
+                        (onChange)="filterByChannge($event)"
+                        >
+                        </ng-select>
+        
+                    </div>
+
+                    <div id="divddl" class="divddlNormal"  *ngIf="tab===2">
+                        <ng-select 
+                        [options]="filterList" 
+                        [displayKey]="displayKey" 
+                        [disable]="isDisable" 
+                        [styleGuide]="styleGuide" 
+                        [isDatalist]="isDataList" 
+                        [searchKeys]="searchKeys" 
+                        [(ngModel)]="filterValue" 
+                        (onChange)="filterChange($event)"
+                        >
+                        </ng-select>
+        
+                        <ng-select 
+                        [options]="orderList" 
+                        [displayKey]="displayKey" 
+                        [disable]="isDisable" 
+                        [styleGuide]="styleGuide" 
+                        [isDatalist]="isDataList" 
+                        [searchKeys]="searchKeys" 
+                        [(ngModel)]="defaultOrder" 
+                        (onChange)="filterOrderChange($event)"
+                        >
+                        </ng-select>
+        
+                        <ng-select 
+                        [options]="dateRange" 
+                        [displayKey]="displayKey" 
+                        [disable]="isDisable" 
+                        [styleGuide]="styleGuide" 
+                        [isDatalist]="isDataList" 
+                        [searchKeys]="searchKeys" 
+                        [(ngModel)]="defaultDate" 
+                        (onChange)="filterTimeChange($event)"
+                        >
+                        </ng-select>
+
+                    </div>
+
+                    <div class="tabs" *ngIf="groupBy===1;else filters">
+                        <div id="btnSaleGraph" class="tab" (click)="ActiveTab(1);" [ngClass]="{active: tab===1}">Sales Graph</div>
+                        <div id="btnPivotTables" class="tab" (click)="ActiveTab(2);" [ngClass]="{active: tab===2}">PivotTables</div>
+                    </div>
+                    <ng-template #filters>
+                        <b id="title-filter">Filter By {{filter}}</b>
+                    </ng-template>
+        
+                </div>
+                <!-- <table id="divStatsExpand" border="0" cellpadding="1" cellspacing="1" style="display:none;z-index:9999" class="divStatsExpandNormal">
+                    <tbody>
+                        <tr>
+                            <td style="width:50%; text-align:left;">
+                                <span id="btnSwap" ng-show="IsshowSwap()" ng-click="SwapClick()" class="ng-hide">Swap Fields</span>
+                            </td>
+                            <td style="width:50%; text-align:right;">
+                                <span id="btnExport" ng-click="ExportPivot()" style="display:none"></span> 
+                                <span id="btnExpand" ng-click="ExpandView()">Expand View</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table> -->
+            </div>
+            <div id="divDashboardBottom" class="graphTab" [ngClass]="{other: tab===1}">
+                <div id="divDashboardTabPage" [ngClass]="{total: groupBy===1}">
+                    <div id="divSaleGraph" class="tabPage active">
+                        <table class="tbSaleGraph">
+                            <thead>
+                                <tr class="bgBashboardHead dateBGColor-Current">
+                                    <td colspan="2">Target - This Month</td>
+                                    <td class="txtLine"></td>
+                                    <td class="txtNumber">MTD Target</td>
+                                    <td class="txtNumber">MTD Results</td>
+                                    <td class="txtNumber">Difference</td>
+                                    <td class="txtNumber">MTD %</td>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="bgTitle">Vehicle Orders</td>
+                                    <!-- <td id="target_Deal" style="background-color: rgb(225, 244, 255);"><b>Not Set</b></td>
+                                    <td class="txtLine"></td>
+                                    <td id="mtd_target_Deal"><span style="color:#808080;">n/a</span></td>
+                                    <td id="mtd_order_Deal">40</td>
+                                    <td id="difference_Deal"><span style="color:#808080;">n/a</span></td>
+                                    <td id="mtd_percentage_Deal"><span style="color:#808080;">n/a</span></td> -->
+                                    <td id="target_Deal" style="background-color: rgb(225, 244, 255);"><b>{{vehicleOrders  |number: '.2-2'}}</b></td>
+                                    <td class="txtLine"></td>
+                                    <td id="mtd_target_Deal"><span style="color:#808080;">n/a</span></td>
+                                    <td id="mtd_order_Deal">40</td>
+                                    <td id="difference_Deal"><span style="color:#808080;">n/a</span></td>
+                                    <td id="mtd_percentage_Deal"><span style="color:#808080;">n/a</span></td>
+                                </tr>
+                                <tr>
+                                    <td class="bgTitle">Vehicle Profit</td>
+                                    <td id="target_Gross" style="background-color: rgb(225, 244, 255);"><b>${{vehicleProfit  |number: '.2-2'}}</b></td>
+                                    <td class="txtLine"></td>
+                                    <td id="mtd_target_Gross"><span style="color:#808080;">n/a</span></td>
+                                    <td id="mtd_order_Gross">$47,954.42</td>
+                                    <td id="difference_Gross"><span style="color:#808080;">n/a</span></td>
+                                    <td id="mtd_percentage_Gross"><span style="color:#808080;">n/a</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                        <div id="divDashboardSale2"></div>
+                        <div id="divDashboardSale" dbtype="covered" data-highcharts-chart="0" style="margin: 10px auto 0px auto;">
+                            <div class="chart" #container>
+
+                            </div>
+                        </div>
+                        <!-- <div id="divDashboardSaleLink">
+                            <div id="divDashboardSaleLinkFinance">
+                                <label class="titleLink">FINANCE</label>
+                                <label class="pipe">:</label>
+                                <span id="penetrationFinance" class="pentration">
+                                    <b style="color:#00B050">29%</b>
+                                </span>
+                                <label class="pipe">|</label>
+                                <span id="averageFinance" class="average">
+                                    <b style="color:#FF0000">$0.00</b>
+                                </span>
+                                <label class="lbAV">Av.</label>
+                                <label class="pipe pipetotal">|</label>
+                                <span id="totalFinance" class="total">
+                                    <b style="color:#FF0000">$0.00</b>
+                                </span>
+                                <label>Total.</label>
+                            </div>
+                            <div id="divDashboardSaleLinkAftermarket">
+                                <label class="titleLink">A/MARKET</label>
+                                <label class="pipe">:</label>
+                                <span id="penetrationAfterMarket" class="pentration">
+                                    <b style="color:#FF0000">0%</b>
+                                </span>
+                                <label class="pipe">|</label>
+                                <span id="averageAfterMarket" class="average">
+                                    <b style="color:#FF0000">$0.00</b>
+                                </span>
+                                <label class="lbAV">Av.</label>
+                                <label class="pipe pipetotal">|</label>
+                                <span id="totalAfterMarket" class="total">
+                                    <b style="color:#FF0000">$0.00</b>
+                                </span>
+                                <label>Total.</label>
+                            </div>
+                        </div> -->
+                    </div>
+                    <div id="divPivotTables" class="tabPage" style="margin-top: 0px;">
+                        <div id="divPivotShow" style="overflow:auto;">
+                            <table class="tbPivot" border="0" cellpadding="0" cellspacing="1" style="width:100%; border-right:solid 1px #D9D9D9; border-bottom: solid 1px #d9d9d9;" ng-show="modelId !== 'settlebalance' &amp;&amp; modelId !== 'settlebalance_swap'">
+                                <thead>
+                                    <tr class="bgHeader">
+                                        <th id="spcol" colspan="2" class="hDetail ng-hide" ng-show="isHidenIns"></th>
+                                        <th class=" hDetail" ng-hide="isHidenIns"></th>
+                                        <th id="sphide" class=" hDetail" ng-hide="isHidenIns"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" lessFleet hDetail">Veh. Order<br>A/M</th>
+                                        <th class=" lessFleet hDetail">Veh. Order<br>F/M</th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail hDetailGross1"></th>
+                                        <th class=" hDetail hDetailGross2"></th>
+                                        <th class=" hDetail hDetailGross3"></th>
+                                        <th class=" hDetail hDetailGross4"></th>
+                                        <th class=" hDetail hDetailProAdj">Processed<br>Adjustment</th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail hDetailFDOther"></th>
+                                        <th class=" hDetail hDetailADOther"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail hDetailWarranty"></th>
+                                        <th class=" hDetail colTotal"></th>
+                                        <th class=" hDetail colTotal hDetailGross5"></th>
+                                        <th class=" hDetail hDetailGross6"></th>
+                                        <th class=" hDetail hDetailGross7"></th>
+                                        <th class=" hDetail hDetailGross8"></th>
+                                        <th class=" hDetail hDetailGross9"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail hDetailGross10"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail hDetailGross11"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail text_center"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                        <th class=" hDetail"></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <!-- ngRepeat: parent in detailNormal|orderBy:'col2' -->
+                                    <tr class="bgNormalTotal ng-hide" ng-show="detailFleet.length > 0 || detailSettle.length > 0">
+                                        <th id="spcol" colspan="2" class=" fDetail text_left padding-left: 5px;">
+                                            <span>Retail Total</span>
+                                        </th>
+                                        <th class=" fDetail"></th>
+                                        <td class=" lessFleet fDetail"></td>
+                                        <td class=" lessFleet fDetail"></td>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail colProAdj "></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail colTotal"></th>
+                                        <th class=" fDetail colTotal"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                    </tr>
+                                </tbody>
+                                <tbody class="tbPivot_HideFleet ng-hide" ng-show="detailFleet.length>0">
+                                    <tr>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class=" lessFleet">&nbsp;</td>
+                                        <td class=" lessFleet">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class=" colTotal">&nbsp;</td>
+                                        <td class=" colTotal">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                    </tr>
+                                    <!-- ngRepeat: parent in detailFleet|orderBy:'col2' -->
+                                    <tr class="bgFleetTotal">
+                                        <th id="spcol" colspan="2" class=" fDetail text_left padding-left: 5px;">
+                                            <span>Fleet Total</span>
+                                        </th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" lessFleet fDetail"></th>
+                                        <th class=" lessFleet fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail colProAdj "></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail colTotal"></th>
+                                        <th class=" fDetail colTotal"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                    </tr>
+                                </tbody>
+                                <tbody class="tbPivot_Settle ng-hide" ng-show="detailSettle.length>0">
+                                    <tr>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class=" lessFleet">&nbsp;</td>
+                                        <td class=" lessFleet">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class=" colTotal">&nbsp;</td>
+                                        <td class=" colTotal">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                        <td class="">&nbsp;</td>
+                                    </tr>
+                                    <!-- ngRepeat: parent in detailSettle|orderBy:'col2' -->
+                                    <tr class="bgSettleTotal">
+                                        <th id="spcol" colspan="2" class=" fDetail text_left padding-left: 5px;">
+                                            <span class="ng-binding">Additional Finance Settled</span>
+                                        </th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" lessFleet fDetail"></th>
+                                        <th class=" lessFleet fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail colProAdj "></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail colTotal"></th>
+                                        <th class=" fDetail colTotal"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                    </tr>
+                                </tbody>
+                                <tbody>
+                                    <tr class="bgHeader">
+                                        <th id="spcol" colspan="2" class=" fDetail text_left padding-left: 5px;">
+                                            <span>Grand Total</span>
+                                        </th>
+                                        <th class=" fDetail"></th>
+                                        <td class=" lessFleet fDetail"></td>
+                                        <td class=" lessFleet fDetail"></td>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail colProAdj "></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail colTotal"></th>
+                                        <th class=" fDetail colTotal"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                        <th class=" fDetail"></th>
+                                    </tr>
+                                </tbody>
+                            </table>
+                            <!-- settle balance -->
+                            <table class="tbPivot settlebalance ng-hide" border="0" cellpadding="0" cellspacing="1" style="width:100%; border-right:solid 1px #D9D9D9; border-bottom: solid 1px #d9d9d9;" ng-show="modelId === 'settlebalance' || modelId === 'settlebalance_swap'">
+                                <!-- 4 Tier -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Global' -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Global' -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Global' -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Global' -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Global' -->
+                                <!-- 3 Tier -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Site' -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Site' -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Site' -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Site' -->
+                                <!-- ngIf: headers.GroupSiteOrDept === 'Site' -->
+                                <!-- 2 Tier -->
+                                <!-- ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                                <thead ng-if="headers.GroupSiteOrDept !== 'Global' &amp;&amp; headers.GroupSiteOrDept !== 'Site'" class="ng-scope">
+                                    <tr class="bgHeader">
+                                        <th class="hDetail text_left boderRight non-export" style="width:230px;">Delivery / Pay</th>
+                                        <th class="hDetail text_left export" style="display:none;">Delivery</th>
+                                        <th class="hDetail text_left export" style="display:none;">Pay</th>
+                                        <th class="hDetail boderRight text_center">Orders</th>
+                                        <th class="hDetail text_right" style="width:110px;">Veh. Sale Price</th>
+                                        <th class="hDetail text_right" style="width:110px;">N.A.F</th>
+                                        <th class="hDetail text_right" style="width:110px;">Deposits</th>
+                                        <th class="hDetail text_right" style="width:110px;">Refund</th>
+                                        <th class="hDetail text_right" style="width:110px;">TRADE-IN Contract</th>
+                                        <th class="hDetail text_right" style="width:110px;">TRADE-IN Payout</th>
+                                        <th class="hDetail text_right" style="width:110px;">Settlement Balance</th>
+                                    </tr>
+                                </thead>
+                                <!-- end ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                                <!-- ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                                <tbody ng-if="headers.GroupSiteOrDept !== 'Global' &amp;&amp; headers.GroupSiteOrDept !== 'Site'" class="ng-scope">
+                                    <!-- ngRepeat: estimated in detailNormal|orderBy:'key' -->
+                                    <tr class="bgNormalTotal ng-hide" ng-show="detailFleet.length > 0 || detailSettle.length > 0">
+                                        <th class="text_left fDetail boderRight non-export">
+                                            <span class="ng-binding"></span>
+                                        </th>
+                                        <th class="text_left fDetail export ng-binding" style="display:none;"></th>
+                                        <th class="text_left fDetail export" style="display:none;"></th>
+                                        <th class="text_center boderRight fDetail ng-binding"></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                    </tr>
+                                </tbody>
+                                <!-- end ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                                <!-- ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                                <tbody ng-if="headers.GroupSiteOrDept !== 'Global' &amp;&amp; headers.GroupSiteOrDept !== 'Site'" class="tbPivot_HideFleet ng-scope ng-hide" ng-show="detailFleet.length>0">
+                                    <tr>
+                                        <td class="non-export">&nbsp;</td>
+                                        <td class="export" style="display:none;">&nbsp;</td>
+                                        <td class="export" style="display:none;">&nbsp;</td>
+                                        <td class="text_center boderRight">&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <!-- ngRepeat: estimated in detailFleet|orderBy:'key' -->
+                                    <tr class="bgFleetTotal">
+                                        <th class="text_left fDetail boderRight non-export">
+                                            <span class="ng-binding"></span>
+                                        </th>
+                                        <th class="text_left fDetail export ng-binding" style="display:none;"></th>
+                                        <th class="text_left fDetail export" style="display:none;"></th>
+                                        <th class="text_center boderRight fDetail ng-binding"></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                    </tr>
+                                </tbody>
+                                <!-- end ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                                <!-- ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                                <tbody ng-if="headers.GroupSiteOrDept !== 'Global' &amp;&amp; headers.GroupSiteOrDept !== 'Site'" class="tbPivot_Settle ng-scope ng-hide" ng-show="detailSettle.length>0">
+                                    <tr>
+                                        <td class="non-export">&nbsp;</td>
+                                        <td class="export" style="display:none;">&nbsp;</td>
+                                        <td class="export" style="display:none;">&nbsp;</td>
+                                        <td class="text_center boderRight">&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                    <!-- ngRepeat: estimated in detailSettle|orderBy:'key' -->
+                                    <tr class="bgSettleTotal">
+                                        <th class="text_left fDetail boderRight non-export">
+                                            <span class="ng-binding"></span>
+                                        </th>
+                                        <th class="text_left fDetail export ng-binding" style="display:none;"></th>
+                                        <th class="text_left fDetail export" style="display:none;"></th>
+                                        <th class="text_center boderRight fDetail ng-binding"></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                    </tr>
+                                </tbody>
+                                <!-- end ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                                <!-- ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                                <tbody ng-if="headers.GroupSiteOrDept !== 'Global' &amp;&amp; headers.GroupSiteOrDept !== 'Site'" class="ng-scope">
+                                    <tr class="bgHeader">
+                                        <th class="text_left fDetail boderRight non-export">
+                                            <span class="ng-binding"></span>
+                                        </th>
+                                        <th class="text_left fDetail export ng-binding" style="display:none;"></th>
+                                        <th class="text_left fDetail export" style="display:none;"></th>
+                                        <th class="text_center boderRight fDetail ng-binding"></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                        <th class="text_right fDetail "></th>
+                                    </tr>
+                                </tbody>
+                                <!-- end ngIf: headers.GroupSiteOrDept !== 'Global' && headers.GroupSiteOrDept !== 'Site' -->
+                            </table>
+                            <!-- settle balance -->
+                            <table id="tbPivotExport" class="tbPivotExport" style="display:none">
+                            </table>
+                        </div>
+                        <div class="divWaitTable" id="divPivotWait" style="display:none;width:100%">
+                            <div class="loadingData">
+                                <div class="saleslogs-preloader"><b></b></div>
+                                <div class="txtLoad"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div id="divDashboardTabTwoPage" [ngClass]="{other: groupBy===2}">
+                    <div id="div_sp_stAZPjeHvb8g0l581a5" class="graphview new" style="cursor: pointer;    width: 430px;">
+                        <h2>Alvin Menezes</h2>
+                        <div id="div_sp_stAZPjeHvb8g0l581a5_highcharts" style="width: 430px; height:218px;" class="dashboard" data-highcharts-chart="77">
+                            <div id="highcharts-avapo86-616" dir="ltr" class="highcharts-container " style="position: absolute; overflow: hidden; width: 430px; height: 218px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                                <div class="chart" #saleperson>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="deptsDetail">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="caption">Sold Vehicles</td>
+                                        <td class="caption">Sold Gross</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="value">9</td>
+                                        <td class="value">$0.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div id="div_sp_stAZPjeHvb8g0l581a5" class="graphview new" style="cursor: pointer;    width: 430px;">
+                        <h2>Alvin Menezes</h2>
+                        <div id="div_sp_stAZPjeHvb8g0l581a5_highcharts" style="width: 430px; height:218px;" class="dashboard" data-highcharts-chart="77">
+                            <div id="highcharts-avapo86-616" dir="ltr" class="highcharts-container " style="position: absolute; overflow: hidden; width: 430px; height: 218px; text-align: left; line-height: normal; z-index: 0; -webkit-tap-highlight-color: rgba(0, 0, 0, 0);">
+                                <div class="chart" #saleperson>
+
+                                </div>
+                            </div>
+                        </div>
+                        <div class="deptsDetail">
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td class="caption">Sold Vehicles</td>
+                                        <td class="caption">Sold Gross</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="value">9</td>
+                                        <td class="value">$0.00</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div id="divDashboardBottom" class="tabPivot"  [ngClass]="{other: tab===2}">
+               
+               <div>
+                    <table>     
+                        <thead>
+                            <tr>
+
+                                 <th> {{groupByHeader}} &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
+                                    {{field}}</th>
+                                <th style="text-align: center;">{{orderHeader}}</th>
+                                <th style="margin:0 auto;text-align: right;">Vehicle Profit</th>
+                                 <th>Total</th> 
+                            </tr>
+                        </thead>
+                        <ng-container *ngFor="let item of pivotTab;let i = index;">
+ 
+                            <tbody class="labels">
+
+                                
+
+
+                                <tr>
+                                    <td colspan="2">
+                                        <label *ngIf="activeRow[i].active" class="toggle" (click)="toggleAccordian(item.departId)">-</label>
+                                        <label *ngIf="!activeRow[i].active" class="toggle" (click)="toggleAccordian(item.departId)">+</label>
+                              
+                                      
+                                        <label   for="accounting">{{item.departmentName}}</label>
+                                        <input type="checkbox" name="accounting" id="accounting" data-toggle="toggle">
+                                    </td>
+                                    <td colspan="1">
+                                        <p style="margin:0 auto;text-align: center;">{{item.totalOrders | number:'1.0-0'}}</p>
+                                    </td>
+                                    <td colspan="1">
+                                        <p style="margin:0 auto;text-align: right;">${{item.totalProfit  |number: '.2-2'}}</p>
+                                    </td>
+                                    <!-- <td colspan="1">
+                                        <label >Total</label>
+                                    </td> -->
+                                </tr>
+                            </tbody>
+                            <tbody   [ngClass]="item.deptId === 1?'rowActive':''" >
+                                <tr  *ngFor="let rowData of item.row;let i =index">
+                              
+                                    <td class="depart-label" style="    border: none;">{{rowData.fieldValues}}</td>
+                                    <td style="border-right:none !important;border:none !important;width: 200px;"></td>
+                                    <td style="text-align: center;">{{rowData.order | number:'1.0-0'}}</td>
+                                    <td style="text-align: right;">${{rowData.Vehicle_Profit |number: '.2-2'}}</td>
+                                    <!-- <td>$10,583.00</td> -->
+                                     
+                                </tr>
+                            </tbody>
+                        </ng-container>
+                        <tfoot>
+                            <tr>
+                                <th>Grand Total</th>
+                                <th></th>
+                                <th style="text-align: center;">{{grandTotalOrders}}</th>
+                                <th style="text-align: right;">${{grandTotalProfit}}</th>
+                            </tr>
+                        </tfoot>		
+                    </table>
+
+                   
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div style="margin-left:17%" id="divuldaterange">
+    
+                        <date-footer></date-footer>
+                        <!-- / Months slider Ends -->
+                    
+                      </div>
+
+
+</div>

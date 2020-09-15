@@ -1,0 +1,51 @@
+<div class="topbar">
+  <div class="filter-container" fxLayoutAlign="space-between">
+
+      <div>
+          <label>Actual History</label>
+          <ng-select 
+          [options]="options" 
+          [displayKey]="displayKey" 
+          [disable]="isDisable" 
+          [styleGuide]="styleGuideHistory" 
+          [isDatalist]="isDataList" 
+          [searchKeys]="searchKeys" 
+          [(ngModel)]="historyValue" 
+          (onChange)="onHistoryChange($event)"
+          >
+          </ng-select>
+      </div>
+
+      <div>
+          <label>Start Date</label>
+          <ng-select 
+          [options]="startFrom" 
+          [displayKey]="displayKey" 
+          [disable]="isDisable" 
+          [styleGuide]="styleGuide" 
+          [isDatalist]="isDataList" 
+          [searchKeys]="searchKeys" 
+          [(ngModel)]="startDateValue" 
+          (onChange)="changeStartFrom($event)"
+          >
+          </ng-select>
+      </div>
+
+      <div>
+          <label>Period</label>
+          <ng-select 
+          [options]="options" 
+          [displayKey]="displayKey" 
+          [disable]="isDisable" 
+          [styleGuide]="styleGuide" 
+          [isDatalist]="isDataList" 
+          [searchKeys]="searchKeys" 
+          [(ngModel)]="periodValue" 
+          (onChange)="changePeriod($event)"
+          >
+          </ng-select>
+      </div>
+
+  </div>
+
+</div>

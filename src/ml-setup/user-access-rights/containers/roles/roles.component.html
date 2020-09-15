@@ -1,0 +1,16 @@
+<div class="tab-content" fusePerfectScrollbar>
+    <ml-roles-form
+        #rolesForm
+        [editValue]="editValue"
+        (reloadRoles)="reloadRoles = $event"
+    ></ml-roles-form>
+    <search-grid
+        [toSearch]=""
+        (searchedFor)="searchedForValue = $event"
+    ></search-grid>
+    <ml-roles-list
+        [searchedForValue]="searchedForValue"
+        [reloadRoles]="reloadRoles"
+        (editValue)="editValue = $event"
+    ></ml-roles-list>
+</div>

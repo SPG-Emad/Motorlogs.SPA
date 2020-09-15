@@ -1,0 +1,20 @@
+<div class="toast-container">
+    <span class="example-pizza-party">
+        {{data}}
+    </span>
+    <button *ngIf="data==='1 filter applied'" mat-raised-button
+        color="accent"
+        (click)="clearData()"
+        class="toast-target filter"    
+    >
+        ClEAR
+    </button>
+    <button *ngIf="data!=='1 filter applied'" mat-raised-button
+    color="accent"
+    (click)="getData()"
+    class="toast-target"    
+>
+    SHOW
+</button>
+</div>
+  

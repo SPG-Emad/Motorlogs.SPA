@@ -1,0 +1,68 @@
+<div class="modal-header" style="margin: 15px 10px !important">
+    <h5 class="modal-title">{{modalTitle}}
+    </h5>
+</div>
+<mat-dialog-content class="mat-typography">
+    <form [formGroup]="excelForm">
+        <div  class="modal-body">
+            <div  fxlayout="column" style="flex-direction: column; box-sizing: border-box; display: flex;">
+                <table style="width:100%;">
+                    <tbody>
+                    <tr>
+                        <td style="width:24px;">
+                            <mat-radio-button  value="1" [name]="row" (change)="changeData($event)" checked="true"></mat-radio-button>
+                        </td>
+                        <td colspan="2"><span id="exportOption_filter_text">Printable Columns &amp; Filtered data Only <span class="tooltip-hover"><i class="fa fa-info-circle"></i><span></span></span></span></td>
+                        <td></td>
+                    </tr>
+                    <tr style="display: block;">
+                        <td colspan="3" style="display: block; height: 10px; padding: 0px;"></td>
+                    </tr>
+                    <tr>
+                        <td style="width:24px;">
+                            <mat-radio-button value="2" [name]="row" (change)="changeData($event)"></mat-radio-button>
+                        </td>
+                        <td style="width:120px;">Export all</td>
+                        <td>
+                            <select id="ddlDeptExport" formControlName="option"  style="padding: 4px 5px; width: 100%;border: 1px solid #dbd9d9; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; -webkit-box-shadow: #e8eaec 0 1px 3px inset; -moz-box-shadow: #e8eaec 0 1px 3px inset; box-shadow: #e8eaec 0 1px 3px inset; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; outline: none;">
+                                <option value="D">This Department Only</option>
+                                <option value="G">All Data</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:24px;">&nbsp;</td>
+                        <td style="width:120px;">Date range</td>
+                        <td>
+                            <select id="ddlMonthExportOption" formControlName="dateRange"  style="padding: 4px 5px; width: 100%;border: 1px solid #dbd9d9; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; -webkit-box-shadow: #e8eaec 0 1px 3px inset; -moz-box-shadow: #e8eaec 0 1px 3px inset; box-shadow: #e8eaec 0 1px 3px inset; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; outline: none;">
+                                <option value="0">This Month</option>
+                                <option value="3">Last 3 Months</option>
+                                <option value="6">Last 6 Months</option>
+                                <option value="12">Last 12 Months</option>
+                                <option value="99">Export All</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="width:24px;">&nbsp;</td>
+                        <td style="width:120px;">File format</td>
+                        <td>
+                            <select id="ddlExportFormat" formControlName="fileFormat"  style="padding: 4px 5px; width: 100%;border: 1px solid #dbd9d9; -webkit-box-sizing: border-box; -moz-box-sizing: border-box; box-sizing: border-box; -webkit-box-shadow: #e8eaec 0 1px 3px inset; -moz-box-shadow: #e8eaec 0 1px 3px inset; box-shadow: #e8eaec 0 1px 3px inset; -webkit-border-radius: 2px; -moz-border-radius: 2px; border-radius: 2px; outline: none;">
+                                <option selected="selected" value="xlsx">XLSX</option>
+                                <option value="csv">CSV</option>
+                            </select>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td colspan="3" >&nbsp;</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+         </div>
+         <div class="modal-footer">
+            <button class="apply" type="button" (click)="submit()">EXPORT</button>
+            <button class="close" mat-dialog-close type="button">CLOSE</button>
+        </div>
+    </form>
+</mat-dialog-content>
