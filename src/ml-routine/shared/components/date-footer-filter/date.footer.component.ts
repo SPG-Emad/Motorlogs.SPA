@@ -252,7 +252,7 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
         if (changes.hasOwnProperty(propName)) {
           switch (propName) {
             case 'rowData': {
-              console.log("change:",this.rowData)
+              // console.log("change:",this.rowData)
             }
           }
         }
