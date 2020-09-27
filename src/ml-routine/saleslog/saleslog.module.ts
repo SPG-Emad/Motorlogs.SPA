@@ -16,7 +16,6 @@ import { NewDealComponent } from './components/new-deal/new-deal.component';
 import { ExcelExportComponent } from './components/excel-export/excel-export.component';
 import { ColumnOptionComponent } from './components/column-option/column-option.component';
 import { CustomHeaderComponent } from 'ml-routine/shared/components/custom-header/custom-header.component';
-import { CustomDropdownComponent } from 'ml-routine/shared/components/custom-dropdown/custom-dropdown.component';
 // import { NgSelectModule } from '@ng-select/ng-select';
 // import { NgSelectizeModule } from 'ng-selectize'; 
 import {MatFormFieldModule} from '@angular/material/form-field';

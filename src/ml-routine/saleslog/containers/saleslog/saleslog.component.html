@@ -171,6 +171,7 @@
               class="ag-theme-alpine"
               [modules]="modules"
               [columnDefs]="columnDefs"
+              [blockLoadDebounceMillis]="true"
               [defaultColDef]="defaultColDef"
               [autoGroupColumnDef]="autoGroupColumnDef"
               [suppressMenuHide]="true"
@@ -186,7 +187,8 @@
               [getMainMenuItems]="getMainMenuItems"
               [frameworkComponents]="frameworkComponents"
               [loadingOverlayComponent]="loadingOverlayComponent"
-
+              [rowBuffer]="10"
+              [components]="components"
               
               [getContextMenuItems]="getContextMenuItems"
               [rowData]="rowData"

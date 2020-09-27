@@ -1,19 +1,11 @@
-<!-- <ng-container *ngIf="isGroupDashboard; else elseTemplate">
-    Group Dashboard
-</ng-container>
-<ng-template #elseTemplate>
-    Dashboard
-    {{ decryptedDepartmentId }}
-</ng-template> -->
-
 <div class="page-layout carded fullwidth " style="height: 100%;margin: 30px auto;background: #fff;">
     <div class="center main-card">
         <div id="divDashboard" class="ng-scope">
             <div id="divDashboardTop">
                 <div id="divGBLogo"><img src="../../../../assets/images/LennockLogo.png"><img src=""></div>
                 <div id="divMonth">
-                    <div id="title-month" class="ng-binding">June - 2020</div>
-                    <div id="title-name" class="ng-binding">Lennock Nissan - New Cars</div>
+                    <div id="title-month" class="ng-binding">{{currentDate}}</div>
+                    <div id="title-name" class="ng-binding">{{departmentName}}</div>
                     <div id="mode-name" class="ng-binding"></div>
                 </div>
             </div>
@@ -94,19 +86,7 @@
                     </ng-template>
         
                 </div>
-                <!-- <table id="divStatsExpand" border="0" cellpadding="1" cellspacing="1" style="display:none;z-index:9999" class="divStatsExpandNormal">
-                    <tbody>
-                        <tr>
-                            <td style="width:50%; text-align:left;">
-                                <span id="btnSwap" ng-show="IsshowSwap()" ng-click="SwapClick()" class="ng-hide">Swap Fields</span>
-                            </td>
-                            <td style="width:50%; text-align:right;">
-                                <span id="btnExport" ng-click="ExportPivot()" style="display:none"></span> 
-                                <span id="btnExpand" ng-click="ExpandView()">Expand View</span>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table> -->
+
             </div>
             <div id="divDashboardBottom" class="graphTab" [ngClass]="{other: tab===1}">
                 <div id="divDashboardTabPage" [ngClass]="{total: groupBy===1}">
@@ -125,72 +105,35 @@
                             <tbody>
                                 <tr>
                                     <td class="bgTitle">Vehicle Orders</td>
-                                    <!-- <td id="target_Deal" style="background-color: rgb(225, 244, 255);"><b>Not Set</b></td>
+                                    <td id="target_Deal" style="background-color: rgb(225, 244, 255);"><b>${{targetObj.vechOrders.mtdTarget |number: '.0-0'}}</b></td>
                                     <td class="txtLine"></td>
-                                    <td id="mtd_target_Deal"><span style="color:#808080;">n/a</span></td>
-                                    <td id="mtd_order_Deal">40</td>
-                                    <td id="difference_Deal"><span style="color:#808080;">n/a</span></td>
-                                    <td id="mtd_percentage_Deal"><span style="color:#808080;">n/a</span></td> -->
-                                    <td id="target_Deal" style="background-color: rgb(225, 244, 255);"><b>{{vehicleOrders  |number: '.2-2'}}</b></td>
-                                    <td class="txtLine"></td>
-                                    <td id="mtd_target_Deal"><span style="color:#808080;">n/a</span></td>
-                                    <td id="mtd_order_Deal">40</td>
-                                    <td id="difference_Deal"><span style="color:#808080;">n/a</span></td>
-                                    <td id="mtd_percentage_Deal"><span style="color:#808080;">n/a</span></td>
+                                    <td id="mtd_target_Deal"><span style="color:#808080;">{{targetObj.vechOrders.mtdTarget |number: '.0-0'}}</span></td>
+                                    <td id="mtd_order_Deal">$ {{targetObj.vechOrders.mtdResult |number: '.0-0'}}</td>
+                                    <td id="difference_Deal"><span style="color:#808080;">{{targetObj.vechOrders.mtdDifference |number: '.0-0'}}</span></td>
+                                    <td id="mtd_percentage_Deal"><span style="color:#808080;">{{targetObj.vechOrders.mtdPercentage |number: '.0-0'}}%</span></td>
                                 </tr>
                                 <tr>
                                     <td class="bgTitle">Vehicle Profit</td>
-                                    <td id="target_Gross" style="background-color: rgb(225, 244, 255);"><b>${{vehicleProfit  |number: '.2-2'}}</b></td>
+                                    <td id="target_Gross" style="background-color: rgb(225, 244, 255);"><b>${{targetObj.vechProfit.mtdTarget |number: '.0-0'}}</b></td>
                                     <td class="txtLine"></td>
-                                    <td id="mtd_target_Gross"><span style="color:#808080;">n/a</span></td>
-                                    <td id="mtd_order_Gross">$47,954.42</td>
-                                    <td id="difference_Gross"><span style="color:#808080;">n/a</span></td>
-                                    <td id="mtd_percentage_Gross"><span style="color:#808080;">n/a</span></td>
+                                    <td id="mtd_target_Gross"><span style="color:#808080;">{{targetObj.vechProfit.mtdTarget |number: '.0-0'}}</span></td>
+                                    <td id="mtd_order_Gross">$ {{targetObj.vechProfit.mtdResult |number: '.0-0'}} </td>
+                                    <td id="difference_Gross"><span style="color:#808080;">{{targetObj.vechProfit.mtdDifference |number: '.0-0'}}</span></td>
+                                    <td id="mtd_percentage_Gross"><span style="color:#808080;">{{targetObj.vechProfit.mtdPercentage |number: '.0-0'}}%</span></td>
                                 </tr>
                             </tbody>
                         </table>
                         <div id="divDashboardSale2"></div>
-                        <div id="divDashboardSale" dbtype="covered" data-highcharts-chart="0" style="margin: 10px auto 0px auto;">
+                        <div  class="chart-container" [ngClass]="{'chart-show': !chartLoader}" id="divDashboardSale" dbtype="covered" data-highcharts-chart="0" style="margin: 10px auto 0px auto;">
                             <div class="chart" #container>
 
                             </div>
                         </div>
-                        <!-- <div id="divDashboardSaleLink">
-                            <div id="divDashboardSaleLinkFinance">
-                                <label class="titleLink">FINANCE</label>
-                                <label class="pipe">:</label>
-                                <span id="penetrationFinance" class="pentration">
-                                    <b style="color:#00B050">29%</b>
-                                </span>
-                                <label class="pipe">|</label>
-                                <span id="averageFinance" class="average">
-                                    <b style="color:#FF0000">$0.00</b>
-                                </span>
-                                <label class="lbAV">Av.</label>
-                                <label class="pipe pipetotal">|</label>
-                                <span id="totalFinance" class="total">
-                                    <b style="color:#FF0000">$0.00</b>
-                                </span>
-                                <label>Total.</label>
+                        <div  class="loader-container" [ngClass]="{'loader-show': chartLoader}">
+                            <div class="loader">
+                                <mat-spinner strokeWidth="5" [diameter]="100"></mat-spinner>
                             </div>
-                            <div id="divDashboardSaleLinkAftermarket">
-                                <label class="titleLink">A/MARKET</label>
-                                <label class="pipe">:</label>
-                                <span id="penetrationAfterMarket" class="pentration">
-                                    <b style="color:#FF0000">0%</b>
-                                </span>
-                                <label class="pipe">|</label>
-                                <span id="averageAfterMarket" class="average">
-                                    <b style="color:#FF0000">$0.00</b>
-                                </span>
-                                <label class="lbAV">Av.</label>
-                                <label class="pipe pipetotal">|</label>
-                                <span id="totalAfterMarket" class="total">
-                                    <b style="color:#FF0000">$0.00</b>
-                                </span>
-                                <label>Total.</label>
-                            </div>
-                        </div> -->
+                        </div>
                     </div>
                     <div id="divPivotTables" class="tabPage" style="margin-top: 0px;">
                         <div id="divPivotShow" style="overflow:auto;">
@@ -760,33 +703,24 @@
                 </div>
             </div>
             <div id="divDashboardBottom" class="tabPivot"  [ngClass]="{other: tab===2}">
-               
-               <div>
-                    <table>     
+                <div>
+                    <table *ngIf="!pivotLoader">
                         <thead>
                             <tr>
-
-                                 <th> {{groupByHeader}} &nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;
-                                    {{field}}</th>
-                                <th style="text-align: center;">{{orderHeader}}</th>
+                                <th>Department</th>
+                                <th>{{filterValue && filterValue.value}}</th>
+                                <th style="text-align: center;">Orders</th>
                                 <th style="margin:0 auto;text-align: right;">Vehicle Profit</th>
-                                 <th>Total</th> 
+                                <!-- <th>Total</th> -->
                             </tr>
                         </thead>
                         <ng-container *ngFor="let item of pivotTab;let i = index;">
- 
                             <tbody class="labels">
-
-                                
-
-
                                 <tr>
                                     <td colspan="2">
-                                        <label *ngIf="activeRow[i].active" class="toggle" (click)="toggleAccordian(item.departId)">-</label>
-                                        <label *ngIf="!activeRow[i].active" class="toggle" (click)="toggleAccordian(item.departId)">+</label>
-                              
-                                      
-                                        <label   for="accounting">{{item.departmentName}}</label>
+                                        <label *ngIf="activeRow[i].active" class="toggle" (click)="toggleAccordian(item.rowId)">-</label>
+                                        <label *ngIf="!activeRow[i].active" class="toggle" (click)="toggleAccordian(item.rowId)">+</label>
+                                        <label for="accounting">{{item.groupHeaderName}}</label>
                                         <input type="checkbox" name="accounting" id="accounting" data-toggle="toggle">
                                     </td>
                                     <td colspan="1">
@@ -800,15 +734,13 @@
                                     </td> -->
                                 </tr>
                             </tbody>
-                            <tbody   [ngClass]="item.deptId === 1?'rowActive':''" >
-                                <tr  *ngFor="let rowData of item.row;let i =index">
-                              
-                                    <td class="depart-label" style="    border: none;">{{rowData.fieldValues}}</td>
+                            <tbody class="hide" [ngClass]="{rowActive: activeRow[i].active}">
+                                <tr *ngFor="let rowData of item.row">
+                                    <td class="depart-label" style="border: none;">{{rowData.fieldValue}}</td>
                                     <td style="border-right:none !important;border:none !important;width: 200px;"></td>
                                     <td style="text-align: center;">{{rowData.order | number:'1.0-0'}}</td>
-                                    <td style="text-align: right;">${{rowData.Vehicle_Profit |number: '.2-2'}}</td>
+                                    <td style="text-align: right;">${{rowData.vehicleProfit |number: '.2-2'}}</td>
                                     <!-- <td>$10,583.00</td> -->
-                                     
                                 </tr>
                             </tbody>
                         </ng-container>
@@ -821,20 +753,17 @@
                             </tr>
                         </tfoot>		
                     </table>
-
-                   
-
-
+                    <div *ngIf="pivotLoader">
+                        <div class="loader">
+                            <mat-spinner strokeWidth="5" [diameter]="100"></mat-spinner>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </div>
     <div style="margin-left:17%" id="divuldaterange">
-    
-                        <date-footer></date-footer>
-                        <!-- / Months slider Ends -->
-                    
-                      </div>
-
-
+        <date-footer></date-footer>
+        <!-- / Months slider Ends -->
+    </div>
 </div>

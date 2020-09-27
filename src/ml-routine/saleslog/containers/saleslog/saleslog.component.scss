@@ -115,6 +115,13 @@ table {
 }
 
 
+::ng-deep .xdsoft_today_button {
+    visibility: hidden !important;
+}
+
+::ng-deep .xdsoft_datetimepicker .xdsoft_label i {
+    visibility: hidden !important;
+}
 
 ::ng-deep .mat-simple-snackbar-action {
     margin: -24px -16px -23px 0px !important;

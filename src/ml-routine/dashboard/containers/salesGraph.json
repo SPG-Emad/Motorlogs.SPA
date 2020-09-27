@@ -1,4 +1,16 @@
 {
+	"target":{
+		"vechOrders": {
+			"target": 140,
+			"mtdTarget": 164,
+			"mtdResult": 272
+		},
+		"vechProfit": {
+			"target": 35000,
+			"mtdTarget": 164,
+			"mtdResult": 272
+		}
+	},
 	"seriesData": [{
 			"date": 1,
 			"graphType": "column",

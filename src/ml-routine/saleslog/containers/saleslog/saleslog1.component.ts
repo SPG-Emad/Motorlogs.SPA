@@ -1,6 +1,6 @@
 
 import { CustomFilterMenuComponent } from './../../../shared/components/custom-filter-menu/custom-filter-menu.component';
-import { CustomDropdownComponent } from './../../../shared/components/custom-dropdown/custom-dropdown.component';
+// import { CustomDropdownComponent } from './../../../shared/components/custom-dropdown/custom-dropdown.component';
 import { filter } from 'rxjs/operators';
 import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
 import { ExcelExportModule } from '@ag-grid-enterprise/excel-export';
@@ -370,11 +370,9 @@ export class SaleslogComponent implements OnInit {
         return data.id;
         };
         this.frameworkComponents = {
-        agColumnHeader: CustomHeaderComponent, 
-        dropdownRenderer: CustomDropdownComponent,
-        calenderRender: CalenderRenderer,
-         //  dropdown:getDropDown,
-        customFilter: CustomFilterMenuComponent,
+          agColumnHeader: CustomHeaderComponent, 
+          calenderRender: CalenderRenderer,
+          customFilter: CustomFilterMenuComponent,
         };
 
         // this.getRowClass = function(params) {

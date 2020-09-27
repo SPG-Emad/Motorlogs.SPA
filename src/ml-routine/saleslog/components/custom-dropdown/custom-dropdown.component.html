@@ -35,11 +35,13 @@
        
         <mat-select *ngIf="!customDropdownFlag" [(ngModel)]="selected"  (openedChange)="openedChange($event)" (selectionChange)="go($event)" [formControl]="bankCtrl"  #singleSelect>
                     
-          <div class="xdsoft_datetimepicker_custom xdsoft_noselect picker_rtl xdsoft_" style="display: block; left: 230px;width: 380px;height:325px; top: -2px; position: absolute;">
+          <div class="xdsoft_datetimepicker_custom xdsoft_noselect picker_rtl xdsoft_" style="display: block; left: 230px;width: 342px;height:295px; top: -2px; position: absolute;">
             <div class="xdsoft_datepicker_custom active">
             
               <div class="xdsoft_mounthpicker">
-                <button type="button" class="calender-ok-btn" value="Select" (click)="doSomething()" style="visibility: visible;margin-left:300px;color:black">Select</button>
+                <button type="button" class="calender-ok-btn" value="Select" (click)="doSomething()" style="visibility: visible;color:black;position: absolute;
+                bottom: 0;
+                right: 58px;">Select</button>
                 <div class="xdsoft_label ">
                   <div class="sd-container">
                    
@@ -92,7 +94,7 @@ $('#xdsoft_time xdsoft_current').on("click", function(e) {
           <mat-option>
             <ngx-mat-select-search placeholderLabel="Search.." noEntriesFoundLabel="'No result found'" [formControl]="bankFilterCtrl"></ngx-mat-select-search>
           </mat-option>
-          <mat-option  class="paytype-option" selected>{{selected}}</mat-option>
+          <mat-option  class="paytype-option" [value]="selected" selected>{{selected}}</mat-option>
 
           <mat-option  class="paytype-option" *ngFor="let item of filteredBanks | async" [value]="item.code">
                       

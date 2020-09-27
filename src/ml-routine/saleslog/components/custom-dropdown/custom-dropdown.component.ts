@@ -5,6 +5,8 @@ import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
 import { Bank, BANKS, ItemObj } from '../demo-data';
+import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
+import { SessionHandlerService } from 'app/shared/services/session-handler.service';
 
 
 declare var $: any;
@@ -30,8 +32,9 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
  // protected items: Bank[] = BANKS;
 
 
- protected items: ItemObj[] = [];
- protected dateitems: ItemObj[] = [];
+  protected items: ItemObj[] = [];
+  protected dateitems: ItemObj[] = [];
+  paramsObject:any;
 
   /** control for the selected bank */
   public bankCtrl: FormControl = new FormControl();
@@ -55,115 +58,90 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
   private openFlag:boolean;
   
   
-  constructor() {  
-  
-   //console.log( this.selected_date);
-  //  console.log($("#_datetimepicker4").val());
-  }
+  constructor(
+    private salesLogService: SaleslogService,
+    private sessionHandlerService: SessionHandlerService,
+  ) {}
+
+
   open(){
     console.log('cal open');
-  /**   $.datetimepicker.setLocale('en');
-    $('#datetimepicker3').datetimepicker({
-     inline:true
-     });**/
 
-   
-
-
-     $.datetimepicker.setLocale('en');
-     $('#_datetimepicker4').datetimepicker({
-       format:'d.m.Y H:i',
-       allowTimes:[
-         '0:00','9:00', '9:30','10:00','10:30', '11:00','11:30',
-         '12:00','12:30','01:00','1:30','2:30','3:00',
-         '3:30','4:00','4:30','5:00','5:30'
-         ],
-      inline:true
-      });
+    $.datetimepicker.setLocale('en');
+    $('#_datetimepicker4').datetimepicker({
+      format:'d.m.Y H:i',
+      allowTimes:[
+        '0:00','9:00', '9:30','10:00','10:30', '11:00','11:30',
+        '12:00','12:30','01:00','1:30','2:30','3:00',
+        '3:30','4:00','4:30','5:00','5:30'
+        ],
+    inline:true
+    });
 
   }
-
-  
- 
 
   openedChange(opened: boolean) {
     
-   // this.ngOnInit();
-    this.open();
-    // console.log($("#_datetimepicker4").val());
-   
+    this.open();   
 
     $('[id^="mat-input"]').attr('placeholder','Search');
     $('.mat-select-search-no-entries-found').text("");
-    // console.log(this.itemArray);
     
     opened ? $("#calDisplay").show():$("#calDisplay").hide();
-   
-    //this.selectedItem= this.rowDate!=null?this.rowDate:this.selected_date;
-    //this.controls['bankCtrl'].setValue("skhsk ");
-  //  console.log( this.cellItem);
-    // console.log(opened ? 'opened' : 'closed');
-    
-}
-
-
-
-doSomething () {
-  
-  this.selectedItem = $("#_datetimepicker4").val();
-  // console.log($("#_datetimepicker4").val());
-
-  
-  // console.log(this.selectedItem+!this.flag);
-  // console.log(this.items.some(x => x.code === "TBA"));
-  
-  if(this.items.length == this.itemArray.length && this.selectedItem!=null){
-    // console.log(this.selectedItem +" "+this.items.length);
-    // console.log(this.items);
-    let item = new ItemObj();
-   
-    item.name=this.selectedItem ;
-    item.id=this.selectedItem ;
-    item.code=null;
-    item.details=null;
-    this.dateitems.push(item);
- 
-    // console.log(this.dateitems);
-    //this.ngOnInit();
   }
-  if(this.items.length == this.itemArray.length+1 && this.selectedItem!=null ){
-    // console.log(this.selectedItem+ " "+this.items.length);
-    this.items.splice(0,1); // delete the last item
-  //  this.items.push({code:  this.selectedItem, id:  this.selectedItem ,name:null ,details:null});
-    // console.log(this.items);
-    let item = new ItemObj();
-   
-    item.name=this.selectedItem ;
-    item.id=this.selectedItem ;
-    item.code=null;
-    item.details=null;
-    this.dateitems.push(item);
+
+  doSomething () {
     
-    // console.log(this.dateitems);
-   // this.ngOnInit();
-  }
+    this.selectedItem = $("#_datetimepicker4").val();
+    // console.log($("#_datetimepicker4").val());
+
+    
+    // console.log(this.selectedItem+!this.flag);
+    // console.log(this.items.some(x => x.code === "TBA"));
+    
+    if(this.items.length == this.itemArray.length && this.selectedItem!=null){
+      // console.log(this.selectedItem +" "+this.items.length);
+      // console.log(this.items);
+      let item = new ItemObj();
+    
+      item.name=this.selectedItem ;
+      item.id=this.selectedItem ;
+      item.code=null;
+      item.details=null;
+      this.dateitems.push(item);
   
-    this.ngOnInit();
-  //console.log(e);
-}
+      // console.log(this.dateitems);
+      //this.ngOnInit();
+    }
+    if(this.items.length == this.itemArray.length+1 && this.selectedItem!=null ){
+      // console.log(this.selectedItem+ " "+this.items.length);
+      this.items.splice(0,1); // delete the last item
+    //  this.items.push({code:  this.selectedItem, id:  this.selectedItem ,name:null ,details:null});
+      // console.log(this.items);
+      let item = new ItemObj();
+    
+      item.name=this.selectedItem ;
+      item.id=this.selectedItem ;
+      item.code=null;
+      item.details=null;
+      this.dateitems.push(item);
+      
+      // console.log(this.dateitems);
+    // this.ngOnInit();
+    }
+    
+      this.ngOnInit();
+    //console.log(e);
+  }
 
 
-dateTimePushToItems(items , item): boolean {
-
-   if(this.items.some(x => x.code === item)){
-  return true;
+  dateTimePushToItems(items , item): boolean {
+    if(this.items.some(x => x.code === item)){
+      return true;
     }else {
-           return false;
-         }
-
-
-}
-
+      return false;
+    }
+  }
 
 
   ngOnInit() {
@@ -203,7 +181,6 @@ dateTimePushToItems(items , item): boolean {
 
     // set initial selection
     this.bankCtrl.setValue(this.items[10]);
-
     // load the initial bank list
     this.filteredBanks.next(this.items.slice());
 
@@ -219,6 +196,7 @@ dateTimePushToItems(items , item): boolean {
   
     this.setInitialValue();
   }
+
   ngAfterContentInit() {
    
   }
@@ -292,14 +270,24 @@ dateTimePushToItems(items , item): boolean {
 
  
   go(event){
-    console.log($("#_datetimepicker4").val());
-    console.log(this.selectedItem, this.selected,event);
+    // console.log($("#_datetimepicker4").val());
+    // console.log(this.selectedItem, this.selected,event);
     if(event.value && event.value.name){
       this.selectedItem  = event.value.name;
-      console.log(event);
+      let params = { 
+        "userid": this.sessionHandlerService.getSession('userObj').userId, 
+        "EntryId": 1005, // Parent ID of the row for which cell he is editing 
+        "ViewID": 1, 
+        "colId": "this.paramsObject.colDef.colId", 
+        "ColType": "this.paramsObject.colDef.columnType", // You need to send the column type 
+        "Value": this.selected 
+      }
+      this.salesLogService.insertCellValue(params)
+      .subscribe(res=>{
+  
+      })
     }
     //event.value.name =this.selected_date;
-
 
   }
   

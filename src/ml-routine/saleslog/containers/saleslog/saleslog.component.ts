@@ -1,13 +1,5 @@
 import { CustomLoadingOverlayComponent } from '../../components/custom-loading-overlay/custom-loading-overlay.component';
 
-import { CustomFilterMenuComponent } from './../../../shared/components/custom-filter-menu/custom-filter-menu.component';
-import { CustomDropdownComponent } from './../../../shared/components/custom-dropdown/custom-dropdown.component';
-import { filter } from 'rxjs/operators';
-import { ClientSideRowModelModule } from '@ag-grid-community/client-side-row-model';
-import { ExcelExportModule } from '@ag-grid-enterprise/excel-export';
-import { RowGroupingModule } from '@ag-grid-enterprise/row-grouping';
-import { MenuModule } from '@ag-grid-enterprise/menu';
-import { ClipboardModule } from '@ag-grid-enterprise/clipboard';
 import { AllCommunityModules, ColumnResizedEvent } from '@ag-grid-community/all-modules';
 import { Component, OnInit, ChangeDetectionStrategy, Inject, OnChanges, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
@@ -29,19 +21,15 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import  *  as  data  from  'app/RoutineSheetJSON.json';
 import { AuthService } from 'ml-auth/shared/services/ml-auth/ml-auth.service';
 import { CalenderRenderer } from './calander-renderer.component';
-import { SingleSelectionExampleComponent } from 'ml-routine/saleslog/components/custom-dropdown/custom-dropdown.component';
 // import * as Selectize from '../../../../../node_modules/selectize/dist/js/standalone/selectize.js';
 
 declare var $:any;
-// declare var Selectize:any;
-import { GlobalConstants } from 'ml-shared/common/global-constants';
 import { CustomDropDownRenderer } from './custom-dropdown-renderer.component';
 import { DropDownRenderer } from './dropdown-renderer.component';
 import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
 import { SessionHandlerService } from 'app/shared/services/session-handler.service';
 import { SharedService } from 'ml-setup/shared/services/shared/shared.service';
 import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
-// import  *  as  salesLogData  from  '../../RoutineSheetJSON.json';
 
 
 
@@ -52,13 +40,7 @@ import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.servi
   animations: [SlideInOutAnimation]
 })
 export class SaleslogComponent implements OnInit {
-  cities = [
-    {id: 1, name: 'Vilnius'},
-    {id: 2, name: 'Kaunas'},
-    {id: 3, name: 'Pavilnys', disabled: true},
-    {id: 4, name: 'Pabradė'},
-    {id: 5, name: 'Klaipėda'}
-  ];
+
   selectedCity: number;
 
   @Input() 
@@ -133,85 +115,7 @@ export class SaleslogComponent implements OnInit {
   private cellMap : any;
   private salesData : any;
 
-  public rowColor = [
-    {
-      rowId:1,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:2,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:3,
-      colId:0,
-      color:''
-    },
-        
-    {
-      rowId:4,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:5,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:6,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:7,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:8,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:9,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:10,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:11,
-      colId:0,
-      color:''
-    },
-    {
-      rowId:12,
-      colId:0,
-      color:''
-    },    
-    {
-      rowId:13,
-      colId:0,
-      color:''
-    },
-        {
-      rowId:14,
-      colId:0,
-      color:''
-    },    
-    {
-      rowId:15,
-      colId:0,
-      color:''
-    }
-
-  ];
+  public rowColor = [];
   private postProcessPopup;
 
   monthSearch:any;
@@ -219,7 +123,7 @@ export class SaleslogComponent implements OnInit {
   searchDate:any= [];
   currentDate:any= [];
   years: any = [];
-  months: any = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Nov','Dec'];
+  months: any = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   monthActive: any;
   yearCounter= 0;
   monthModal: boolean = false;
@@ -266,25 +170,6 @@ export class SaleslogComponent implements OnInit {
       }
     });
 
-
-         
-    /**let model = Object();
-     model["login"]="emadkhanqai@gmail.com";
-    model["password"]="crystal123";
-    model["userid"]=this.authService.user.userId;
-    model["viewid"]=3;
-    model["roleid"]=8
-    model["deptid"]= this.decryptedDepartmentId;
-    model["tilldate"]="Jun_20";
-    model["pastmonths"]=1;
-    let gridData:any;    
-    this.http
-    .post(GlobalConstants.apiURL + `viewsdata/getlivesheetdataforviews`, model)
-    .subscribe(data => {
-      this.salesData = data;
-      //this.loadAPIData(data);
-      console.log(  this.salesData);
-      }); **/
 
     this.columnDefs = [];
 
@@ -343,9 +228,9 @@ export class SaleslogComponent implements OnInit {
         },
         'red-field-color': function(params) {
         if(
-            params.colDef.field === "SE" &&
-            params.colDef.field === "AFM" &&
-            params.colDef.field === "FM"
+            params.colDef.colCode === "SE" ||
+            params.colDef.colCode === "AFM" ||
+            params.colDef.colCode === "FM"
         ){
           let choice = false;
           let date = moment().format('DD-MMM-YY');
@@ -359,7 +244,7 @@ export class SaleslogComponent implements OnInit {
           // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
           return params.value === '' && choice;
             
-        }else if(params.colDef.field === "PT"){
+        }else if(params.colDef.colCode === "PT"){
           let date = moment().format('DD-MMM-YY');
           let isAfter =moment(params.data.orderDate).isSameOrAfter(date);
           let isBefore;
@@ -406,23 +291,17 @@ export class SaleslogComponent implements OnInit {
     return data.id;
     };
     this.frameworkComponents = {
-      agColumnHeader: CustomHeaderComponent, 
-      customdropdownRenderer: CustomDropdownComponent,
-      dropdownRenderer:SingleSelectionExampleComponent,
-      calenderRender: CalenderRenderer,
       dropDownRenderer : DropDownRenderer,
       customDropDownRenderer : CustomDropDownRenderer,
       customLoadingOverlay: CustomLoadingOverlayComponent,
-      customFilter: CustomFilterMenuComponent,
+      calenderRender: CalenderRenderer,
+      agColumnHeader: CustomHeaderComponent, 
     };
 
     this.rowSelection = 'single';
 
     this.components = { 
-    // singleClickEditRenderer: getRenderer(),
-    // datePicker: getDatePicker(),
-    // dropdown: getDropDown(),
-    // custom: getCustomDropDown()
+      datePicker: getDatePicker()
     };
 
     this.loadingOverlayComponent = 'customLoadingOverlay';
@@ -432,22 +311,11 @@ export class SaleslogComponent implements OnInit {
     };
   }
 
-
-
   rowResponse = [];
 
   url = "../../../assets/selectize/dist/js/standalone/selectize.js";
   loadAPI:any;
 
-
-  loadAPIData():void {
-    /** To be replaced with API url data **/
-
-    this.salesData = (data as any).default;
-   
-    let gridData:any;
-    //this.http.post(GlobalConstants.apiURL + `viewsdata/getlivesheetdataforviews`, model).map(this.extractData)
-  }
 
   onColumnResized (params: any) {
     if (params.finished == true) {
@@ -647,229 +515,6 @@ export class SaleslogComponent implements OnInit {
 
   }
 
-  // /** Used To Generate row number Column with default settings */
-
-  // generateRowColumn():void{
-
-  //   let rowIdcolumn = new Object();
-  
-  //   rowIdcolumn["headerName"]= ".", 
-   
-  //   rowIdcolumn["colId"]= 0,
-  //   rowIdcolumn["minWidth"]= 60,
-  //   rowIdcolumn["maxWidth"] = 60,
-  //   rowIdcolumn["cellClass"] = 'row-no',
-  //   rowIdcolumn["editable"]= true, 
-  
-  //   rowIdcolumn["pinned"]= 'left', 
-  //   rowIdcolumn["lockPinned"]= true,
-   
-  //   rowIdcolumn["filter"] = true,
-  //   rowIdcolumn["lockPosition"]= true, 
-   
-  //   rowIdcolumn["cellClass"] = function(params) {
-  //       // console.log(params);
-  //     let i =1;
-  //     return (params.data.carryOver===true?'agClassCarryOver':'agClassNoCarryOver');
-        
-  //   }
-  //   let carryOverCount=this.carryOverUnits;
-  //   rowIdcolumn["valueGetter"] = function(params) {
-  //     // console.log(carryOverCount);
-  //     if (params.data.carryOver===true){
-  //       return null;
-  //     }else {
-  //       //i++;
-  //       return (params.node.rowIndex+1)-carryOverCount;
-  //     }
-  //   }
-       
-  //   this.columnDefs.push(rowIdcolumn);
-
-  // }
-  
-
-  // /** This is used to generate grid column header */
-
-  // generateColumnHeader():void{
-  //   this.columnDefs = [];
-  //   this.salesData.column.forEach(element => {
-  //     //  console.log(element.colName);
-  //     let columnMap = new Object();
-  //     columnMap["headerName"] = element.colName;
-  //     columnMap["field"] = element.colCode;
-  //     columnMap["sortable"] = true;
-  //     columnMap["colCode"] = element.colCode;
-  //     columnMap["filter"] = true,
-  //     columnMap["hide"] = !element.display;
-  //     let required = element.required
-  //       columnMap["cellStyle"] = function(params) {
-          
-  //         if (required && params.value === "") {
-  //             //mark police cells as red
-  //             return { backgroundColor: 'red'};
-  //         } else {
-  //             return  null;
-  //         }
-          
-  //     }
-            
-
-  //     if(element.type === 'Date'){
-  //       columnMap["cellRenderer"] = 'calenderRender';
-  //     }
-  //     if(element.type === 'DD-Fixed'){
-  //       columnMap["cellRenderer"] = 'customDropDownRenderer';
-  //     }
-  //     if(element.type === 'DD-Self'){
-  //       columnMap["cellRenderer"] = 'customDropDownRenderer';
-  //     }
-  //     if(element.type === 'DD-Suggest'){
-  //       columnMap["cellRenderer"] = 'customDropDownRenderer';
-  //     }
-  //     if(element.type === 'Combo'){
-  //       columnMap["cellRenderer"] = 'dropDownRenderer';
-  //     }
-      
-
-      
-  //     // console.log(columnMap);
-  //     this.columnDefs.push(columnMap);
-  //   });
-  //   console.log(this.columnDefs );
-  // }
-
-
-
-  /** Used To Generate row number Column with default settings */
-
-  generateRowColumn():void{
-
-    let rowIdcolumn = new Object();
-
-    rowIdcolumn["headerName"]= ".", 
-  
-    rowIdcolumn["colId"]= 0,
-    rowIdcolumn["minWidth"]= 40,
-    rowIdcolumn["maxWidth"] = 40,
-    rowIdcolumn["cellClass"] = 'row-no',
-    rowIdcolumn["editable"]= false, 
-    rowIdcolumn["sequence"] = 0;
-    rowIdcolumn["pinned"]= 'left', 
-    rowIdcolumn["lockPinned"]= true,
-    rowIdcolumn["filter"] = true,
-    rowIdcolumn["lockPosition"]= true, 
-  
-    rowIdcolumn["cellClass"] = function(params) {
-        // console.log(params);
-      let i =1;
-      return (params.data.carryOver===true?'agClassCarryOver':'agClassNoCarryOver');
-        
-    }
-    let carryOverCount=this.carryOverUnits;
-    rowIdcolumn["valueGetter"] = function(params) {
-      if (params.data.carryOver===true){
-          return null;
-      }else {
-        //i++;
-        return (params.node.rowIndex+1)-carryOverCount;
-      }
-
-    }
-      
-    this.columnDefs.push(rowIdcolumn);
-
-  }
-
-  /** This is used to generate grid column header */
-
-  generateColumnHeader():void{
-    let column = [];
-
-    let rowIdcolumn = new Object();
-
-    rowIdcolumn["headerName"]= ".", 
-  
-    rowIdcolumn["colId"]= 0,
-    rowIdcolumn["minWidth"]= 40,
-    rowIdcolumn["maxWidth"] = 40,
-    rowIdcolumn["cellClass"] = 'row-no',
-    rowIdcolumn["editable"]= true, 
-    rowIdcolumn["sequence"] = 0;
-    rowIdcolumn["pinned"]= 'left', 
-    rowIdcolumn["lockPinned"]= true,
-    rowIdcolumn["filter"] = true,
-    rowIdcolumn["lockPosition"]= true, 
-  
-    rowIdcolumn["cellClass"] = function(params) {
-      // console.log(params);
-      let i =1;
-      return (params.data.carryOver===true?'agClassCarryOver':'agClassNoCarryOver');
-        
-    }
-    let carryOverCount=this.carryOverUnits;
-    rowIdcolumn["valueGetter"] = function(params) {
-      // console.log(carryOverCount);
-      if (params.data.carryOver===true){
-          return null;
-      }else {
-        //i++;
-        return (params.node.rowIndex+1)-carryOverCount;
-      }
-
-    }
-
-    column.push(rowIdcolumn);
-
-    this.salesData.column.forEach(element => {
-
-      let columnMap = new Object();
-      columnMap["headerName"] = element.colName;
-      columnMap["field"] = element.colCode;
-      columnMap["colCode"] = element.colCode;
-      columnMap["sequence"] = element.sequence;
-      columnMap["resizable"] = true;
-      columnMap["sortable"] = true;
-      columnMap["filter"] = true,
-      columnMap["hide"] = !element.display;
-      let required = element.required
-      columnMap["cellStyle"] = function(params) {
-        console.log('params:',params);
-        if (required && params.value === "") {
-            //mark police cells as red
-            return { backgroundColor: 'red'};
-        } else {
-            return  null;
-        }
-      }
-          
-      
-
-      if(element.type === 'Date'){
-        columnMap["cellRenderer"] = 'calenderRender';
-      }
-      if(element.type === 'DD-Fixed'){
-        columnMap["cellRenderer"] = 'customDropDownRenderer';
-      }
-      if(element.type === 'DD-Self'){
-        columnMap["cellRenderer"] = 'customDropDownRenderer';
-      }
-      if(element.type === 'DD-Suggest'){
-        columnMap["cellRenderer"] = 'customDropDownRenderer';
-      }
-      if(element.type === 'Combo'){
-        columnMap["cellRenderer"] = 'dropDownRenderer';
-      }
-
-      column.push(columnMap);
-    });
-    column.sort(function(a, b){
-      return a.sequence - b.sequence;
-    });
-    this.columnDefs= column;
-    console.log(this.columnDefs );
-    console.log(this.rowData );
-}
 
   dateFormatter(params) {
         
@@ -939,11 +584,12 @@ export class SaleslogComponent implements OnInit {
               colId: element1.colId,
               color:''
             })
+            this.cellMap['rowId'] =rowIndex;
+
           if(element1.colCode === "OD"){
             this.cellMap[element1.colId] =moment(element1.currentCellValue).format('MM/DD/YYYY');
 
             this.cellMap['"'+element1.colCode+'"'] = moment(element1.currentCellValue).format('MM/DD/YYYY');
-            // console.log(this.cellMap['"'+element1.colCode+'"'])
           }else{
             this.cellMap[''+element1.colId+''] = element1.currentCellValue;
             this.cellMap['"'+element1.colCode+'"']= element1.currentCellValue;
@@ -963,8 +609,6 @@ export class SaleslogComponent implements OnInit {
         /** Calculate Aggregared Header */
         let columnData = this.cellData[0];
         let typeArray = [];
-        // console.log(this.cellData[0]);
-        // console.log(this.cellData[0]['"OD"'], this.cellData[0]['"ED"'], this.cellData[0]['"VEHGRO"'], this.cellData[0]['"AD"'], this.cellData[0]["type"]);
         if(moment(this.cellData[0]['"OD"']).isBefore(moment().format('DD-MMM-YY'),'months')){
           let time = moment().isSameOrAfter(moment(this.cellData[0]['"ED"']).format('DD-MMM-YY'),'months');
           if(time){
@@ -998,7 +642,6 @@ export class SaleslogComponent implements OnInit {
           this.deliveredAmount = this.deliveredAmount + Number( this.cellData[0]['"VEHGRO"']);
         }
         this.cellData[0]['type'] =typeArray;
-        // console.log(this.cellData[0]['type']);
         rows.push(this.cellData[0]);
       });
 
@@ -1006,7 +649,7 @@ export class SaleslogComponent implements OnInit {
       // console.log(this.soldAmount, this.soldUnits, )
       // console.log(this.coveredAmount, this.coveredUnits, )
       // console.log(this.deliveredAmount, this.deliveredUnits, )
-      console.log(this.rowColor);
+      // console.log(this.rowColor);
 
       this.carryOverAvg = (this.carryOverUnits > 0)? Number(this.carryOverAmount)/Number(this.carryOverUnits):0;
       this.soldAvg = (this.soldUnits > 0)? Number(this.soldAmount)/Number(this.soldUnits):0;
@@ -1045,12 +688,10 @@ export class SaleslogComponent implements OnInit {
         }else {
           //i++;
           let l = (params.node.rowIndex+1)-carryOverCount;
-          console.log(params.node.rowIndex, carryOverCount, l ,params.data.carryOver);
           if(params.node.rowIndex >=carryOverCount){
             return (params.node.rowIndex+1)-carryOverCount;
           }else{
             count++;
-            console.log(count);
             return count;
           }
         }
@@ -1063,7 +704,6 @@ export class SaleslogComponent implements OnInit {
   
         let columnMap = new Object();
         columnMap["headerName"] = element.colName;
-        // columnMap["field"] = element.colCode;
         columnMap["field"] = ''+element.colId+'';
         columnMap["colId"] = element.colId;
 
@@ -1073,9 +713,10 @@ export class SaleslogComponent implements OnInit {
         columnMap["sortable"] = true;
         columnMap["filter"] = true,
         columnMap["hide"] = !element.display;
+        columnMap["columnType"] = element.type;
+
         let required = element.required
         columnMap["cellStyle"] = function(params) {
-          // console.log(params.data, params.value);
 
           if (required && params.value === "") {
               //mark police cells as red
@@ -1086,7 +727,7 @@ export class SaleslogComponent implements OnInit {
         }
   
         if(element.type === 'Date'){
-          columnMap["cellRenderer"] = 'calenderRender';
+          columnMap["cellEditor"] = 'datePicker';
         }
         if(element.type === 'DD-Fixed'){
           columnMap["cellRenderer"] = 'customDropDownRenderer';
@@ -1113,7 +754,6 @@ export class SaleslogComponent implements OnInit {
       this.rowResponse = rows;
       // console.log(this.columnDefs );
       // console.log(this.rowData );
-      console.log(this.rowColor);
 
 
     });
@@ -1159,7 +799,7 @@ export class SaleslogComponent implements OnInit {
             this.cellMap[''+element1.colId+''] =moment(element1.currentCellValue).format('MM/DD/YYYY');
 
             this.cellMap['"'+element1.colCode+'"'] =moment(element1.currentCellValue).format('MM/DD/YYYY');
-            console.log(this.cellMap['"'+element1.colCode+'"'])
+            // console.log(this.cellMap['"'+element1.colCode+'"'])
           }else{
             this.cellMap[''+element1.colId+''] = element1.currentCellValue;
             this.cellMap['"'+element1.colCode+'"']= element1.currentCellValue;
@@ -1179,8 +819,7 @@ export class SaleslogComponent implements OnInit {
         /** Calculate Aggregared Header */
         let columnData = this.cellData[0];
         let typeArray = [];
-        // console.log(this.cellData[0]);
-        // console.log(this.cellData[0]['"OD"'], this.cellData[0]['"ED"'], this.cellData[0]['"VEHGRO"'], this.cellData[0]['"AD"'], this.cellData[0]["type"]);
+
         if(moment(this.cellData[0]['"OD"']).isBefore(moment().format('DD-MMM-YY'),'months')){
           let time = moment().isSameOrAfter(moment(this.cellData[0]['"ED"']).format('DD-MMM-YY'),'months');
           if(time){
@@ -1236,8 +875,7 @@ export class SaleslogComponent implements OnInit {
         let financeManger = resp['"FM"'];
         let email = resp['"EM"'];
         let dept = resp['"Dept"'];
-        // console.log(resp['"OD"'], resp['"EM"'],email);
-        // console.log(email, searchValue);
+
         return(
           email && email.toLowerCase().includes(searchValue.toLowerCase()) || 
           dept && dept.toLowerCase().includes(searchValue.toLowerCase()) || 
@@ -1246,10 +884,6 @@ export class SaleslogComponent implements OnInit {
         )
 
       });
-
-
-      console.log(searchResult );
-      // console.log(this.rowData );
 
       /*Dispaly search results in grid row array and number of display records found*/ 
       this.displaySearchResult(searchResult);
@@ -1280,19 +914,6 @@ export class SaleslogComponent implements OnInit {
     return (currentRow !== undefined)?currentRow.color === color: "";
   }
 
-  getCssRules(params) {
-    if(params.colDef){
-      switch(params.colDef.field){
-        case 'status':
-            // this.emptyFieldsCount = this.emptyFieldsCount + 1;
-            return params.value === undefined;
-          break;
-        default:
-          break;
-      }
-    }
-  }
-
   getStatusColor(params) {
     // console.log(params);
     if(params.value){
@@ -1312,21 +933,6 @@ export class SaleslogComponent implements OnInit {
     }
   }
 
-  cellStyling(params) {
-    // console.group('Group');
-    // console.log(params['column']['userProvidedColDef']);
-    // console.groupEnd();
-    // if(params.node.level === 0) {
-    //   return { 
-    //     'backgroundColor': '#1976D2', 
-    //     'color':'#fff',fontWeight:'bold',
-    //     'cursor':'pointer',
-    //     'height':'30px'
-    //   }
-    // }
-    return { 'border-right': '1px solid #ececec',backgroundColor: '#fff','justify-content': 'flex-start','overflow':'hidden','white-space': 'nowrap','min-width': '0',' text-overflow': 'ellipsis'};
-
-  }
 
   search(){
     let searchVal = this.searchForm.get('searchbar').value;
@@ -1422,46 +1028,6 @@ export class SaleslogComponent implements OnInit {
           this.monthObject.allMonth = true;
         }
       }
-      // let searchedDate =  moment().subtract(Number(previousMonthFilter)+1, 'months').format('MMM-YYYY');
-      // searchResult = this.rowResponse.filter(resp=>{
-      //   let datafilter;
-      //   let endDate =  moment().format('MMM-YYYY');
-      //   let orderDate = resp['"OD"'];
-      //   let payType = resp['"PT"'];
-      //   let financeManger = resp['"FM"'];
-      //   let email = resp['"EM"'];
-      //   let dept = resp['"Dept"'];
-
-      //   console.log(resp);
-
-
-      //   if(previousMonthFilter !== "all"){
-      //     return moment(orderDate).isAfter(searchedDate) &&  moment(orderDate).isBefore(endDate) && 
-      //     (
-      //       email && email.toLowerCase().includes(searchVal.toLowerCase()) || 
-      //       dept && dept.toLowerCase().includes(searchVal.toLowerCase()) || 
-      //       payType && payType.toLowerCase().includes(searchVal.toLowerCase()) || 
-      //       financeManger && financeManger.toLowerCase().includes(searchVal.toLowerCase())
-      //     )
-      //   }else{
-      //     return (
-      //       email && email.toLowerCase().includes(searchVal.toLowerCase()) || 
-      //       dept && dept.toLowerCase().includes(searchVal.toLowerCase()) || 
-      //       payType && payType.toLowerCase().includes(searchVal.toLowerCase()) || 
-      //       financeManger && financeManger.toLowerCase().includes(searchVal.toLowerCase())
-      //     )
-      //   }
-      //   // datefilter = Object.keys(resp).filter(res=> {
-      //   //   // if(res !=="" && isNaN(Number(resp[res]))){
-      //   //   //   console.log(resp[res], Number(resp[res]))
-      //   //   //   return resp[res].toLowerCase()=== searchVal;
-      //   //   // }
-      //   // });
-      //   // if(datefilter.length> 0){         
-      //   //   return resp;
-      //   // }
-
-      // });
 
     }else{
       if(this.searchForm.get('searchbar').value !==""){
@@ -1528,52 +1094,50 @@ export class SaleslogComponent implements OnInit {
   ngOnDestroy(): void {
     this.snackBar.dismiss();
   }
+
   filterGrid(option){
-
     // If filter matches change active state of columns*/ 
-      if(option === 0){
-
-        let row = this.rowResponse.filter(res=>{ 
-          // console.log(res.type);
-          return res.type.find(el=> el ==="carryOver")
-        });
-        console.log(this.rowResponse, row)
-        if(row.length >0){
-          this.rowData = [];
-          this.rowData = row;  
-          this.toastHandlerService.generateToast("1 filter applied",'Clear',null);
-        }
-      }else if(option === 1){
-        let row = this.rowResponse.filter(res=>{ 
-          // console.log(res.type);
-          return res.type.find(el=> el ==="sold")
-        });
-        if(row.length >0){
-          this.rowData = [];
-          this.rowData = row;  
-          this.toastHandlerService.generateToast("1 filter applied",'Clear',null);
-        }
-      }else if(option === 2){
-        let row = this.rowResponse.filter(res=>{ 
-          // console.log(res.type);
-          return res.type.find(el=> el ==="covered")
-        });
-        if(row.length >0){
-          this.rowData = [];
-          this.rowData = row;  
-          this.toastHandlerService.generateToast("1 filter applied",'Clear',null);
-        }
-      }else if(option === 3){
-        let row = this.rowResponse.filter(res=>{ 
-          // console.log(res.type);
-          return res.type.find(el=> el ==="delivered")
-        });
-        if(row.length >0){
-          this.rowData = [];
-          this.rowData = row;  
-          this.toastHandlerService.generateToast("1 filter applied",'Clear',null);
-        }
+    if(option === 0){
+      let row = this.rowResponse.filter(res=>{ 
+        return res.type.find(el=> el ==="carryOver")
+      });
+      console.log(this.rowResponse, row)
+      if(row.length >0){
+        this.rowData = [];
+        this.rowData = row;  
+        this.toastHandlerService.generateToast("1 filter applied",'Clear',null);
       }
+    }else if(option === 1){
+      let row = this.rowResponse.filter(res=>{ 
+        // console.log(res.type);
+        return res.type.find(el=> el ==="sold")
+      });
+      if(row.length >0){
+        this.rowData = [];
+        this.rowData = row;  
+        this.toastHandlerService.generateToast("1 filter applied",'Clear',null);
+      }
+    }else if(option === 2){
+      let row = this.rowResponse.filter(res=>{ 
+        // console.log(res.type);
+        return res.type.find(el=> el ==="covered")
+      });
+      if(row.length >0){
+        this.rowData = [];
+        this.rowData = row;  
+        this.toastHandlerService.generateToast("1 filter applied",'Clear',null);
+      }
+    }else if(option === 3){
+      let row = this.rowResponse.filter(res=>{ 
+        // console.log(res.type);
+        return res.type.find(el=> el ==="delivered")
+      });
+      if(row.length >0){
+        this.rowData = [];
+        this.rowData = row;  
+        this.toastHandlerService.generateToast("1 filter applied",'Clear',null);
+      }
+    }
 
   }
 
@@ -1587,20 +1151,15 @@ export class SaleslogComponent implements OnInit {
           let date =resp[res];
           if(month===1){
             if(date){
-              console.log(moment(resp[res]).isSame(searchingFormat, "months"));
               return moment(resp[res]).isSame(searchingFormat, "months") && moment(resp[res]).isSame(searchingFormat, "years");
             }
           }else{
-            console.log("after:",  moment(resp[res]).isAfter(searchingFormat),resp[res]);
-            console.log("before:", moment(resp[res]).isBefore(startingMonth),resp[res]);
-
             return moment(resp[res]).isAfter(searchingFormat) && moment(resp[res]).isBefore(startingMonth);
           }
           console.log(date,searchingFormat,moment(resp[res]).isAfter(searchingFormat));
         }
       });
-      if(filter.length> 0){ 
-                
+      if(filter.length> 0){    
         return resp;
       }
     });
@@ -1624,17 +1183,12 @@ export class SaleslogComponent implements OnInit {
       let filter = Object.keys(resp).filter(res=>{
         if(res==="orderDate"){
           let date =moment(resp[res]).format('MMM YY');
-            if(date){
-              console.log(date,searchingFormat);
-              console.log(date===searchingFormat);
-              return date===searchingFormat;
-            }
-
-          console.log(date,searchingFormat,moment(resp[res]).isAfter(searchingFormat));
+          if(date){
+            return date===searchingFormat;
+          }
         }
       });
-      if(filter.length> 0){ 
-                
+      if(filter.length> 0){   
         return resp;
       }
     });
@@ -1673,9 +1227,6 @@ export class SaleslogComponent implements OnInit {
   next(){
     if(this.yearCounter<this.years.length-1){
 
-
-      console.log(this.yearCounter<this.years.length)
-      console.log(this.yearCounter,this.years.length)
       this.yearCounter = this.yearCounter+ 1;
       let month = moment().format('MMM');
       let year = moment().format('YYYY');
@@ -1750,9 +1301,7 @@ export class SaleslogComponent implements OnInit {
       searchedDisplayFormat = moment(this.monthActive+"-"+this.yearActive).subtract(length-1, 'months').format('MMM YY');
     }
     /*---------------------------------------------------------*/ 
-    console.log('searched value:',searchedDisplayFormat);
     this.monthFilter = searchedDisplayFormat+" - "+currentDisplayFormat;
-    console.log(this.monthFilter);
 
     this.calenderSearch(searchingFormat, month, currentSearchFormat)
   }
@@ -1772,9 +1321,6 @@ export class SaleslogComponent implements OnInit {
     console.log(params.colDef.type);
     
     if (params.colDef.type === 'number') {
-      // return {
-      //   component: 'numericCellEditor'
-      // };
       return false;
     }
     else if(params.colDef.type === 'date'){
@@ -1836,15 +1382,6 @@ export class SaleslogComponent implements OnInit {
                   values: this.financeManagerOption
               }
             };
-            break;
-          // case "client":
-          //   return {
-          //     component: 'agSelectCellEditor',
-          //     params: {
-          //         values: this.rolesOptions
-          //     }
-          //   };
-          //   break;
         default:
           break;
       }
@@ -1995,8 +1532,6 @@ export class SaleslogComponent implements OnInit {
         'active': false
       });
     }
-    // console.log(this.years);
-
   }
 
 
@@ -2082,7 +1617,7 @@ export class SaleslogComponent implements OnInit {
           });
           let rows = [];
           rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-          thisRef.updateCellColor();
+          thisRef.updateCellColor(params.node.rowIndex);
           thisRef.gridApi.redrawRows();
         },
         icon: createFlagImg('blue-color'),
@@ -2099,7 +1634,7 @@ export class SaleslogComponent implements OnInit {
           });
           let rows = [];
           rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-          thisRef.updateCellColor();
+          thisRef.updateCellColor(params.node.rowIndex);
           thisRef.gridApi.redrawRows();
         },
         icon: createFlagImg('green-color'),
@@ -2116,7 +1651,7 @@ export class SaleslogComponent implements OnInit {
           });
           let rows = [];
           rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-          thisRef.updateCellColor();
+          thisRef.updateCellColor(params.node.rowIndex);
           thisRef.gridApi.redrawRows();
         },
         icon: createFlagImg('yellow-color'),
@@ -2133,7 +1668,7 @@ export class SaleslogComponent implements OnInit {
           });
           let rows = [];
           rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-          thisRef.updateCellColor();
+          thisRef.updateCellColor(params.node.rowIndex);
           thisRef.gridApi.redrawRows();
         },
         icon: createFlagImg('red-color'),
@@ -2151,7 +1686,7 @@ export class SaleslogComponent implements OnInit {
           });
           let rows = [];
           rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-          thisRef.updateCellColor();
+          thisRef.updateCellColor(params.node.rowIndex);
           thisRef.gridApi.redrawRows();
         },
         icon: createFlagImg('purple-color'),
@@ -2191,14 +1726,11 @@ export class SaleslogComponent implements OnInit {
     });
     thisRef.dialogRef.afterClosed().subscribe(res=>{
       if(res && res.column){
-        console.log(res.column);
-        
         
         if(res.column.length > 0){
           res.column.map(res=>{
             let column = this.columnDefs.find(el=> el.headerName === res.columnName);
             if(column !== undefined){
-              console.log(column.colId);
               this.gridColumnApi.setColumnVisible(column.colId, res.display);
             }
           });
@@ -2252,7 +1784,7 @@ export class SaleslogComponent implements OnInit {
 
   updateCellColor(newItems?) {
     let params = {
-      EntryId: ''
+      EntryId: newItems
     }
     this.saleslog.updateCellColor(params)
     .subscribe(res=>{
@@ -2353,281 +1885,43 @@ export class SaleslogComponent implements OnInit {
   
 }
 
-// function getDatePicker() {
-//   function Datepicker() {}
-//   Datepicker.prototype.init = function(params) {
-
-//     this.div = document.getElementsByClassName('AG_Popup');
-//     $(function() {
-
-//       let data = ['cancelled','pending','empty','tba'];
-//       let inputField = $('.AG_InputAutoCompleteEstimated');
-//       let dropDown = $('.ag-dropdown-style');
-//       let cancel = $('#cancelled');
-//       let pending = $('#pending');
-//       let tba = $('#tba');
-//       let empty = $('#empty');
-
-//       console.log(inputField, cancel)
-      
-      
-//       inputField.keyup(function(){
-//         let value = ($(this).val());
-//         let search =	data.find(el=> el=== value);
-//         if(search !== undefined){
-//           let element = "#"+search;
-//           $('tr').removeClass('selected');
-//           $(element).addClass('selected');
-//         }else{
-//           $('tr').removeClass('selected');
-//         }
-//       });
-      
-      
-//       inputField.on("click", function(){
-//         dropDown.css("display","block");
-//       });
-      
-//       empty.on("click", function(){
-//         let value = ($(this).text().trim());
-//         change(this,value);
-//       });
-      
-//       cancel.on("click", function(){
-//         let value = ($(this).text().trim());
-//         change(this,value);
-//       });
-      
-//       pending.on("click", function(){
-//         let value = ($(this).text().trim());
-//         change(this,value);
-//       });
-      
-//       tba.click(function(){
-//         let value = ($(this).text().trim());
-//         change(this, value);
-//       });
-        
-        
-//       function change(thisRef,value){
-//         $('tr').removeClass('selected');
-//         $(thisRef).addClass('selected');
-//         inputField.val(value);
-//         dropDown.css("display","none");
-//       }
-      
-//       let format = 'd-M-y';
-//       let timepicker = false;
-  
-//       if(params && params.colDef.field==="estimated_delivery"){
-//         format= 'd-M-y h:m A';
-//         timepicker = true;
-//       }
-      
-//       inputField.datetimepicker({
-//         timepicker:timepicker,
-//         format:format,
-//       });
-
-      
-//     });
-
-
-
-//     /*--------------------------------------*/ 
-
-//     // this.eInput = document.createElement('input');
-//     // this.eInput.value = params.value;
-//     // this.eInput.classList.add('ag-input');
-//     // this.eInput.style.height = '100%';
-//     // this.eInput.style.width = '100%';
-
-//     // let format = 'd-M-y';
-//     // let timepicker = false;
-
-//     // if(params && params.colDef.field==="estimated_delivery"){
-//     //   format= 'd-M-y h:m A';
-//     //   timepicker = true;
-//     // }
-    
-//     // $(this.eInput).datetimepicker({
-//     //   timepicker:timepicker,
-//     //   format:format,
-//     // });
-    
-
-//   };
-//   Datepicker.prototype.getGui = function() {
-//     return this.div;
-//   };
-//   Datepicker.prototype.afterGuiAttached = function() {
-//     this.div.focus();
-//     // this.div.select();
-//   };
-//   Datepicker.prototype.getValue = function() {
-//     return this.div.value;
-//   };
-//   Datepicker.prototype.destroy = function() {};
-//   Datepicker.prototype.isPopup = function() {
-//     return false;
-//   };
-//   return Datepicker;
-// }
-
-
-// function getDropDown() {
-//   function DropDown() {}
-//   DropDown.prototype.init = function(params) {
-//     this.select = document.createElement('select');
-//     // this.select.value = params.value;
-//     this.select.classList.add('email-select');
-//     this.select.style.height = '100%';
-//     this.select.style.width = '100%';
-//     $(this.select).selectize({
-//       valueField: 'name',
-//       labelField: 'name',
-//       placeholder: 'Select'
-//   ,    options: [
-//         {
-//             description: 'Nice Guy',
-//             name: 'Brian Reavis',
-//             imageUrl: 'http://www.fashionspictures.com/wp-content/uploads/2013/11/short-hairstyles-for-a-square-face-42-150x150.jpg'
-//         }, 
-//         {
-//             description: 'Other nice guy',
-//             name: 'Nikola Tesla',
-//             imageUrl: 'http://www.fashionspictures.com/wp-content/uploads/2013/11/short-hairstyles-for-a-square-face-42-150x150.jpg'
-//         }
-//       ]
-//   });
-//     // let option = document.createElement('option');
-//     // option.value = "One";
-//     // this.select.append= option;
-
-    
-
-//   };
-//   DropDown.prototype.getGui = function() {
-//     return this.select;
-//   };
-//   DropDown.prototype.afterGuiAttached = function() {
-//     this.select.focus();
-//   };
-//   DropDown.prototype.getValue = function() {
-//     return this.select.value;
-//   };
-//   DropDown.prototype.destroy = function() {};
-//   DropDown.prototype.isPopup = function() {
-//     return false;
-//   };
-//   return DropDown;
-// }
-
-
-// function getCustomDropDown() {
-//   function DropDown() {}
-//   DropDown.prototype.init = function(params) {
-//     this.select = document.createElement('select');
-//     // this.select.value = params.value;
-//     this.select.classList.add('email-select');
-//     this.select.style.height = '100%';
-//     this.select.style.width = '100%';
-//     $(this.select).attr('theme','google');
-//     $(this.select).attr('data-search',true);
-
-//     // $(this.select).selectize({);
- 
-//     for(var i = 0; i < params.values.length; i++) {
-//       var option = params.values[i];
-//       $('<option />', { value: option, text: option }).appendTo(this.select);
-//     }
-
-//     $(this.select).selectstyle({
-//       width  : 250,
-//       height : 300,
-//     });
-//   };
-//   DropDown.prototype.getGui = function() {
-//     return this.select;
-//   };
-//   DropDown.prototype.afterGuiAttached = function() {
-//     this.select.focus();
-//   };
-//   DropDown.prototype.getValue = function() {
-//     return this.select.value;
-//   };
-//   DropDown.prototype.destroy = function() {};
-//   DropDown.prototype.isPopup = function() {
-//     return false;
-//   };
-//   return DropDown;
-// }
-
-
-// function getRenderer() {
-
-//   function CellRenderer() {}
-//   CellRenderer.prototype.createGui = function() {
-//     var template =
-//       '<span style="flex-direction: row-reverse;width: 100%;display: flex;justify-content: space-between;"><img id="theButton" src="./assets/icons/down-arrow.png"><span id="theValue"></span></span>';
-//     var tempDiv = document.createElement('div');
-//     tempDiv.innerHTML = template;
-
-//     this.eGui = tempDiv.firstElementChild;
-//   };
-//   CellRenderer.prototype.init = function(params) {
-//     this.createGui();
-//     this.params = params;
-//     var eValue = this.eGui.querySelector('#theValue');
-//     eValue.innerHTML = params.value;
-//     this.eButton = this.eGui.querySelector('#theButton');
-//     this.buttonClickListener = this.onButtonClicked.bind(this);
-//     this.eButton.addEventListener('click', this.buttonClickListener);
-//   };
-//   CellRenderer.prototype.onButtonClicked = function() {
-//     var startEditingParams = {
-//       rowIndex: this.params.rowIndex,
-//       colKey: this.params.column.getId(),
-//     };
-//     this.params.api.startEditingCell(startEditingParams);
-//   };
-//   CellRenderer.prototype.getGui = function() {
-//     return this.eGui;
-//   };
-//   CellRenderer.prototype.destroy = function() {
-//     this.eButton.removeEventListener('click', this.buttonClickListener);
-//   };
-//   CellRenderer.prototype.isPopup = function() {
-//     return true;
-//   };
-//   return CellRenderer;
-// }
-
-// function getRendererDropDown(){
-//   function CellRenderer() {}
-//   CellRenderer.prototype.init = function(params) {
-    
-
-//   };
-//   CellRenderer.prototype.getGui = function() {
-//     return this.eInput;
-//   };
-//   CellRenderer.prototype.afterGuiAttached = function() {
-//     this.eInput.focus();
-//     this.eInput.select();
-//   };
-//   CellRenderer.prototype.getValue = function() {
-//     return this.eInput.value;
-//   };
-//   CellRenderer.prototype.destroy = function() {};
-//   CellRenderer.prototype.isPopup = function() {
-//     return false;
-//   };
-//   return CellRenderer;
-// }
 
 function createFlagImg(flag) {
   return (
     '<img border="0" width="15px" height="10" src="./assets/icons/'+flag+'.png"/>'
   );
+}
+
+function getDatePicker() {
+  function Datepicker() {}
+  Datepicker.prototype.init = function (params) {
+    this.eInput = document.createElement('input');
+    this.eInput.value = params.value;
+    this.eInput.classList.add('ag-input');
+    this.eInput.style.height = '100%';
+    this.eInput.style.width = '100%';
+
+    $.datetimepicker.setLocale('en');
+    $(this.eInput).datetimepicker({
+      // mask:true,
+      format:'m/d/Y',
+      timepicker: false,
+      inline:false
+    });
+  };
+  Datepicker.prototype.getGui = function () {
+    return this.eInput;
+  };
+  Datepicker.prototype.afterGuiAttached = function () {
+    this.eInput.focus();
+    this.eInput.select();
+  };
+  Datepicker.prototype.getValue = function () {
+    return this.eInput.value;
+  };
+  Datepicker.prototype.destroy = function () {};
+  Datepicker.prototype.isPopup = function () {
+    return false;
+  };
+  return Datepicker;
 }

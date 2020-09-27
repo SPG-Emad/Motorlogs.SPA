@@ -1,7 +1,6 @@
-import { SingleSelectionExampleComponent } from './components/dropdown/dropdown.component';
+import { ShareableDropDownComponent } from './components/dropdown/dropdown.component';
 import { DropDownRenderer } from './components/grid-custom/dropdown-renderer.component';
 import { CalenderRenderer } from './components/grid-custom/calander-renderer.component';
-import { CustomDropDownRenderer } from './components/grid-custom/custom-dropdown-renderer.component';
 import {  ModuleWithProviders } from "@angular/core";
 import { CommonModule } from "@angular/common";
 
@@ -27,7 +26,7 @@ import { DateFiltersComponent } from "./components/date-filters/date-filters.com
 import { DateCalendarComponent } from "./components/date-filters/date-calendar/date-calendar.component";
 
 
-import { CustomDropdownComponent } from './components/custom-dropdown/custom-dropdown.component';
+import { CustomDropDownRenderer } from './components/grid-custom/custom-dropdown-renderer.component';
 import { CustomHeaderComponent } from './components/custom-header/custom-header.component';
 import { CustomFilterMenuComponent } from './components/custom-filter-menu/custom-filter-menu.component';
 import {DateFooterFilterComponent } from './components/date-footer-filter/date.footer.component';
@@ -78,7 +77,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
             DropDownRenderer,
             CustomLoadingOverlayComponent,
             AppComponentDateTime,
-            SingleSelectionExampleComponent,
+            ShareableDropDownComponent,
         ]),
         NgSelectModule,       
     ],
@@ -88,8 +87,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         DataCalculationsComponent,
         DataEntrySheetComponent,
         DateFiltersComponent,
-        SingleSelectionExampleComponent,
-        CustomDropDownRenderer,
+        ShareableDropDownComponent,
         CalenderRenderer,
         DropDownRenderer,
         CustomLoadingOverlayComponent,
@@ -101,7 +99,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         SearchComponent,
         XlsExportComponent,
         DateFooterFilterComponent,
-        CustomDropdownComponent,
+        CustomDropDownRenderer,
         CustomHeaderComponent,
         CustomFilterMenuComponent,
         RoutineSheetComponent,
@@ -118,6 +116,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         DateCarouselComponent,
         DateFooterFilterComponent,
         GoToCurrentMonthComponent,
+        CustomDropDownRenderer,
         PrintComponent,
         SearchComponent,
         XlsExportComponent,
@@ -129,8 +128,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         NewDealComponent, 
         XlsExportComponent,
         ColumnOptionsComponent,
-        NewDealComponent,
-        CustomDropDownRenderer,
+        NewDealComponent,        
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA

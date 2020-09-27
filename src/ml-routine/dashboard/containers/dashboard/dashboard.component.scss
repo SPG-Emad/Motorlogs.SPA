@@ -12,6 +12,20 @@
         cursor: pointer;
     }
 }
+.loader { 
+    display: flex;
+    justify-content: center;
+    height: 200px;
+    align-items: center;
+}
+
+.chart-show ,.loader-show{
+    display: block !important;
+}
+
+.loader-container, .chart-container{ 
+    display: none;
+}
 
 .toggle{
     padding: 0px 7px;
