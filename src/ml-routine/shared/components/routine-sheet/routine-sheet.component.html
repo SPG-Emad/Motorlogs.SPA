@@ -57,7 +57,7 @@
                 <h2 style="margin: 0px;">{{departmentName}}
                     <mat-form-field  *ngIf = "routineSelected === 3"  appearance="fill" class="departmentID">
                         <mat-label>Department ID</mat-label>
-                        <mat-select [(ngModel)]="departmentID">
+                        <mat-select [(ngModel)]="departmentID" (change)="generateGrid()">
                           <mat-option *ngFor="let item of departmentIDs" [value]="item.value">
                             {{item.viewValue}}
                           </mat-option>
@@ -337,6 +337,9 @@
                     <div class="mat-button-ripple mat-ripple" matripple=""></div>
                     <div class="mat-button-focus-overlay"></div>
                 </button>
+                <div *ngIf = "routineSelected !== 1 || routineSelected !== 3">
+                    <p></p>
+                </div>
                 <div>
                     <button class="ng-tns-c59-23 mat-button" (click)="excelExport()">
                         <span class="mat-button-wrapper">

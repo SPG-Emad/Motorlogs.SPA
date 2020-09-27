@@ -6,7 +6,7 @@
         <div class="xdsoft_datetimepicker_custom xdsoft_noselect picker_rtl xdsoft_" style="display: block; left: 230px;width: 380px;height:325px; top: -2px; position: absolute;">
             <div class="xdsoft_datepicker_custom active">           
                 <div class="xdsoft_mounthpicker">
-                    <button type="button" class="calender-ok-btn" value="Select" (click)="doSomething()" style="visibility: visible;margin-left:300px;color:black">Select</button>
+                    <button type="button" class="calender-ok-btn" value="Select" (click)="selectDateTime()" style="visibility: visible;margin-left:300px;color:black">Select</button>
                     <div class="xdsoft_label ">
                         <div class="sd-container">
                             <input id="_datetimepicker4"  type="text">
@@ -37,7 +37,7 @@
         </mat-option>
         <mat-option selected>{{selected}}</mat-option> 
 
-        <mat-option  *ngFor="let item of filteredBanks | async" [value]="item.name">
+        <mat-option  *ngFor="let item of filteredOptions | async" [value]="item.name">
             <span  [ngClass]="{
             'text-success':item.name === 'TBA',
             'text-primary':item.name === 'Pending',
@@ -56,7 +56,7 @@
         </mat-option>
         <mat-option  class="paytype-option" selected>{{selected}}</mat-option>
 
-        <mat-option  class="paytype-option" *ngFor="let item of filteredBanks | async" [value]="item.code">
+        <mat-option  class="paytype-option" *ngFor="let item of filteredOptions | async" [value]="item.code">
                     
         <span    *ngIf="header != 'Pay Type'" [style.color]="item.details!=null?item.details.color:null"
         [style.background-color]="item.details!=null?item.details.background:null" 

@@ -24,11 +24,19 @@ export class NewDealComponent implements OnInit {
       private route: ActivatedRoute, 
       @Inject(MAT_DIALOG_DATA) public modalParams?: any,
     ) { 
-      console.log(modalParams)
       if (modalParams && modalParams.hasOwnProperty('key')) {
+        /* Fetch Department ID and view ID */ 
         this.decryptedDepartmentId = modalParams.key.id;
         this.viewId = this.modalParams.key.viewId;
-
+        /*-----------------------------*/ 
+        
+        /*If view ID is 1 or 2 then new deal else add wholesales for arriving*/ 
+        if(this.viewId !== 3){
+          this.modalTitle = "New Deal";
+        }else{
+          this.modalTitle = "Add Wholesale";
+        }
+        /*-----------------------------------*/ 
       }
 
     }
@@ -49,6 +57,12 @@ export class NewDealComponent implements OnInit {
     stockNumber: ["",],
   });
 
+  arrivingForm: FormGroup = this.fb.group({
+    purchaseDate: [new Date(), [Validators.required]],      
+    site: [""],
+    purchaseFrom: ["",],
+  });
+
   ngOnInit() {
   }
 
@@ -58,7 +72,7 @@ export class NewDealComponent implements OnInit {
     let params = {
       "UserId" : this.sessionHandlerService.getSession('userObj').userId,
       "ViewId" : this.viewId, // Always be 1
-      "DeptId" : this.decryptedDepartmentId,
+      "DeptId" : ""+this.decryptedDepartmentId,
       "OrderDate" : this.columnForm.get('orderDate').value,
       "CustomerName": this.columnForm.get('customerName').value,
       "DealNumber" :  this.columnForm.get('dealNumber').value,
@@ -79,9 +93,16 @@ export class NewDealComponent implements OnInit {
   }
 
   submit(){
-    if (this.columnForm.valid) {
+    if(this.viewId !== 3){
+      if (this.columnForm.valid) {
         this.add = true;
         this.InsertRows();
+      }
+    }else{
+      if (this.columnForm.valid) {
+        this.add = true;
+        this.InsertRows();
+      }
     }
   }
 

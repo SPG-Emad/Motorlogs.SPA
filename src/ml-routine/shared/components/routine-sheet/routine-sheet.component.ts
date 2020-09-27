@@ -1,6 +1,4 @@
 
-import { CustomFilterMenuComponent } from '../custom-filter-menu/custom-filter-menu.component';
-import { CustomDropdownComponent } from '../custom-dropdown/custom-dropdown.component';
 import { Component, OnInit, ChangeDetectionStrategy, Inject, OnChanges, Input } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastHandlerService } from 'app/shared/services/toast-handler.service';
@@ -11,7 +9,6 @@ import { XlsExportComponent } from '../xls-export/xls-export.component';
 import { ColumnOptionsComponent } from '../column-options/column-options.component';
 
 import { AllModules } from '@ag-grid-enterprise/all-modules';
-import { CustomHeaderComponent } from 'ml-routine/shared/components/custom-header/custom-header.component';
 import { SlideInOutAnimation } from 'app/shared/animation/animation';
 import { FormBuilder, Validators, FormGroup } from '@angular/forms';
 import * as moment from 'moment';
@@ -20,7 +17,6 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import  *  as  data  from  'app/RoutineSheetJSON.json';
 import { AuthService } from 'ml-auth/shared/services/ml-auth/ml-auth.service';
-import { SingleSelectionExampleComponent } from 'ml-routine/shared/components/dropdown/dropdown.component';
 
 import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
 import { SessionHandlerService } from 'app/shared/services/session-handler.service';
@@ -28,9 +24,12 @@ import { SharedService } from 'ml-setup/shared/services/shared/shared.service';
 import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
 
 import { CalenderRenderer } from '../grid-custom/calander-renderer.component';
+import { CustomLoadingOverlayComponent } from 'ml-shared/components/custom-loading-overlay/custom-loading-overlay.component';
+import { CustomHeaderComponent } from 'ml-routine/shared/components/custom-header/custom-header.component';
+
 import { CustomDropDownRenderer } from '../grid-custom/custom-dropdown-renderer.component';
 import { DropDownRenderer } from '../grid-custom/dropdown-renderer.component';
-import { CustomLoadingOverlayComponent } from 'ml-shared/components/custom-loading-overlay/custom-loading-overlay.component';
+
 
 declare var $:any;
 
@@ -153,7 +152,7 @@ export class RoutineSheetComponent implements OnInit {
   searchDate:any= [];
   currentDate:any= [];
   years: any = [];
-  months: any = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Nov','Dec'];
+  months: any = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
   monthActive: any;
   yearCounter= 0;
   monthModal: boolean = false;
@@ -322,13 +321,10 @@ export class RoutineSheetComponent implements OnInit {
     };
     this.frameworkComponents = {
       agColumnHeader: CustomHeaderComponent, 
-      customdropdownRenderer: CustomDropdownComponent,
-      dropdownRenderer:SingleSelectionExampleComponent,
       calenderRender: CalenderRenderer,
       dropDownRenderer : DropDownRenderer,
       customDropDownRenderer : CustomDropDownRenderer,
       customLoadingOverlay: CustomLoadingOverlayComponent,
-      customFilter: CustomFilterMenuComponent,
     };
 
     this.rowSelection = 'single';
@@ -367,7 +363,7 @@ export class RoutineSheetComponent implements OnInit {
     let cid = colId.replace('/"/g','');
     let params = {
       "userId": this.sessionHandlerService.getSession('userObj').userId,
-      "deptid": 1118, 
+      "deptid": (this.decryptedDepartmentId)? this.decryptedDepartmentId: this.departmentID, 
       "ViewID": this.routineSelected,
       "colId": cid, 
       "config": "{'width':"+width+"}" // or "{'sequence':1}"
@@ -703,7 +699,6 @@ export class RoutineSheetComponent implements OnInit {
 
   generateGrid(months?, date?){
     this.gridApi.showLoadingOverlay();
-    
     if(this.routineSelected !== 3){
       let department = this.sessionHandlerService.getSession('userObj').departmentAccess;
       this.departmentIDs =department;
@@ -754,8 +749,8 @@ export class RoutineSheetComponent implements OnInit {
       this.rowData = [];
       this.columnDefs = [];
       let rows=  [];
-      // this.salesData = (data as any).default;
-      this.salesData = res;
+      this.salesData = (data as any).default;
+      // this.salesData = res;
       this.monthObject.oneMonth = true;
 
       this.salesData.rowData.row.forEach((element, rowIndex) => {
@@ -773,6 +768,8 @@ export class RoutineSheetComponent implements OnInit {
               colId: element1.colId,
               color:''
             })
+            this.cellMap['rowId'] =rowIndex;
+
           if(element1.colCode === "OD"){
             this.cellMap[element1.colId] =moment(element1.currentCellValue).format('MM/DD/YYYY');
 
@@ -831,13 +828,13 @@ export class RoutineSheetComponent implements OnInit {
           this.deliveredUnits = this.deliveredUnits + 1;
           this.deliveredAmount = this.deliveredAmount + Number( this.cellData[0]['"VEHGRO"']);
         }
-        console.log( this.missingUnits, this.cellData[0]['"PROGRO"'] === null);
+        // console.log( this.missingUnits, this.cellData[0]['"PROGRO"'] === null);
         if( this.cellData[0]['"PROGRO"'] !== null ){
           this.processedUnits = this.processedUnits + 1;
           this.processedAmount = this.processedAmount + Number( this.cellData[0]['"PROGRO"']);
         }else{
           this.missingUnits = this.missingUnits + 1;
-          console.log(this.missingUnits);
+          // console.log(this.missingUnits);
         }
 
         this.cellData[0]['type'] =typeArray;
@@ -1001,7 +998,7 @@ export class RoutineSheetComponent implements OnInit {
       this.rowResponse = rows;
       // console.log(this.columnDefs );
       // console.log(this.rowData );
-      console.log(this.rowColor);
+      // console.log(this.rowColor);
 
 
     });
@@ -2165,7 +2162,7 @@ export class RoutineSheetComponent implements OnInit {
       panelClass: 'custom-dialog-container',
       'width': '400px',
       data: {
-        "key": {id: this.decryptedDepartmentId, viewId: this.routineSelected}
+        "key": {id: this.departmentID, viewId: this.routineSelected}
       }
     });
     this.dialogRef.afterClosed().subscribe(res=>{
