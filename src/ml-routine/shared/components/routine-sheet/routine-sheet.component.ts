@@ -330,10 +330,7 @@ export class RoutineSheetComponent implements OnInit {
     this.rowSelection = 'single';
 
     this.components = { 
-    // singleClickEditRenderer: getRenderer(),
-    // datePicker: getDatePicker(),
-    // dropdown: getDropDown(),
-    // custom: getCustomDropDown()
+      datePicker: getDatePicker(),
     };
 
     this.loadingOverlayComponent = 'customLoadingOverlay';
@@ -653,7 +650,7 @@ export class RoutineSheetComponent implements OnInit {
       
 
       if(element.type === 'Date'){
-        columnMap["cellRenderer"] = 'calenderRender';
+        columnMap["cellEditor"] = 'datePicker';
       }
       if(element.type === 'DD-Fixed'){
         columnMap["cellRenderer"] = 'customDropDownRenderer';
@@ -971,7 +968,7 @@ export class RoutineSheetComponent implements OnInit {
         }
   
         if(element.type === 'Date'){
-          columnMap["cellRenderer"] = 'calenderRender';
+          columnMap["cellRenderer"] = 'datePicker';
         }
         if(element.type === 'DD-Fixed'){
           columnMap["cellRenderer"] = 'customDropDownRenderer';
@@ -2228,4 +2225,38 @@ function createFlagImg(flag) {
   return (
     '<img border="0" width="15px" height="10" src="./assets/icons/'+flag+'.png"/>'
   );
+}
+
+function getDatePicker() {
+  function Datepicker() {}
+  Datepicker.prototype.init = function (params) {
+    this.eInput = document.createElement('input');
+    this.eInput.value = params.value;
+    this.eInput.classList.add('ag-input');
+    this.eInput.style.height = '100%';
+    this.eInput.style.width = '100%';
+
+    $.datetimepicker.setLocale('en');
+    $(this.eInput).datetimepicker({
+      // mask:true,
+      format:'m/d/Y',
+      timepicker: false,
+      inline:false
+    });
+  };
+  Datepicker.prototype.getGui = function () {
+    return this.eInput;
+  };
+  Datepicker.prototype.afterGuiAttached = function () {
+    this.eInput.focus();
+    this.eInput.select();
+  };
+  Datepicker.prototype.getValue = function () {
+    return this.eInput.value;
+  };
+  Datepicker.prototype.destroy = function () {};
+  Datepicker.prototype.isPopup = function () {
+    return false;
+  };
+  return Datepicker;
 }
