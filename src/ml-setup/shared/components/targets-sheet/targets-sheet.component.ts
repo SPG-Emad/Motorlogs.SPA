@@ -29,8 +29,8 @@ export class TargetsSheetComponent implements OnInit {
   @Input() targetSelected:number;
   @Input() dateFilters:any;
   count :number = 0;
-  private gridApi;
-  private gridColumnApi;
+  gridApi;
+  gridColumnApi;
   editing: boolean = false;
   emptyRows:any = [];
   
@@ -42,26 +42,26 @@ export class TargetsSheetComponent implements OnInit {
       MenuModule,
       ColumnsToolPanelModule,
     ];
-  private columnDefs;
-  private defaultColDef;
-  private columnTypes;
-  private autoGroupColumnDef;
-  private rowData = [];
-  private columnData = [];
-  private getRowNodeId;
-  private aggFuncs;
-  private colLength: number = 0;
-  private baseCondtion:number = 0;
+  columnDefs;
+  defaultColDef;
+  columnTypes;
+  autoGroupColumnDef;
+  rowData = [];
+  columnData = [];
+  getRowNodeId;
+  aggFuncs;
+  colLength: number = 0;
+  baseCondtion:number = 0;
 
-  private history: number = 3;
-  private peroid: number = 3;
-  private startFrom: number= null;
+  history: number = 3;
+  peroid: number = 3;
+  startFrom: number= null;
   public  emptyFieldsCount: number = 0;
-  private getRowHeight;
-  private overlayLoadingTemplate;
-  private frameworkComponents;
-  private loadingOverlayComponent;
-  private loadingOverlayComponentParams;
+  getRowHeight;
+  overlayLoadingTemplate;
+  frameworkComponents;
+  loadingOverlayComponent;
+  loadingOverlayComponentParams;
 
   toastEvent:Subscription;
 

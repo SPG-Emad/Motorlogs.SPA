@@ -10,7 +10,7 @@ export class DeleteConfirmComponent implements OnInit {
     @Output()
     deleteConfirmed = new EventEmitter<boolean>();
 
-    show: false;
+    show:boolean = false;
     constructor() { }
 
     ngOnInit() {

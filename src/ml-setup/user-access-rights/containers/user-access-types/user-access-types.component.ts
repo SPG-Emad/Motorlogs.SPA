@@ -16,7 +16,7 @@ export class UserAccessTypesComponent implements OnInit, OnDestroy {
 
     constructor(
         private departmentsService: DepartmentsService,
-        private roleService: RolesService,
+        public roleService: RolesService,
         private store: Store<any>
     ) { }
 

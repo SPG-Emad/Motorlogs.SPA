@@ -62,7 +62,7 @@ import { Component, ViewChild, ElementRef } from '@angular/core';
   ],
 })
 export class CustomHeaderComponent {
-  private params: any;
+  params: any;
 
 
   @ViewChild('menuButton', { read: ElementRef,static:false }) public menuButton;

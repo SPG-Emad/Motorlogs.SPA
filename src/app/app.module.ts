@@ -1,4 +1,4 @@
-import { NgModule } from "@angular/core";
+import { NgModule, InjectionToken } from "@angular/core";
 import { BrowserModule } from "@angular/platform-browser";
 import { HttpClientModule, HTTP_INTERCEPTORS } from "@angular/common/http";
 import { BrowserAnimationsModule } from "@angular/platform-browser/animations";
@@ -49,6 +49,7 @@ import { BoldTextPipe } from './shared/pipes/bold-text.pipe';
 import { mlStepReducers } from 'ml-setup/shared/ngrx/ml-setup.state';
 import { UserProfileService } from './shared/services/user-profile.service';
 /*-------------*/ 
+export const ROOT_REDUCER = new InjectionToken<any>('Root Reducer');
 
 
 const appRoutes: Routes = [
@@ -108,12 +109,13 @@ const appRoutes: Routes = [
         DeviceDetectorModule.forRoot(),
 
         // Initializing NGRX store
-        StoreModule.forRoot(mlStepReducers)
+        StoreModule.forRoot(ROOT_REDUCER)
 
     ],
     bootstrap: [AppComponent],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
+        {provide: ROOT_REDUCER, useValue: { count: mlStepReducers }},
         Store,
         GlobalErrorInterceptorProvider,
         ServerErrorInterceptorProvider,

@@ -22,7 +22,7 @@ export class UserInitialsComponent implements OnInit, OnDestroy {
 
     constructor(
         private fb: FormBuilder,
-        private roleService: RolesService,
+        public roleService: RolesService,
         private store: Store<any>
     ) {
     }

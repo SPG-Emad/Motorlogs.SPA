@@ -30,9 +30,6 @@ import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatSelectModule} from '@angular/material/select';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatAutocompleteModule } from '@angular/material';
-//import { CustomDropDownRenderer } from './custom-dropdown-renderer.component';
-//import { CalenderRenderer } from './calander-renderer.component';
-//import { SingleSelectionExampleComponent } from './components/custom-dropdown/custom-dropdown.component';
 
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { CustomDropDownRenderer } from './containers/saleslog/custom-dropdown-renderer.component';

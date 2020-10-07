@@ -13,9 +13,9 @@ import { CustomLoadingOverlayComponent } from 'ml-shared/components/custom-loadi
 export class HistoryComponent implements OnInit {
   public modules: any[] = AllModules;
 
-  private loadingOverlayComponent;
-  private loadingOverlayComponentParams;
-  private frameworkComponents;
+   loadingOverlayComponent;
+   loadingOverlayComponentParams;
+   frameworkComponents;
   constructor(
     private dialog: MatDialog,
     private fb: FormBuilder, 
@@ -116,18 +116,18 @@ export class HistoryComponent implements OnInit {
     searchbar: ["",],
   });
 
-  private gridApi;
-  private gridColumnApi;
-  private searchOption: any;
-  private modalTitle : string = "History";
-  private columnDefs;
-  private defaultColDef;
-  private columnTypes;
-  private autoGroupColumnDef;
-  private rowData = [];
-  private rowResponse = [];
-  private getRowNodeId;
-  private days:any= [{
+  gridApi;
+  gridColumnApi;
+  searchOption: any;
+  modalTitle : string = "History";
+  columnDefs;
+  defaultColDef;
+  columnTypes;
+  autoGroupColumnDef;
+  rowData = [];
+  rowResponse = [];
+  getRowNodeId;
+  days:any= [{
     key: 30,
     value: 'Past 30 days',
   }];

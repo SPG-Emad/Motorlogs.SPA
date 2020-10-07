@@ -64,38 +64,38 @@ export class SaleslogComponent implements OnInit {
   public deliveredUnits: number =0;
   public deliveredAvg: number =0;
 
-  private gridApi;
-  private gridColumnApi;
+  gridApi;
+  gridColumnApi;
 
   public modules: any[] = AllModules;
-  private columnDefs;
-  private defaultColDef;
-  private columnTypes;
-  private autoGroupColumnDef;
-  private rowData = [];
-  private rows = [];
+  columnDefs;
+  defaultColDef;
+  columnTypes;
+  autoGroupColumnDef;
+  rowData = [];
+  rows = [];
 
-  private getRowNodeId;
-  private aggFuncs;
-  private baseCondtion:number = 0;
-  private rowHeight: number;
+  getRowNodeId;
+  aggFuncs;
+  baseCondtion:number = 0;
+  rowHeight: number;
 
-  private history: number = 3;
-  private peroid: number = 3;
-  private startFrom: number= null;
+  history: number = 3;
+  peroid: number = 3;
+  startFrom: number= null;
   public  emptyFieldsCount: number = 0;
-  private statusOption: string[]= ['NEW','DEMO'];
-  private payOptions: string[]= ['Cash','OFA','IHP'];
-  private salesEngOption: string[]= [''];
-  private salesPersonOption: string[]= ['Morgan Mac','Emily Gill','James Over','Robert Knight'];
-  private afterMarketManagerOptions: string[]= ['Fleet','No intro'];
-  private financeManagerOption: string[]= ['LOCUM','Fleet'];
-  private components;
+  statusOption: string[]= ['NEW','DEMO'];
+  payOptions: string[]= ['Cash','OFA','IHP'];
+  salesEngOption: string[]= [''];
+  salesPersonOption: string[]= ['Morgan Mac','Emily Gill','James Over','Robert Knight'];
+  afterMarketManagerOptions: string[]= ['Fleet','No intro'];
+  financeManagerOption: string[]= ['LOCUM','Fleet'];
+  components;
   public rowSelection;
   public thisComponent = this;
-  private getRowClass;
-  private dialogRef: any;
-  private frameworkComponents:any;
+  getRowClass;
+  dialogRef: any;
+  frameworkComponents:any;
   printdata:any;
   monthObject: any = {
     oneMonth: false,
@@ -111,12 +111,12 @@ export class SaleslogComponent implements OnInit {
     }
   };
 
-  private cellData: any = [];
-  private cellMap : any;
-  private salesData : any;
+  cellData: any = [];
+  cellMap : any;
+  salesData : any;
 
   public rowColor = [];
-  private postProcessPopup;
+  postProcessPopup;
 
   monthSearch:any;
   animationState = 'out';
@@ -133,11 +133,11 @@ export class SaleslogComponent implements OnInit {
   sliderItem: string;
   sliderIndex: number;
   records: any = [];
-  private toggleColumns: boolean = true;
+  toggleColumns: boolean = true;
   decryptedDepartmentId: string;
-  private loadingOverlayComponent;
-  private loadingOverlayComponentParams;
-  private pageCounter: number = 0;
+  loadingOverlayComponent;
+  loadingOverlayComponentParams;
+  pageCounter: number = 0;
 
   searchForm: FormGroup = this.fb.group({
     searchbar: ["",],

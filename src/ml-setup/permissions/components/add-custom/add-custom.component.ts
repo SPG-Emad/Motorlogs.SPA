@@ -20,7 +20,7 @@ export class AddCustomComponent implements OnInit {
 
     constructor(
         private fb: FormBuilder,
-        private dialog: MatDialog,
+        public dialog: MatDialog,
         private toastHandlerService: ToastHandlerService,
         private permissionService: PermissionsService,
         private permissionStore: PermissionStateService,

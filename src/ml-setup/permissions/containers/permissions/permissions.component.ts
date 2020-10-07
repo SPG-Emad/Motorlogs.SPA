@@ -16,22 +16,22 @@ import { CustomLoadingOverlayComponent } from '../../components/loading-overlay/
 })
 export class PermissionsComponent implements OnInit {
 
-    private gridApi;
-    private gridColumnApi;
-    private defaultColDef;
-    private autoGroupColumnDef;
-    private departmentOptions: string[] = ['ON', 'OFF'];
-    private rolesOptions: string[] = ['EDIT', 'READ ONLY', 'BLOCK'];
-    private rowHeight: number;
-    private columnFilter: number;
-    private toggleColumns = true;
-    private updateColumnID: number;
-    private frameworkComponents;
-    private loadingOverlayComponent;
-    private loadingOverlayComponentParams;
-    public rolePos = 10;
+    gridApi;
+    gridColumnApi;
+    defaultColDef;
+    autoGroupColumnDef;
+    departmentOptions: string[] = ['ON', 'OFF'];
+    rolesOptions: string[] = ['EDIT', 'READ ONLY', 'BLOCK'];
+    rowHeight: number;
+    columnFilter: number;
+    toggleColumns = true;
+    updateColumnID: number;
+    frameworkComponents;
+    loadingOverlayComponent;
+    loadingOverlayComponentParams;
+    rolePos = 10;
 
-    public modules: any[] = AllCommunityModules;
+    modules: any[] = AllCommunityModules;
 
     columnDefs = [];
     columnData = [];
@@ -46,18 +46,18 @@ export class PermissionsComponent implements OnInit {
     delivered = [];
     arriving = [];
 
-    public rowCode = [];
-    public showAllRowCode = [];
-    public arrivingRowCode = [];
-    public deliveredRowCode = [];
-    public salesLogdRowCode = [];
+    rowCode = [];
+    showAllRowCode = [];
+    arrivingRowCode = [];
+    deliveredRowCode = [];
+    salesLogdRowCode = [];
 
     response = [];
 
     accessList = [];
 
     tabSelected = 0;
-    private overlayLoadingTemplate;
+    overlayLoadingTemplate;
 
     constructor(
         private legendService: LegendsService,

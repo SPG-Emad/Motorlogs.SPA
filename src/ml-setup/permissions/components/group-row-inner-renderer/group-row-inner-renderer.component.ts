@@ -16,16 +16,16 @@ import { ToastHandlerService } from 'app/shared/services/toast-handler.service';
 
 })
 export class CustomHeader {
-    private params: any;
+    params: any;
 
     @ViewChild('PermissionsComponent', { static: true }) PermissionsComponent: PermissionsComponent;
 
-    private ascSort: string;
-    private descSort: string;
-    private noSort: string;
-    private dialogRef: any;
-    private editName: boolean = false;
-    private columnId: number;
+    ascSort: string;
+    descSort: string;
+    noSort: string;
+    dialogRef: any;
+    editName: boolean = false;
+    columnId: number;
 
     constructor(
         private permissionsService: PermissionsService,

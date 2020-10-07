@@ -116,7 +116,7 @@
                 </mat-step>
                 <mat-step>
                     <ng-template matStepLabel>Users</ng-template>    
-                    <app-user-roles-list  [updateColumnID]="updateColumnID" (submit)="createUpdateColumn($event);" #userRolesComp></app-user-roles-list>
+                    <app-user-roles-list  [updateColumnID]="updateColumnID" (submit)="createUpdateColumn();" #userRolesComp></app-user-roles-list>
                 </mat-step>
             </mat-horizontal-stepper>
         </div>

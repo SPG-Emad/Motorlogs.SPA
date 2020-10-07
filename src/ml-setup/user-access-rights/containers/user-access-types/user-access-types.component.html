@@ -61,7 +61,7 @@
                     [(ngModel)]="names"
                     name="names"
                     (keypress)="onlyCharacters($event)"
-                    (keyup)="applyFilter($event.target.value)"
+                    (keyup)="applyFilter()"
                     ngDefaultControl 
                 />
             </mat-form-field>
