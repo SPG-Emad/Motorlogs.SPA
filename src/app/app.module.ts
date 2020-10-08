@@ -115,7 +115,7 @@ const appRoutes: Routes = [
     bootstrap: [AppComponent],
     providers: [
         { provide: HTTP_INTERCEPTORS, useClass: AuthInterceptor, multi: true },
-        {provide: ROOT_REDUCER, useValue: { count: mlStepReducers }},
+        {provide: ROOT_REDUCER, useValue: mlStepReducers },
         Store,
         GlobalErrorInterceptorProvider,
         ServerErrorInterceptorProvider,
