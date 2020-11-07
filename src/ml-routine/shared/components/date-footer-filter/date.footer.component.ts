@@ -28,7 +28,8 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
     sliderItem: string;
     sliderIndex: number;
     apiDateFormat:any;
-    
+    calender: string;
+
     @Input() 
     rowData = [];
 
@@ -73,9 +74,10 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
         if(res.month===sliderMonth){
           this.sliderItem= res.month;
           this.sliderIndex=index;
-          this.apiDateFormat= moment(res.month).format('MMM_YY');
+          this.apiDateFormat= res.dateFormat;
         }
-      })
+      });
+      console.log(this.years, this.searchDate)
     }
 
 
@@ -84,8 +86,7 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
         if(i===index){
           this.sliderItem= res.month;
           this.sliderIndex=index;
-          this.apiDateFormat= moment(res.month).format('MMM_YY');
-          console.log(moment(res.month).format('MMM_YY'),res.month )
+          this.apiDateFormat= res.dateFormat;
         }
       });
       this.monthSliderSearch(this.sliderItem)
@@ -97,26 +98,29 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
       
       this.monthFilter = searchingFormat+" - "+searchingFormat;
   
-  
-      searchResult = this.rowData.filter(resp=>{
-        let filter = Object.keys(resp).filter(res=>{
-          if(res==="orderDate"){
-            let date =moment(resp[res]).format('MMM YY');
-              if(date){
-                return date===searchingFormat;
+      if(this.rowData && this.rowData.length > 0){    
+        searchResult = this.rowData.filter(resp=>{
+          let filter = Object.keys(resp).filter(res=>{
+            if(res==="orderDate"){
+              let date =moment(resp[res]).format('MMM YY');
+                if(date){
+                  return date===searchingFormat;
+                }
               }
-            }
+          });
+          if(filter.length> 0){ 
+            return resp;
+          }
         });
-        if(filter.length> 0){ 
-          return resp;
+        // this.rowData = [];
+        this.rowData = searchResult;
+  
+        if(searchResult.length> 0){
+          let text= (searchResult.length>1)? "Records":"Record";
+          this.toastHandlerService.generateToast(searchResult.length+" "+text+' found','',2000);
         }
-      });
-      // this.rowData = [];
-      this.rowData = searchResult;
-      if(searchResult.length> 0){
-        let text= (searchResult.length>1)? "Records":"Record";
-        this.toastHandlerService.generateToast(searchResult.length+" "+text+' found','',2000);
       }
+
       /* Output All Date variables*/ 
       this.dateFilterObj.emit({
         monthActive: this.monthActive,
@@ -136,10 +140,12 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
       
         /*Generate Key and value for startFrom Object from momentJs*/ 
         let month = moment().subtract(i, 'months').format('MMM YY');
+        let dateFormat = moment().subtract(i, 'months').format('MMM_YY').toUpperCase();
         /*---------------------------------------------------------*/ 
   
         this.searchDate.push({
-          'month': month
+          'month': month,
+          'dateFormat': dateFormat
         });
       }
     }
@@ -150,9 +156,11 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
       
         /*Generate Key and value for startFrom Object from momentJs*/ 
         let month = moment().add(i, 'months').format('MMM YY');
-  
+        let dateFormat = moment().add(i, 'months').format('MMM_YY').toUpperCase();
+        
         this.searchDate.push({
-          'month': month
+          'month': month,
+          'dateFormat': dateFormat
         });
       }
     }
@@ -213,9 +221,6 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
     next(){
       if(this.yearCounter<this.years.length-1){
   
-  
-        // console.log(this.yearCounter<this.years.length)
-        // console.log(this.yearCounter,this.years.length)
         this.yearCounter = this.yearCounter+ 1;
         let month = moment().format('MMM');
         let year = moment().format('YYYY');
@@ -273,6 +278,7 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
       let searchedDisplayFormat;
       let searchingFormat;
       let currentSearchFormat;
+      let calender= "";
       let month=0;
   
       if(length !=="1"){
@@ -281,19 +287,20 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
         currentDisplayFormat = moment(this.monthActive+"-"+this.yearActive).format('MMM YY');
         currentSearchFormat = moment(this.monthActive+"-"+this.yearActive).format('MMM-YYYY');
         searchedDisplayFormat = moment(this.monthActive+"-"+this.yearActive).subtract(length-1, 'months').format('MMM YY');
-  
+        calender = moment(this.monthActive+"-"+this.yearActive).subtract(length-1, 'months').format('MMM_YY').toUpperCase();
       }else{
   
         month = 1;
         searchingFormat =  moment(this.monthActive+"-"+this.yearActive).subtract(length-1, 'months').format('MMM-YYYY');
         currentDisplayFormat = moment(this.monthActive+"-"+this.yearActive).format('MMM YY');
         searchedDisplayFormat = moment(this.monthActive+"-"+this.yearActive).subtract(length-1, 'months').format('MMM YY');
+        calender = moment(this.monthActive+"-"+this.yearActive).subtract(length-1, 'months').format('MMM_YY').toUpperCase();
       }
       /*---------------------------------------------------------*/ 
-      console.log('searched value:',searchedDisplayFormat);
+
       this.monthFilter = searchedDisplayFormat+" - "+currentDisplayFormat;
-      console.log(this.monthFilter);
-      console.log("change:",this.rowData)
+      this.calender = calender;
+
 
       this.calenderSearch(searchingFormat, month, currentSearchFormat, type)
     }
@@ -308,43 +315,44 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
 
     calenderSearch(searchingFormat, month, startingMonth, type?){
 
-      console.log(searchingFormat, startingMonth, month);
       let searchResult=  [];
-  
-      searchResult = this.rowData.filter(resp=>{
-        let filter = Object.keys(resp).filter(res=>{
-          if(res==="OD"){
-            let date =resp[res];
-            if(month===1){
-              if(date){
-                // console.log(moment(resp[res]).isSame(searchingFormat, "months"));
-                return moment(resp[res]).isSame(searchingFormat, "months") && moment(resp[res]).isSame(searchingFormat, "years");
+      if(this.rowData && this.rowData.length > 0){    
+        searchResult = this.rowData.filter(resp=>{
+          let filter = Object.keys(resp).filter(res=>{
+            if(res==="OD"){
+              let date =resp[res];
+              if(month===1){
+                if(date){
+                  // console.log(moment(resp[res]).isSame(searchingFormat, "months"));
+                  return moment(resp[res]).isSame(searchingFormat, "months") && moment(resp[res]).isSame(searchingFormat, "years");
+                }
+              }else{
+                // console.log("after:",  moment(resp[res]).isAfter(searchingFormat),resp[res]);
+                // console.log("before:", moment(resp[res]).isBefore(startingMonth),resp[res]);
+    
+                return moment(resp[res]).isAfter(searchingFormat) && moment(resp[res]).isBefore(startingMonth);
               }
-            }else{
-              // console.log("after:",  moment(resp[res]).isAfter(searchingFormat),resp[res]);
-              // console.log("before:", moment(resp[res]).isBefore(startingMonth),resp[res]);
-  
-              return moment(resp[res]).isAfter(searchingFormat) && moment(resp[res]).isBefore(startingMonth);
+              // console.log(date,searchingFormat,moment(resp[res]).isAfter(searchingFormat));
             }
-            // console.log(date,searchingFormat,moment(resp[res]).isAfter(searchingFormat));
+          });
+          if(filter.length> 0){ 
+                    
+            return resp;
           }
         });
-        if(filter.length> 0){ 
-                  
-          return resp;
-        }
-      });
-      this.rowData = [];
-      console.log(searchResult)
-      this.rowData = searchResult;
+        this.rowData = [];
+  
+        this.rowData = searchResult;
+      }  
+
       if(type && type !== 1){
-      //   console.log("inside")
         let text= (searchResult.length>1)? "Records":"Record";
         this.toastHandlerService.generateToast(searchResult.length+" "+text+' found','',2000);
       }
 
       /* Output All Date variables*/ 
       this.dateFilterObj.emit({
+        calender: this.calender,
         monthActive: this.monthActive,
         monthSelected: this.monthSelected,      
         yearActive: this.yearActive,

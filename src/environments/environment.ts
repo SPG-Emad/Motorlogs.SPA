@@ -5,7 +5,7 @@
 export const environment = {
     production: false,
     hmr       : false,
-    apiURL    : "https://motorlogs.azurewebsites.net/api/",
+    apiURL    : "https://motorlog.azurewebsites.net/api/",
     sessionTimeout : 6000
 };
 

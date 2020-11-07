@@ -105,7 +105,7 @@
                             <tbody>
                                 <tr>
                                     <td class="bgTitle">Vehicle Orders</td>
-                                    <td id="target_Deal" style="background-color: rgb(225, 244, 255);"><b>${{targetObj.vechOrders.mtdTarget |number: '.0-0'}}</b></td>
+                                    <td id="target_Deal" style="background-color: rgb(225, 244, 255);"><b>$ {{targetObj.vechOrders.mtdTarget |number: '.0-0'}}</b></td>
                                     <td class="txtLine"></td>
                                     <td id="mtd_target_Deal"><span style="color:#808080;">{{targetObj.vechOrders.mtdTarget |number: '.0-0'}}</span></td>
                                     <td id="mtd_order_Deal">$ {{targetObj.vechOrders.mtdResult |number: '.0-0'}}</td>
@@ -114,7 +114,7 @@
                                 </tr>
                                 <tr>
                                     <td class="bgTitle">Vehicle Profit</td>
-                                    <td id="target_Gross" style="background-color: rgb(225, 244, 255);"><b>${{targetObj.vechProfit.mtdTarget |number: '.0-0'}}</b></td>
+                                    <td id="target_Gross" style="background-color: rgb(225, 244, 255);"><b>$ {{targetObj.vechProfit.mtdTarget |number: '.0-0'}}</b></td>
                                     <td class="txtLine"></td>
                                     <td id="mtd_target_Gross"><span style="color:#808080;">{{targetObj.vechProfit.mtdTarget |number: '.0-0'}}</span></td>
                                     <td id="mtd_order_Gross">$ {{targetObj.vechProfit.mtdResult |number: '.0-0'}} </td>
@@ -763,7 +763,7 @@
         </div>
     </div>
     <div style="margin-left:17%" id="divuldaterange">
-        <date-footer></date-footer>
+        <date-footer [rowData]="rowData" (dateFilterObj)="dateSetting($event)"></date-footer>
         <!-- / Months slider Ends -->
     </div>
 </div>

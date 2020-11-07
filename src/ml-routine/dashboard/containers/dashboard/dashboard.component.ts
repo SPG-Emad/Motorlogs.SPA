@@ -10,6 +10,7 @@ import  *  as  filteredData  from  './salesFilterByGraph.json';
 import  *  as  pivotDD  from  '../pivotTable.json';
 
 import * as _ from 'lodash';
+import { DashboardService } from 'ml-routine/shared/services/dashboard/dashboard.service';
 /** Added */;
 
 
@@ -68,21 +69,35 @@ export class DashboardComponent implements OnInit {
     ];
 
     orderOptions = [
-        { key: "Order covered", value: "Order covered" },
-        { key: "Order delivered", value: "Order delivered" },
-        { key: "Order sold", value: "Order sold" },
+        { key: "Order covered", value: "Covered" },
+        { key: "Order delivered", value: "Delivered" },
+        { key: "Order sold", value: "Sold" },
     ];
 
 
-    filterList:any[]=[];
+    filterList:any[]=[
+        {key: "DEP/SP", value: "Department / Sales Person"},
+        {key: "DEP/VEHTP", value: "Department / VEH.Type"},
+        {key: "SP", value: "Sales Person"},
+        {key: "SP/VEHTP", value: "Sales Person / VEH.Type"},
+        {key: "SP/DM", value: "Sales Person / Delivery Month"},
+        {key: "VEHTP/VEHMOD", value: "VEH.Type / VEH.Model"},
+        {key: "VEHTP/VEHCOL", value: "VEH.Type / VEH.Colour"},
+        {key: "INQ/SP", value: "Inquiry / Sales Person"},
+        {key: "ST/SP", value: "Status / Sales Person"},
+        {key: "ST/VEHTP", value: "Status / VEH.Type"},
+        {key: "ST/DEPT", value: "Status / Dept."},
+        {key: "SOV/VEHTP", value: "Source of Vehicle / VEH.Type"},
+        {key: "SOV/SP", value: "Source of Vehicle / Sales Person"},
+    ];
 
-    filterValue: any = {key: "Dept. /Sales Person", value: "Dept. /Sales Person"};
+    filterValue: any = {key: "DEP/SP", value: "Department / Sales Person"};
 
     orderList = [
-        { key: "Orders Delivered", value: "Orders Delivered" },
-        { key: "Orders Sold", value: "Orders Sold" },
-        { key: "Orders Reportable", value: "Orders Reportable" },
-        { key: "Orders Reported", value: "Orders Reported" },
+        { key: "Orders Delivered", value: "Delivered" },
+        { key: "Orders Sold", value: "Sold" },
+        // { key: "Orders Reportable", value: "Reportable" },
+        // { key: "Orders Reported", value: "Reported" },
     ];
 
     dateRange = [
@@ -95,8 +110,8 @@ export class DashboardComponent implements OnInit {
     groupBy = 1;
     tab = 1;
 
-    dataValue: any = "By Total";
-    orderValue: any = "Order covered";
+    dataValue: any = { key: "Group by: Total", value: "By Total" };
+    orderValue: any = { key: "Order covered", value: "Covered" };
     filter = "";
 
     displayKey = "value";
@@ -116,7 +131,7 @@ export class DashboardComponent implements OnInit {
     grandTotalProfit = 0;
 
     defaultDate: any = "This Month";
-    defaultOrder: any = "Order Covered";
+    defaultOrder: any = { key: "Orders Delivered", value: "Delivered" };
     departmentName: string = "";
     isDataList = false;
     searchKeys = ['key', 'value'];
@@ -124,191 +139,242 @@ export class DashboardComponent implements OnInit {
     // pivotTab: any =[];
     activeAccrdn :any=1;
     pivotTab: any = [
-        {
-            rowId: 1,
-            groupHeaderName: "Lennock Hyundai - New Cars",
-            field: 'Sales',
-            totalOrders: 69,
-            totalProfit: 13000,
-            row: [
-                {
-                    fieldValue: "Chris Commisso",
-                    order: 2,
-                    vehicleProfit: 4000
-                },
-                {
-                    fieldValue: "Emily Gill",
-                    order: 12,
-                    vehicleProfit: 83000
-                },
-                {
-                    fieldValue: "James Overend",
-                    order: 33,
-                    vehicleProfit: 6000,
-                },
-                {
-                    fieldValue: "Morgan McGuinness",
-                    order: 22,
-                    vehicleProfit: 1000,
-                }
+        // {
+        //     rowId: 1,
+        //     groupHeaderName: "Lennock Hyundai - New Cars",
+        //     field: 'Sales',
+        //     totalOrders: 69,
+        //     totalProfit: 13000,
+        //     row: [
+        //         {
+        //             fieldValue: "Chris Commisso",
+        //             order: 2,
+        //             vehicleProfit: 4000
+        //         },
+        //         {
+        //             fieldValue: "Emily Gill",
+        //             order: 12,
+        //             vehicleProfit: 83000
+        //         },
+        //         {
+        //             fieldValue: "James Overend",
+        //             order: 33,
+        //             vehicleProfit: 6000,
+        //         },
+        //         {
+        //             fieldValue: "Morgan McGuinness",
+        //             order: 22,
+        //             vehicleProfit: 1000,
+        //         }
 
-            ]
-        },
-        {
-            rowId: 2,
-            groupHeaderName: "Lennock Jaguar & Land Rover - New Cars",
-            field: 'Sales',
-            totalOrders: 77,
-            totalProfit: 13000,
-            row: [
-                {
-                    fieldValue: "Chris Commisso",
-                    order: 10,
-                    vehicleProfit: 4000
-                },
-                {
-                    fieldValue: "Emily Gill",
-                    order: 12,
-                    vehicleProfit: 83000
-                },
-                {
-                    fieldValue: "James Overend",
-                    order: 33,
-                    vehicleProfit: 6000,
-                },
-                {
-                    fieldValue: "Morgan McGuinness",
-                    order: 22,
-                    vehicleProfit: 1000,
-                }
+        //     ]
+        // },
+        // {
+        //     rowId: 2,
+        //     groupHeaderName: "Lennock Jaguar & Land Rover - New Cars",
+        //     field: 'Sales',
+        //     totalOrders: 77,
+        //     totalProfit: 13000,
+        //     row: [
+        //         {
+        //             fieldValue: "Chris Commisso",
+        //             order: 10,
+        //             vehicleProfit: 4000
+        //         },
+        //         {
+        //             fieldValue: "Emily Gill",
+        //             order: 12,
+        //             vehicleProfit: 83000
+        //         },
+        //         {
+        //             fieldValue: "James Overend",
+        //             order: 33,
+        //             vehicleProfit: 6000,
+        //         },
+        //         {
+        //             fieldValue: "Morgan McGuinness",
+        //             order: 22,
+        //             vehicleProfit: 1000,
+        //         }
 
-            ]
-        },
-        {
-            rowId: 3,
-            groupHeaderName: "Lennock Jaguar & Land Rover - New Cars",
-            field: 'Sales',
-            totalOrders: 17,
-            totalProfit: 14000,
-            row: [
-                {
-                    fieldValue: "Chris Commisso",
-                    order: 5,
-                    vehicleProfit: 5000
-                },
-                {
-                    fieldValue: "Emily Gill",
-                    order: 33,
-                    vehicleProfit: 5000
-                },
-                {
-                    fieldValue: "James Overend",
-                    order: 13,
-                    vehicleProfit: 5000,
-                },
-                {
-                    fieldValue: "Morgan McGuinness",
-                    order: 21,
-                    vehicleProfit: 6000,
-                }
+        //     ]
+        // },
+        // {
+        //     rowId: 3,
+        //     groupHeaderName: "Lennock Jaguar & Land Rover - New Cars",
+        //     field: 'Sales',
+        //     totalOrders: 17,
+        //     totalProfit: 14000,
+        //     row: [
+        //         {
+        //             fieldValue: "Chris Commisso",
+        //             order: 5,
+        //             vehicleProfit: 5000
+        //         },
+        //         {
+        //             fieldValue: "Emily Gill",
+        //             order: 33,
+        //             vehicleProfit: 5000
+        //         },
+        //         {
+        //             fieldValue: "James Overend",
+        //             order: 13,
+        //             vehicleProfit: 5000,
+        //         },
+        //         {
+        //             fieldValue: "Morgan McGuinness",
+        //             order: 21,
+        //             vehicleProfit: 6000,
+        //         }
 
-            ]
-        },
+        //     ]
+        // },
     ];
 
     isGroupDashboard = false;
     targetObj : any = {
 		"vechOrders": {
-			"target": null,
-			"mtdTarget": null,
-            "mtdResult": null,
-            "mtdDifference": null,
-            "mdtPercentage": null
+			"target": 0,
+			"mtdTarget": 0,
+            "mtdResult": 0,
+            "mtdDifference": 0,
+            "mdtPercentage": 0
 		},
 		"vechProfit": {
-			"target": null,
-			"mtdTarget": null,
-            "mtdResult": null,
-            "mtdDifference": null,
-            "mdtPercentage": null
+			"target": 0,
+			"mtdTarget": 0,
+            "mtdResult": 0,
+            "mtdDifference": 0,
+            "mdtPercentage": 0
 		}
 	};
     pivotLoader: boolean = false;
 
     constructor(
-        private sessionHandlerService: SessionHandlerService, 
         private router: Router, 
         private route: ActivatedRoute, 
+        private sessionHandlerService: SessionHandlerService, 
+        private dashboardService: DashboardService, 
         private encryptionService: EncryptionService ,  
         private toastHandlerService: ToastHandlerService
     ) {
 
         this.route.paramMap.subscribe(params => {
             this.chartLoader =true;
+            this.decryptedDepartmentId =  "";
+
+            var coll = document.getElementsByClassName("collapsible");
+            var i;
+            let dateFormat = moment().add().format('MMM_YY').toUpperCase();
+            this.monthFilter =dateFormat;
+            this.currentDate = moment().format('MMM - DD');
+    
+            for (i = 0; i < coll.length; i++) {
+              coll[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var content = this.nextElementSibling;
+                if (content.style.display === "block") {
+                  content.style.display = "none";
+                } else {
+                  content.style.display = "block";
+                }
+              });
+            }
+    
             if (params.get("id") != null) {
                 this.decryptedDepartmentId = this.encryptionService.convertToEncOrDecFormat('decrypt', params.get("id"));
                 this.departmentName = this.sessionHandlerService.getSession('userObj').departmentAccess.find(res=>{
                     return Number(res.departmentId) === Number(this.decryptedDepartmentId)
                 }).departmentName;
-
-                this.seriesData.length = 0;
-                this.generateSalesGraph(data);
+                
+                this.constructPivotTableDD();     
+                this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
 
             }else{
-                this.seriesData.length = 0;
-                this.generateSalesGraph(data);
-
+                this.constructPivotTableDD();     
+                this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
             }
         });
     }
 
-    ngOnInit() {
-        var coll = document.getElementsByClassName("collapsible");
-        var i;
-        this.currentDate = moment().format('MMM - DD');
 
-        for (i = 0; i < coll.length; i++) {
-          coll[i].addEventListener("click", function() {
-            this.classList.toggle("active");
-            var content = this.nextElementSibling;
-            if (content.style.display === "block") {
-              content.style.display = "none";
-            } else {
-              content.style.display = "block";
-            }
-          });
+    fetchSaleGraph(groupBy, orderBy){
+        console.log(groupBy, orderBy);
+        this.chartLoader=  true;   
+        let param = {
+            "Deptid": (this.decryptedDepartmentId)? this.decryptedDepartmentId:"-1", // if called on GROUP DASHBOARD then this would be -1
+            "PastMonths": 1, // it will always be 1
+            "TillDate": this.monthFilter, // take this value from calendar and sent to this API
+            "GroupBy": groupBy, // Take values from first dropdown
+            "OrderBy": orderBy // Possible values are Delivered, Covered, Sold         
         }
 
-        this.constructPivotTableDD();     
+        this.dashboardService.generateSalesGraph(param)
+        .subscribe(data=>{
+            if(data){
+                this.generateSalesGraph(data);
+            }else{
+                this.chartLoader=  false;                
+            }
+        },(err)=>{
+            this.chartLoader=  false;                
+        });
+    }
 
-        this.fetchGrandTotal();
+    ngOnInit() {
+    }
+    
+    dateSetting(event){    
+        this.monthActive = event.monthActive;
+        this.yearActive = event.yearActive;
+        this.monthSelected = event.monthSelected;
+        this.sliderIndex = event.monthSelected;
+        this.sliderItem = event.sliderItem;
+
+        console.log(this.dataValue, this.orderValue);
+        if(this.tab===1){
+            if(event.option === 1){
+                this.monthFilter = event.dateFormat;
+            }else{
+                this.monthFilter = event.calender;
+            }
+            this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+        }else {
+            if(event.option === 1){
+                this.monthFilter = event.dateFormat;
+            }else{
+                this.monthFilter = event.calender;
+            }
+            this.constructPivotTableDD();     
+        }
     }
 
     calculateTableData(graphData, filterOptions?){
         let salesObject:any = new Object();   
-        salesObject = graphData['default']['target'];
+        salesObject = graphData['target'];
 
         /*Vechicle Orders*/ 
-        this.targetObj['vechOrders']['mtdTarget'] = salesObject["vechOrders"]["mtdTarget"];
-        this.targetObj['vechOrders']['mtdResult'] = salesObject["vechOrders"]["mtdResult"];
-        this.targetObj['vechOrders']['mtdPercentage'] = (salesObject["vechOrders"]["mtdTarget"] && salesObject["vechOrders"]["mtdResult"])? (salesObject["vechOrders"]["mtdResult"]  / salesObject["vechOrders"]["mtdTarget"])*100 : 0;
-        this.targetObj['vechOrders']['mtdDifference'] = (salesObject["vechOrders"]["mtdTarget"] && salesObject["vechOrders"]["mtdResult"])? (salesObject["vechOrders"]["mtdResult"]  - salesObject["vechOrders"]["mtdTarget"]) : 0;
+        this.targetObj['vechOrders']['mtdTarget'] = salesObject["vehOrders"]["mtdTarget"];
+        this.targetObj['vechOrders']['mtdResult'] = salesObject["vehOrders"]["mtdResult"];
+        this.targetObj['vechOrders']['mtdPercentage'] = (salesObject["vehOrders"]["mtdTarget"] && salesObject["vehOrders"]["mtdResult"])? (salesObject["vehOrders"]["mtdResult"]  / salesObject["vehOrders"]["mtdTarget"])*100 : 0;
+        this.targetObj['vechOrders']['mtdDifference'] = (salesObject["vehOrders"]["mtdTarget"] && salesObject["vehOrders"]["mtdResult"])? (salesObject["vehOrders"]["mtdResult"]  - salesObject["vehOrders"]["mtdTarget"]) : 0;
         
         /*Vechicle Profit*/ 
-        this.targetObj['vechProfit']['mtdTarget'] = salesObject["vechProfit"]["mtdTarget"];
-        this.targetObj['vechProfit']['mtdResult'] = salesObject["vechProfit"]["mtdResult"];
-        this.targetObj['vechProfit']['mtdPercentage'] = (salesObject["vechProfit"]["mtdTarget"] && salesObject["vechProfit"]["mtdResult"])? (salesObject["vechProfit"]["mtdResult"]  / salesObject["vechProfit"]["mtdTarget"])*100 : 0;
-        this.targetObj['vechProfit']['mtdDifference'] = (salesObject["vechProfit"]["mtdTarget"] && salesObject["vechProfit"]["mtdResult"])? (salesObject["vechProfit"]["mtdResult"]  - salesObject["vechProfit"]["mtdTarget"]) : 0;
+        this.targetObj['vechProfit']['mtdTarget'] = salesObject["vehProfit"]["mtdTarget"];
+        this.targetObj['vechProfit']['mtdResult'] = salesObject["vehProfit"]["mtdResult"];
+        this.targetObj['vechProfit']['mtdPercentage'] = (salesObject["vehProfit"]["mtdTarget"] && salesObject["vehProfit"]["mtdResult"])? (salesObject["vehProfit"]["mtdResult"]  / salesObject["vehProfit"]["mtdTarget"])*100 : 0;
+        this.targetObj['vechProfit']['mtdDifference'] = (salesObject["vehProfit"]["mtdTarget"] && salesObject["vehProfit"]["mtdResult"])? (salesObject["vehProfit"]["mtdResult"]  - salesObject["vehProfit"]["mtdTarget"]) : 0;
     }
     
     generateSalesGraph(graphData){
         
         let dataAry=[]; 
         let legendArray : any[]= [];
-
+        this.seriesData = [];
+        
         this.calculateTableData(graphData);        
 
-        graphData['default'].seriesData.forEach(element => {
+        graphData.seriesData.forEach(element => {
             let salesObject:any = new Object();   
             let markerObj = new Object();
             let valuePrefx :any = new Object();
@@ -381,20 +447,36 @@ export class DashboardComponent implements OnInit {
             }
 
             if(element.columnData!=null) {
+                // console.log(element.columnData);
+                element.columnData.map(res=>{
+                    // console.log(res.x);
+                    // console.log(typeof res.x);
+
+                    let date = res.x.split('-')
+                    // console.log(date);
+
+                    res.x = Date.UTC(date[0], date[1], date[2]);
+                });
+                
                 salesObject["data"] = element.columnData;
             
             } else {
+                element.splineData.map(res=>{
+                    let date = res.x.split('-')
+                    res.x = Date.UTC(date[0], date[1], date[2]);
+                });
+                
                 salesObject["data"] = element.splineData;
             }
             if(element.splineStyle!=null){
-                markerObj["lineWidth"] = element.splineStyle.lineWidth;
-                markerObj["lineColor"] = element.splineStyle.lineColor;
-                markerObj["fillColor"] = element.splineStyle.fillColor;
+                markerObj["lineWidth"] = 2;
+                markerObj["lineColor"] = Highcharts.getOptions().colors[3];
+                markerObj["fillColor"] = "white";
             }
             salesObject["marker"]  = markerObj;
             this.seriesData.push(salesObject);
+
             legendArray.push(element.legendName);
-            console.log( this.seriesData);
         });
 
         this.initializeGraph();
@@ -403,135 +485,138 @@ export class DashboardComponent implements OnInit {
     initializeGraph(){
         
         if (this.router.url.includes("/dashboard") || this.router.url.includes("/group-overview")) {
-            console.log('after init')
-            setTimeout(() => {
-                this.isGroupDashboard = true;
-                this.chartOptions = {
-                    title: {
-                        text: null
-                    },
-                    xAxis: {
-                        tickInterval: 24 * 3600 * 1000,
-                        type: 'datetime'  
-                    },
-                    yAxis: [
-                        {
-                            title: {
-                                text: null
-                            },
+            this.isGroupDashboard = true;
+            this.chartOptions = {};
+            console.log(this.chartOptions);
+            this.chartOptions = {
+                title: {
+                    text: null
+                },
+                xAxis: {
+                    tickInterval: 24 * 3600 * 1000,
+                    type: 'datetime'  
+                },
+                yAxis: [
+                    {
+                        title: {
+                            text: null
                         },
-                        {
-                            title: {
-                                text: null
-                            },
-                            opposite: true
-                        }
-                    ],
-                    labels: {
-                        items: [{
-                            html: '',
-                        }]
                     },
-                    legend: {
-                        layout: 'horizontal',
-                        align: 'right',
-                        verticalAlign: 'bottom',
-                    },
-                    plotOptions: {
-                        series: {
-                            pointWidth: 10,
-                            pointStart: 1,
-                        }
-                    },
-                    tooltip: {
-                        formatter: function () {
-                            let s = [];
-                            console.log(this.points);
-                            this.points.map((el, i) => {
-                                console.log(el);
-                                s.push(el.point.series.name + ' : <span style="color:#D31B22;font-weight:bold;">' +
-                                    el.point.y + '</span><br>');
-                            });
-                            return s;
+                    {
+                        title: {
+                            text: null
                         },
-                        shared: true,
-                        valueDecimals: 2
-                    },
-                    series: this.seriesData,
-                    responsive: {
-                        rules: [{
-                            condition: {
-                                maxWidth: 500
-                            },
-                            chartOptions: {
-                                legend: {
-                                    floating: false,
-                                    layout: 'horizontal',
-                                    align: 'center',
-                                    verticalAlign: 'bottom',
-                                    x: 0,
-                                    y: 0
-                                },
-                                yAxis: [{
-                                    labels: {
-                                        align: 'right',
-                                        x: 0,
-                                        y: -6
-                                    },
-                                    showLastLabel: false
-                                }, {
-                                    labels: {
-                                        align: 'left',
-                                        x: 0,
-                                        y: -6
-                                    },
-                                    showLastLabel: false
-                                }, {
-                                    visible: false
-                                }]
-                            }
-                        }]
+                        opposite: true
                     }
-                };
-                Highcharts.chart(this.container.nativeElement, this.chartOptions);
-                this.chartLoader=  false;                
-            }, 2000);
+                ],
+                labels: {
+                    items: [{
+                        html: '',
+                    }]
+                },
+                legend: {
+                    layout: 'horizontal',
+                    align: 'right',
+                    verticalAlign: 'bottom',
+                },
+                plotOptions: {
+                    series: {
+                        pointWidth: 10,
+                        pointStart: 1,
+                    }
+                },
+                tooltip: {
+                    formatter: function () {
+                        let s = [];
+                        // console.log(this.points);
+                        this.points.map((el, i) => {
+                            // console.log(el);
+                            s.push(el.point.series.name + ' : <span style="color:#D31B22;font-weight:bold;">' +
+                                el.point.y + '</span><br>');
+                        });
+                        return s;
+                    },
+                    shared: true,
+                    valueDecimals: 2
+                },
+                series: this.seriesData,
+                responsive: {
+                    rules: [{
+                        condition: {
+                            maxWidth: 500
+                        },
+                        chartOptions: {
+                            legend: {
+                                floating: false,
+                                layout: 'horizontal',
+                                align: 'center',
+                                verticalAlign: 'bottom',
+                                x: 0,
+                                y: 0
+                            },
+                            yAxis: [{
+                                labels: {
+                                    align: 'right',
+                                    x: 0,
+                                    y: -6
+                                },
+                                showLastLabel: false
+                            }, {
+                                labels: {
+                                    align: 'left',
+                                    x: 0,
+                                    y: -6
+                                },
+                                showLastLabel: false
+                            }, {
+                                visible: false
+                            }]
+                        }
+                    }]
+                }
+            };
+            Highcharts.chart(this.container.nativeElement, this.chartOptions);
+            this.chartLoader=  false;                
         }
     }
 
     constructPivotTableDD(){
         this.pivotLoader = true;
 
-        /** filterList = [
-            { key: "Dept. /Sales Person", value: "Dept. /Sales Person" },
-            { key: "Dept. / Delivery Month", value: "Dept. / Delivery Month" },
-            { key: "Dept. /VEH. Type", value: "Dept. /VEH. Type" },
-            { key: "Dept. /VEH. Model", value: "Dept. /VEH. Model" },
-            { key: "Dept. /VEH. Color", value: "Dept. /VEH. Color" },
-            { key: "Inquiry /Sales Person", value: "Inquiry /Sales Person" },
-            { key: "Status /Sales Person", value: "Status /Sales Person" },
-            { key: "Status /VEH. Type", value: "Status /VEH. Type" },
-            { key: "Status Dept", value: "Status Dept" },
-            { key: "Source of Vehicle/ Dept.", value: "Source of Vehicle/ Dept." },
-            { key: "Source of Vehicle/ VeH. Type", value: "Source of Vehicle/ VeH. Type" },
-            { key: "Source of Vehicle/ Sales Person", value: "Source of Vehicle/ Sales Person" },
-        ]; **/
-        
-        pivotDD.pivotData.dynamicHeader.groupByHeader.forEach(element => {
-            let map = new Object();
-            map["key"]=element.groupByHeaderName+" /"+element.field;
-            map["value"]=element.groupByHeaderName+" /"+element.field;
-            
-            this.filterList.push(map);
+        let param = {
+            "Deptid": (this.decryptedDepartmentId)? this.decryptedDepartmentId:"-1", // if called on GROUP DASHBOARD then this would be -1
+            "PastMonths": 1, // it will always be 1
+            "TillDate": this.monthFilter, // take this value from calendar and sent to this API
+            "GroupBy": this.filterValue.key, // Take values from first dropdown
+            "OrderBy": this.defaultOrder.value // Possible values are Delivered, Covered, Sold        
+        }
+
+        this.dashboardService.generatePivotData(param)
+        .subscribe(res=>{
+            if(res && res.legnth> 0){
+                this.pivotTab= [];
+                this.field = "";
+                this.groupByHeader= "";
+    
+                this.pivotTab = res;
+                this.fetchGrandTotal();
+
+                this.groupByHeader =  res[0].groupByHeaderName;
+                this.field =  res[0].field;
+            }
+            this.pivotLoader = false;
+
+        }, err=>{
+            this.pivotLoader = false;
         });
-        this.groupByHeader =  pivotDD.pivotData.dynamicHeader.groupByHeader[0].groupByHeaderName;
-        this.field =  pivotDD.pivotData.dynamicHeader.groupByHeader[0].field;
-        this.pivotLoader = false;
+
 
     }
 
     fetchGrandTotal() {
         this.activeRow = [];
+        this.grandTotalOrders = 0;
+        this.grandTotalProfit = 0;
         this.pivotTab.map(res => {
             this.grandTotalOrders = this.grandTotalOrders + res.totalOrders;
             this.grandTotalProfit = this.grandTotalProfit + res.totalProfit;
@@ -542,125 +627,26 @@ export class DashboardComponent implements OnInit {
         });
     }
 
-    ngAfterViewInit() {
-
-        // if (this.router.url.includes("/dashboard") || this.router.url.includes("/group-overview")) {
-        //     console.log('after init')
-        //     setTimeout(() => {
-        //         this.isGroupDashboard = true;
-        //         this.chartOptions = {
-        //             title: {
-        //                 text: null
-        //             },
-        //             xAxis: {
-        //                 tickInterval: 24 * 3600 * 1000,
-        //                 type: 'datetime'  
-        //             },
-        //             yAxis: [
-        //                 {
-        //                     title: {
-        //                         text: null
-        //                     },
-        //                 },
-        //                 {
-        //                     title: {
-        //                         text: null
-        //                     },
-        //                     opposite: true
-        //                 }
-        //             ],
-        //             labels: {
-        //                 items: [{
-        //                     html: '',
-        //                 }]
-        //             },
-        //             legend: {
-        //                 layout: 'horizontal',
-        //                 align: 'right',
-        //                 verticalAlign: 'bottom',
-        //             },
-        //             plotOptions: {
-        //                 series: {
-        //                     pointWidth: 10,
-        //                     pointStart: 1,
-        //                 }
-        //             },
-        //             tooltip: {
-        //                 formatter: function () {
-        //                     let s = [];
-        //                     // console.log(this.points);
-        //                     this.points.map((el, i) => {
-        //                         // console.log(el);
-        //                         s.push(el.point.series.name + ' : <span style="color:#D31B22;font-weight:bold;">' +
-        //                             el.point.y + '</span><br>');
-        //                     });
-        //                 },
-        //                 shared: true,
-        //                 valueDecimals: 2
-        //             },
-        //             series: this.seriesData,
-        //             responsive: {
-        //                 rules: [{
-        //                     condition: {
-        //                         maxWidth: 500
-        //                     },
-        //                     chartOptions: {
-        //                         legend: {
-        //                             floating: false,
-        //                             layout: 'horizontal',
-        //                             align: 'center',
-        //                             verticalAlign: 'bottom',
-        //                             x: 0,
-        //                             y: 0
-        //                         },
-        //                         yAxis: [{
-        //                             labels: {
-        //                                 align: 'right',
-        //                                 x: 0,
-        //                                 y: -6
-        //                             },
-        //                             showLastLabel: false
-        //                         }, {
-        //                             labels: {
-        //                                 align: 'left',
-        //                                 x: 0,
-        //                                 y: -6
-        //                             },
-        //                             showLastLabel: false
-        //                         }, {
-        //                             visible: false
-        //                         }]
-        //                     }
-        //                 }]
-        //             }
-        //         };
-        //         Highcharts.chart(this.container.nativeElement, this.chartOptions);
-        //         this.chartLoader=  false;                
-        //     }, 2000);
-        // }
-    }
-
     filterChange(event) {  
-        const value = event.value;
-        this.dataValue = value;
-        console.log(this.filterValue);
-        console.log("Group by "+this.dataValue);
-        this.groupByHeader = this.dataValue.split(" /")[0];
-        this.field = this.dataValue.split(" /")[1];
-        this.callPivotApi( this.groupByHeader,   this.field ,this.orderHeader,this.time);  
-        this.fetchPivotAPI();  
+        console.log(this.dataValue);
+        if(this.tab === 1){
+            this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+        }else{
+            this.groupByHeader = this.dataValue.split(" /")[0];
+            this.field = this.dataValue.split(" /")[1];
+            this.callPivotApi( this.groupByHeader,   this.field ,this.orderHeader,this.time);  
+        }
     }
 
     filterOrderChange(event) {
-        const value = event.value;
-        this.dataValue = value;
-        console.log(this.dataValue);
-        console.log("Group by "+this.dataValue);
-        this.orderHeader = this.dataValue.split(" /")[0];
-        //this.field = this.dataValue.split(" /")[1];
-        this.callPivotApi( this.groupByHeader,   this.field, this.orderHeader,this.time);
-        this.fetchPivotAPI();
-        
+        this.dataValue = event.value;
+
+        if(this.tab === 1){
+            this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+        }else{
+            this.orderHeader = this.dataValue.split(" /")[0];
+            this.callPivotApi( this.groupByHeader,   this.field, this.orderHeader,this.time);
+        }  
     }
 
     filterTimeChange(event) {
@@ -669,25 +655,16 @@ export class DashboardComponent implements OnInit {
         this.time = this.dataValue.split(" /")[0];
     
         this.callPivotApi( this.groupByHeader,   this.field,this.orderHeader,this.time);
-        this.fetchPivotAPI();
-    }
-
-    fetchPivotAPI(){
-        
     }
 
     callPivotApi(groupBy,field ,filterby,date) {
-        console.log(groupBy+" "+ field+" "+filterby+" "+date)
+        // console.log(groupBy+" "+ field+" "+filterby+" "+date);
+        this.chartLoader=  true;   
+        this.constructPivotTableDD();
     }
 
     filterByChannge(event) {
-        const value = event.value;
-
-        this.generateGraphByFilter(this.dataValue , value);
-    }
-
-    generateGraphByFilter(groupBy , filterBy) {
-       this.generateSalesGraph(filteredData);
+        this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
     }
 
     toggleAccordian(rowId) {
@@ -705,7 +682,16 @@ export class DashboardComponent implements OnInit {
 
     ActiveTab(tab) {
         this.tab = tab;
-        console.log(this.tab);
+        if(this.tab === 2){
+            this.filterValue = {key: "DEP/SP", value: "Department / Sales Person"};
+            this.defaultOrder = { key: "Orders Delivered", value: "Delivered" };
+            this.constructPivotTableDD();
+        }else{
+            this.dataValue = { key: "Group by: Total", value: "By Total" };
+            this.orderValue = { key: "Order covered", value: "Covered" };
+            this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+        }
+        
     }
 
     applyCalenderFilter(){

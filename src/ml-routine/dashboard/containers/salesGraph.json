@@ -12,7 +12,6 @@
 		}
 	},
 	"seriesData": [{
-			"date": 1,
 			"graphType": "column",
 			"legendName": "Target Profit",
 			"yAxis": 0,
@@ -21,23 +20,25 @@
 			"tooltip": {
 				"valuePrefix": " $"
 			},
-			"columnData": [20, 200, 100, 10, 150, 50, 30, 40, 300,350
+			"columnData": [
+				{
+					"x": "2019-12-1", 
+					"y": 20
+				},
+				{
+					"x":"2019-12-2",
+					"y": 200
+				}, 
+				{
+					"x": "2019-12-3",
+					"y": 100
+				}
 			],
 			"color":"rgb(166, 165, 166)",
-			"month":"Feb",
-			"interval":24,
-			"columnDataIndex": 0,
-
-			"splineData": null,
-
-			"splineStyle": null
-
-
-
+			"splineData": null
 		},
 
 		{
-			"date": 1,
 			"graphType": "column",
 			"legendName": "Profit Covered",
 			"yAxis": 0,
@@ -46,22 +47,29 @@
 			"tooltip": {
 				"valuePrefix": " $"
 			},
-			"columnData": [210, 250, 300, 150, 180, 80, 50, 140, 400,550
+			"columnData": [
+				{
+					"x": "2019-12-1",
+					"y": 210
+				},
+				{
+					"x":"2019-12-2",
+					"y": 250
+				}, 
+				{
+					"x": "2019-12-3",
+					"y": 300
+				},
+				{
+					"x": "2019-12-4",
+					"y": 150
+				}
 			],
 			"color":"green",
 			"month":"Feb",
-			"interval":24,
-			"columnDataIndex": 0,
-
-			"splineData": null,
-
-			"splineStyle": null
-
-
-
+			"splineData": null
 		},
 		{
-			"date": 1,
 			"graphType": "spline",
 			"legendName": "Target Order",
 			"yAxis": 1,
@@ -71,22 +79,26 @@
 				"valuePrefix": " $"
 			},
 			"columnData": null,
-		
-			"splineData": [100, 150, 200, 250, 300, 350, 400, 450,500],
-			"month":"Feb",
-			"interval": 24 ,
-
-			"splineDataIndex": 1,
-
-			"splineStyle": {
-				"lineWidth": 2,
-				"lineColor": "Highcharts.getOptions().colors[3]",
-				"fillColor": "white"
-
-			}
+			"splineData": [
+				{
+					"x": "2019-12-1",
+					"y": 100
+				},
+				{
+					"x":"2019-12-2",
+					"y": 150
+				}, 
+				{
+					"x": "2019-12-3",
+					"y": 200
+				},
+				{
+					"x": "2019-12-4",
+					"y": 250
+				}
+			]
 		},
 		{
-			"date": 1,
 			"graphType": "spline",
 			"legendName": "Orders Covered",
 			"yAxis": 1,
@@ -96,23 +108,24 @@
 				"valuePrefix": " $"
 			},
 			"columnData": null,
-
-			"splineData": [200, 220, 250, 280, 300, 320, 350, 380,420],
-			"month":"Feb",
-			"interval": 24 ,
-			"splineDataIndex": 1,
-
-			"splineStyle": {
-				"lineWidth": 2,
-				"lineColor": "Highcharts.getOptions().colors[3]",
-				"fillColor": "white"
-
-			}
-
-
+			"splineData": [
+				{
+					"x": "2019-12-1",
+					"y": 200
+				},
+				{
+					"x":"2019-12-2",
+					"y": 220
+				}, 
+				{
+					"x": "2019-12-3",
+					"y": 250
+				},
+				{
+					"x": "2019-12-4",
+					"y": 280
+				}
+			]
 		}
-
-
-
 	]
 }
