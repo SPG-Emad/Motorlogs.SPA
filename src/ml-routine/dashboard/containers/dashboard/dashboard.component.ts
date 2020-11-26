@@ -33,6 +33,8 @@ export class DashboardComponent implements OnInit {
     rowData:any;
     seriesData:any[]=[];
     seriesObj:any;
+    pivotData =  [];
+    graphData = [];
     private postProcessPopup;
 
   monthSearch:any;
@@ -46,6 +48,8 @@ export class DashboardComponent implements OnInit {
   monthModal: boolean = false;
   monthSelected: any;
   monthFilter:string;
+  searchDateBar:string;
+
   yearActive: string;
   sliderItem: string;
  
@@ -330,9 +334,10 @@ export class DashboardComponent implements OnInit {
         this.monthSelected = event.monthSelected;
         this.sliderIndex = event.monthSelected;
         this.sliderItem = event.sliderItem;
-
-        console.log(this.dataValue, this.orderValue);
+        this.searchDateBar = event.monthFilter;
+        
         if(this.tab===1){
+            this.graphData = this.seriesData;
             if(event.option === 1){
                 this.monthFilter = event.dateFormat;
             }else{
@@ -340,6 +345,7 @@ export class DashboardComponent implements OnInit {
             }
             this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
         }else {
+            this.pivotData = this.pivotTab;
             if(event.option === 1){
                 this.monthFilter = event.dateFormat;
             }else{
@@ -366,6 +372,22 @@ export class DashboardComponent implements OnInit {
         this.targetObj['vechProfit']['mtdDifference'] = (salesObject["vehProfit"]["mtdTarget"] && salesObject["vehProfit"]["mtdResult"])? (salesObject["vehProfit"]["mtdResult"]  - salesObject["vehProfit"]["mtdTarget"]) : 0;
     }
     
+
+    resetSearch(){
+        this.searchDateBar="";
+
+        let dateFormat = moment().add().format('MMM_YY').toUpperCase();
+        this.monthFilter =dateFormat;
+        this.currentDate = moment().format('MMM - DD');
+
+        if(this.tab===1){
+            this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+        }else {
+            this.constructPivotTableDD();     
+        }
+
+    }
+
     generateSalesGraph(graphData){
         
         let dataAry=[]; 
@@ -487,7 +509,6 @@ export class DashboardComponent implements OnInit {
         if (this.router.url.includes("/dashboard") || this.router.url.includes("/group-overview")) {
             this.isGroupDashboard = true;
             this.chartOptions = {};
-            console.log(this.chartOptions);
             this.chartOptions = {
                 title: {
                     text: null
@@ -593,7 +614,7 @@ export class DashboardComponent implements OnInit {
 
         this.dashboardService.generatePivotData(param)
         .subscribe(res=>{
-            if(res && res.legnth> 0){
+            if(res && res.length> 0){
                 this.pivotTab= [];
                 this.field = "";
                 this.groupByHeader= "";

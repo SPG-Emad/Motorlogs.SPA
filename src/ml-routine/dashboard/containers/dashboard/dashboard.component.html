@@ -1,3 +1,16 @@
+<div class="search-header" [ngClass]="{'search-visible': searchDateBar}">
+    <div class="month-shown">
+      <h3>Month shown</h3>
+      <p>{{searchDateBar}}</p>
+    </div>
+    <div class="go-to">
+      <h3>Go to</h3>
+      <div class="reset-search" (click)="resetSearch()">
+        <h3>Current Month</h3>
+      </div>
+    </div>
+</div>
+
 <div class="page-layout carded fullwidth " style="height: 100%;margin: 30px auto;background: #fff;">
     <div class="center main-card">
         <div id="divDashboard" class="ng-scope">
@@ -105,10 +118,10 @@
                             <tbody>
                                 <tr>
                                     <td class="bgTitle">Vehicle Orders</td>
-                                    <td id="target_Deal" style="background-color: rgb(225, 244, 255);"><b>$ {{targetObj.vechOrders.mtdTarget |number: '.0-0'}}</b></td>
+                                    <td id="target_Deal" style="background-color: rgb(225, 244, 255);"><b>{{targetObj.vechOrders.mtdTarget |number: '.0-0'}}</b></td>
                                     <td class="txtLine"></td>
                                     <td id="mtd_target_Deal"><span style="color:#808080;">{{targetObj.vechOrders.mtdTarget |number: '.0-0'}}</span></td>
-                                    <td id="mtd_order_Deal">$ {{targetObj.vechOrders.mtdResult |number: '.0-0'}}</td>
+                                    <td id="mtd_order_Deal">{{targetObj.vechOrders.mtdResult |number: '.0-0'}}</td>
                                     <td id="difference_Deal"><span style="color:#808080;">{{targetObj.vechOrders.mtdDifference |number: '.0-0'}}</span></td>
                                     <td id="mtd_percentage_Deal"><span style="color:#808080;">{{targetObj.vechOrders.mtdPercentage |number: '.0-0'}}%</span></td>
                                 </tr>
@@ -763,7 +776,12 @@
         </div>
     </div>
     <div style="margin-left:17%" id="divuldaterange">
-        <date-footer [rowData]="rowData" (dateFilterObj)="dateSetting($event)"></date-footer>
+        <date-footer 
+            [rowData]="rowData" 
+            (dateFilterObj)="dateSetting($event)" 
+            [monthsFilter]=false
+        >
+        </date-footer>
         <!-- / Months slider Ends -->
     </div>
 </div>

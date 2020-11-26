@@ -33,6 +33,9 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
     @Input() 
     rowData = [];
 
+    @Input() 
+    monthsFilter?:boolean = true;
+
     @Output()
     dateFilterObj = new  EventEmitter()
     

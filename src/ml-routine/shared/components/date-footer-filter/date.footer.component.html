@@ -1,4 +1,9 @@
-<div id="divDateRange" style="width: 450px; height: 260px;" *ngIf="monthModal">
+<div 
+id="divDateRange" 
+style="height: 260px;" 
+*ngIf="monthModal" 
+[ngStyle]="{width: monthsFilter? '450px': '272px'}"
+>
         <div style="float:left;border-right: 1px solid #e0e0e0;">
             <div style=" text-align: center; background-color: #1976D2;color: #ffffff;padding: 8px 4px;">
                 <div class="slider-wrap-year">
@@ -32,7 +37,7 @@
             </div>
         </div>
         <div style="float:left; width: 172px; background-color: #F9F9F9;">
-            <div style="margin-left: 15px;margin-top: 26px;">
+            <div style="margin-left: 15px;margin-top: 26px;" *ngIf="monthsFilter">
               <mat-radio-group aria-label="Select an option" [(ngModel)]="monthSelected">
                 <mat-radio-button class="calendar-radio-button" value="1">1 month</mat-radio-button>
                 <mat-radio-button class="calendar-radio-button" value="3">Past 3 months</mat-radio-button>
