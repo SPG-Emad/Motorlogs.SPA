@@ -117,7 +117,7 @@ export class DashboardComponent implements OnInit {
     dataValue: any = { key: "Group by: Total", value: "By Total" };
     orderValue: any = { key: "Order covered", value: "Covered" };
     filter = "";
-
+    salepersonArray =  [];
     displayKey = "value";
     isDisable = false;
 
@@ -303,7 +303,6 @@ export class DashboardComponent implements OnInit {
 
 
     fetchSaleGraph(groupBy, orderBy){
-        console.log(groupBy, orderBy);
         this.chartLoader=  true;   
         let param = {
             "Deptid": (this.decryptedDepartmentId)? this.decryptedDepartmentId:"-1", // if called on GROUP DASHBOARD then this would be -1
@@ -315,7 +314,8 @@ export class DashboardComponent implements OnInit {
 
         this.dashboardService.generateSalesGraph(param)
         .subscribe(data=>{
-            if(data){
+            if(data && data.seriesData !== null && data.seriesData !== undefined){
+                console.log(data.seriesData);
                 this.generateSalesGraph(data);
             }else{
                 this.chartLoader=  false;                
@@ -406,7 +406,7 @@ export class DashboardComponent implements OnInit {
             salesObject["yAxis"] = element.yAxis;
 
             switch(element.month) { 
-                case 'Jan': { 
+                case 'Jan': {   
                     salesObject["pointStart"]=Date.UTC(2010, 0, 1);
                 break; 
                 } 
@@ -469,13 +469,8 @@ export class DashboardComponent implements OnInit {
             }
 
             if(element.columnData!=null) {
-                // console.log(element.columnData);
                 element.columnData.map(res=>{
-                    // console.log(res.x);
-                    // console.log(typeof res.x);
-
                     let date = res.x.split('-')
-                    // console.log(date);
 
                     res.x = Date.UTC(date[0], date[1], date[2]);
                 });
@@ -549,9 +544,7 @@ export class DashboardComponent implements OnInit {
                 tooltip: {
                     formatter: function () {
                         let s = [];
-                        // console.log(this.points);
                         this.points.map((el, i) => {
-                            // console.log(el);
                             s.push(el.point.series.name + ' : <span style="color:#D31B22;font-weight:bold;">' +
                                 el.point.y + '</span><br>');
                         });
@@ -601,6 +594,146 @@ export class DashboardComponent implements OnInit {
         }
     }
 
+
+    fetchSalePersonsGraph(groupBy?, orderBy?){
+        this.chartLoader=  true;   
+        let param = {
+            "Deptid": 1118, // it is always called in some department dashboard NOT IN GROUP DASHBOARD
+            "PastMonths": 1, // it will always be 1
+            "TillDate": "JUN_20", // take this value from calendar and sent to this API
+            "OrderBy": "Delivered" // Possible values are Delivered, Covered, Sold
+        }
+
+        this.dashboardService.generateSalesPersonGraph(param)
+        .subscribe(data=>{
+            if(data && data.users !== null && data.users !== undefined){
+                console.log(data['users']);
+                this.salepersonArray = data['users'];
+                this.generateSalesGraph(data);
+            }else{
+                this.chartLoader=  false;                
+            }
+        },(err)=>{
+            this.chartLoader=  false;                
+        });
+    }
+
+    /*Start from here*/ 
+    generateSalesPersonsGraph(graphData){
+        
+        let dataAry=[]; 
+        let legendArray : any[]= [];
+        this.seriesData = [];
+        
+        this.calculateTableData(graphData);        
+
+        graphData.seriesData.forEach(element => {
+            let salesObject:any = new Object();   
+            let markerObj = new Object();
+            let valuePrefx :any = new Object();
+
+            salesObject["type"] = element.graphType;
+            salesObject["name"] = element.legendName;
+            salesObject["yAxis"] = element.yAxis;
+
+            switch(element.month) { 
+                case 'Jan': {   
+                    salesObject["pointStart"]=Date.UTC(2010, 0, 1);
+                break; 
+                } 
+                case 'Feb': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 1, 1);
+                break; 
+                } 
+                case 'Mar': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 2, 1);
+                break; 
+                } 
+                case 'Apr': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 3, 1);
+                break; 
+                } 
+                case 'May': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 4, 1);
+                break; 
+                } 
+                case 'Jun': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 5, 1);
+                break; 
+                } 
+                case 'Jul': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 6, 1);
+                break; 
+                }
+            
+                case 'Aug': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 7, 1);
+                break; 
+                } 
+                case 'Sep': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 8, 1);
+                break; 
+                } 
+                case 'Oct': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 9, 1);
+                break; 
+                }  
+                case 'Nov': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 10, 1);
+                break; 
+                } 
+                case 'Dec': { 
+                    salesObject["pointStart"]=Date.UTC(2010, 11, 1);
+                break; 
+                } 
+                default: { 
+                //statements; 
+                break; 
+                } 
+            } 
+
+            salesObject["pointInterval"] = element.interval * 3600 * 1000 ;
+            if(element.graphType ==='column') {
+                valuePrefx["valuePrefix"] = element.tooltip.valuePrefix;
+                salesObject["tooltip"] = valuePrefx;
+                salesObject["color"] =  element.color;
+            }
+
+            if(element.columnData!=null) {
+                element.columnData.map(res=>{
+                    let date = res.x.split('-')
+
+                    res.x = Date.UTC(date[0], date[1], date[2]);
+                });
+                
+                salesObject["data"] = element.columnData;
+            
+            } else {
+                element.splineData.map(res=>{
+                    let date = res.x.split('-')
+                    res.x = Date.UTC(date[0], date[1], date[2]);
+                });
+                
+                salesObject["data"] = element.splineData;
+            }
+            if(element.splineStyle!=null){
+                markerObj["lineWidth"] = 2;
+                markerObj["lineColor"] = Highcharts.getOptions().colors[3];
+                markerObj["fillColor"] = "white";
+            }
+            salesObject["marker"]  = markerObj;
+            this.seriesData.push(salesObject);
+
+            legendArray.push(element.legendName);
+        });
+
+        this.initializeGraph();
+    }
+    /*============================*/ 
+
+
+
+
     constructPivotTableDD(){
         this.pivotLoader = true;
 
@@ -649,9 +782,15 @@ export class DashboardComponent implements OnInit {
     }
 
     filterChange(event) {  
-        console.log(this.dataValue);
+
         if(this.tab === 1){
-            this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+            if(this.dataValue.value ==="By Sale Person"){
+                this.groupBy =2;
+                this.fetchSalePersonsGraph();
+            }else{
+                this.groupBy =1;
+                this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+            }
         }else{
             this.groupByHeader = this.dataValue.split(" /")[0];
             this.field = this.dataValue.split(" /")[1];
@@ -679,7 +818,6 @@ export class DashboardComponent implements OnInit {
     }
 
     callPivotApi(groupBy,field ,filterby,date) {
-        // console.log(groupBy+" "+ field+" "+filterby+" "+date);
         this.chartLoader=  true;   
         this.constructPivotTableDD();
     }
@@ -716,7 +854,6 @@ export class DashboardComponent implements OnInit {
     }
 
     applyCalenderFilter(){
-        console.log(this.monthSelected);
         this.monthModal= false;
         // this.generateFilter(this.monthSelected);
     }

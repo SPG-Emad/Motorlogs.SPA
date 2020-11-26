@@ -54,6 +54,12 @@ export class DashboardService {
             .map(this.extractData);
     }
 
+    generateSalesPersonGraph(params: any){
+        return this._http
+            .post<IDashboard[]>(`${DASHBOARD_API}/GenerateSalesGraphUser`, params)
+            .map(this.extractData);
+    }
+
     private extractData(res) {
         let body = (typeof (res) != 'object')? res.json(): res;  // If response is a JSON use json(), If response is a String use text()
         if (body) {
