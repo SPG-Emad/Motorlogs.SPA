@@ -1,7 +1,7 @@
 import { CustomLoadingOverlayComponent } from '../../components/custom-loading-overlay/custom-loading-overlay.component';
 
 import { AllCommunityModules, ColumnResizedEvent } from '@ag-grid-community/all-modules';
-import { Component, OnInit, ChangeDetectionStrategy, Inject, OnChanges, Input } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Inject, OnChanges, Input, ViewChild, ElementRef, Renderer2 } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { ToastHandlerService } from 'app/shared/services/toast-handler.service';
 import { MatDialog, MAT_DIALOG_DATA } from '@angular/material/dialog';
@@ -45,7 +45,9 @@ export class SaleslogComponent implements OnInit {
 
   @Input() 
   public routineSelected: number = 1; 
-  
+  @ViewChild('myGrid',{static:true}) agGrid: ElementRef;
+  private renderer: Renderer2
+
   public carryOverAmount: number =- 0;
   public carryOverUnits: number =0;
   public carryOverAvg: number =0;
@@ -550,7 +552,7 @@ export class SaleslogComponent implements OnInit {
     let obj = {
       "UserId": this.sessionHandlerService.getSession('userObj').userId,
       "RoleId": this.sessionHandlerService.getSession('userObj').roleID,
-      "ViewId": 3,
+      "ViewId": 1,
       "DeptId": this.decryptedDepartmentId,
       "TillDate": (date)? date : moment().format('MMM_YY'),
       "PastMonths": (months)? months : 1,
@@ -1854,6 +1856,31 @@ export class SaleslogComponent implements OnInit {
         });
       }
     });
+  }
+
+
+  onBtPrint() {
+    var api = this.gridApi;
+    this.setPrinterFriendly(api);
+    let thisRef=  this;
+    setTimeout(function () {  
+      window.print();
+      thisRef.setNormal(api);
+    }, 2000);
+  }
+
+  setPrinterFriendly(api) {
+    let eGridDiv: HTMLElement = document.getElementById('myGrid')as HTMLElement;
+    eGridDiv.style.height = '';
+
+    api.setDomLayout('print');
+  }
+  setNormal(api) {
+    let eGridDiv: HTMLElement = document.getElementById('myGrid')as HTMLElement;
+    eGridDiv.style.width = '100%';
+    eGridDiv.style.height = '600px';
+
+    api.setDomLayout(null);
   }
 
   excelExport(){

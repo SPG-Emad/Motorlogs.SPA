@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, Input, SimpleChanges } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, Input, SimpleChanges, Output, EventEmitter } from '@angular/core';
 
 @Component({
   selector: 'app-print',
@@ -9,6 +9,9 @@ import { Component, OnInit, ChangeDetectionStrategy, Input, SimpleChanges } from
 export class PrintComponent implements OnInit {
 
   @Input() printData:any;
+
+  @Output() 
+  generatePrint? =  new EventEmitter<any>();
 
   constructor() { }
 
@@ -30,6 +33,6 @@ export class PrintComponent implements OnInit {
   }
 
   print(){
-    window.print();
+    this.generatePrint.emit('');
   }
 }

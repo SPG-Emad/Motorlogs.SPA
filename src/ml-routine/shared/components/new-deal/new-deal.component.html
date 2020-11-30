@@ -63,7 +63,7 @@
             
             <mat-form-field floatLabel="always" class="example-full-width">
                 <mat-label> Site</mat-label>
-                <input matInput formControlName="site" (keypress)="onlyCharacters($event)">
+                <input matInput formControlName="site" (keypress)="onlyCharacters($event)" value="{{siteValue}}">
             </mat-form-field>
             <br>
     

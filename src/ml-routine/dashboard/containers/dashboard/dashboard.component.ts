@@ -269,6 +269,7 @@ export class DashboardComponent implements OnInit {
         this.route.paramMap.subscribe(params => {
             this.chartLoader =true;
             this.decryptedDepartmentId =  "";
+            this.groupBy = 1;
 
             var coll = document.getElementsByClassName("collapsible");
             var i;

@@ -6,7 +6,8 @@ export const environment = {
     production: false,
     hmr       : false,
     apiURL    : "https://motorlogs.azurewebsites.net/api/",
-    sessionTimeout : 6000
+    sessionTimeout : 6000,
+    ARRIVING_SITE_VALUE: 'LENNOK MOTORS'
 };
 
 

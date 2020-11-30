@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { SessionHandlerService } from 'app/shared/services/session-handler.service';
 import { EncryptionService } from 'app/shared/services/encryption.service';
 import { ActivatedRoute } from '@angular/router';
+import {environment} from '../../../../environments/environment';
 
 @Component({
   selector: 'app-new-deal',
@@ -35,12 +36,14 @@ export class NewDealComponent implements OnInit {
           this.modalTitle = "New Deal";
         }else{
           this.modalTitle = "Add Wholesale";
+          this.siteValue =  environment.ARRIVING_SITE_VALUE;
         }
         /*-----------------------------------*/ 
       }
 
     }
-  
+
+  siteValue: string =  "";
   modalTitle : string = "New Deal";
   startDate = new Date();
   add:boolean = false;
