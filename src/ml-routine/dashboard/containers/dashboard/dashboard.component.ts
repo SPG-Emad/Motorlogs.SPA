@@ -53,7 +53,8 @@ export class DashboardComponent implements OnInit {
 
   yearActive: string;
   sliderItem: string;
- 
+  
+
   private toggleColumns: boolean = true;
   decryptedDepartmentId: string;
    
@@ -411,6 +412,7 @@ export class DashboardComponent implements OnInit {
             salesObject["name"] = element.legendName;
             salesObject["yAxis"] = element.yAxis;
 
+
             switch(element.month) { 
                 case 'Jan': {   
                     salesObject["pointStart"]=Date.UTC(2010, 0, 1);
@@ -501,7 +503,6 @@ export class DashboardComponent implements OnInit {
 
             legendArray.push(element.legendName);
         });
-
         this.initializeGraph();
     }
 
@@ -645,11 +646,15 @@ export class DashboardComponent implements OnInit {
         let dataAry=[]; 
         let legendArray : any[]= [];
         this.seriesData = [];
-        let result = graphData;
+        let result = null;
+        result = graphData
         for(let i =0;i<result.users.length;i++){
             let data = result.users[i];
             let gross = 0;
             let vehicles = 0;
+            let grandTotalOrders = 0;
+            let grandTotalProfit = 0;
+
             data.seriesData.forEach(element => {
                 let salesObject:any = new Object();   
                 let markerObj = new Object();
@@ -725,8 +730,8 @@ export class DashboardComponent implements OnInit {
                 if(element.columnData!=null) {
                     element.columnData.map(res=>{
                         let date = res.x.split('-')
-    
                         res.x = Date.UTC(date[0], date[1], date[2]);
+                        grandTotalProfit+= Number(res.y);
                     });
                     
                     salesObject["data"] = element.columnData;
@@ -735,6 +740,7 @@ export class DashboardComponent implements OnInit {
                     element.splineData.map(res=>{
                         let date = res.x.split('-')
                         res.x = Date.UTC(date[0], date[1], date[2]);
+                        grandTotalOrders+= Number(res.y);
                     });
                     
                     salesObject["data"] = element.splineData;
@@ -743,6 +749,7 @@ export class DashboardComponent implements OnInit {
                     markerObj["lineWidth"] = 2;
                     markerObj["lineColor"] = Highcharts.getOptions().colors[3];
                     markerObj["fillColor"] = "white";
+                    
                 }
                 salesObject["marker"]  = markerObj;
                 this.seriesData.push(salesObject);
@@ -842,14 +849,15 @@ export class DashboardComponent implements OnInit {
                 Highcharts.chart(this.container.nativeElement, this.chartOptions);
                 this.chartLoader=  false;                
             }
-    
+
             data['chart'] = this.chartOptions;
             data['gross'] = 0;
-            data['vehicles'] = 0;
-            
+            data['grandTotalOrders'] = grandTotalOrders;
+            data['grandTotalProfit'] = grandTotalProfit;   
         }
+        console.log(result);
+
         this.salepersonArray = result;
-        console.log(this.salepersonArray)
     }
 
     constructPivotTableDD(){

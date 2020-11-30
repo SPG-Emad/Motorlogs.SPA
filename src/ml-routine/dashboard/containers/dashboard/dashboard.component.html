@@ -689,8 +689,8 @@
                                         <td class="caption">{{salesPersonVehicleLabel}}</td>
                                     </tr>
                                     <tr>
-                                        <td class="value">9</td>
-                                        <td class="value">$0.00</td>
+                                        <td class="value">{{person.grandTotalOrders| number: '1.0-0'}}</td>
+                                        <td class="value">${{person.grandTotalProfit| number: '1.0-0'}}</td>
                                     </tr>
                                 </tbody>
                             </table>
