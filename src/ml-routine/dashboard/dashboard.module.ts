@@ -26,6 +26,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import { Ng2CarouselamosModule } from 'ng2-carouselamos';
 import { MatDatepickerModule, MatFormFieldModule, MatIconModule,  MatAutocompleteModule, MatInputModule, MatProgressSpinnerModule, MatSlideToggleModule, MatTableModule, MatSortModule, MatDialogModule, MatCheckboxModule, MatSelectModule } from '@angular/material';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
+import { HighchartsChartComponent } from 'highcharts-angular';
 
 export const ROUTES: Routes = [
     {
@@ -77,6 +78,7 @@ export const ROUTES: Routes = [
     declarations: [
         DashboardComponent,
         DashboardHeaderComponent,
+        HighchartsChartComponent,
         PivotDataComponent,
         PivotFiltersComponent,
         GroupByDepartmentComponent,

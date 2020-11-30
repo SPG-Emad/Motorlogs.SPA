@@ -27,6 +27,7 @@ export class DashboardComponent implements OnInit {
 
     vehicleProfit = 180;
     vehicleOrders = 1800000;
+    highcharts = Highcharts;
 
     sliderIndex: number;
     searchDate:any= [];
@@ -64,7 +65,9 @@ export class DashboardComponent implements OnInit {
   tableData:any;
   chartLoader :boolean = false;
   staticTableHeader=pivotDD.pivotData.staticTableHeader;
-
+  salesPersonGrossLabel: string = "";
+  salesPersonVehicleLabel: string = "";
+  
 
     options = [
         { key: "Group by: Total", value: "By Total" },
@@ -359,17 +362,19 @@ export class DashboardComponent implements OnInit {
         let salesObject:any = new Object();   
         salesObject = graphData['target'];
 
-        /*Vechicle Orders*/ 
-        this.targetObj['vechOrders']['mtdTarget'] = salesObject["vehOrders"]["mtdTarget"];
-        this.targetObj['vechOrders']['mtdResult'] = salesObject["vehOrders"]["mtdResult"];
-        this.targetObj['vechOrders']['mtdPercentage'] = (salesObject["vehOrders"]["mtdTarget"] && salesObject["vehOrders"]["mtdResult"])? (salesObject["vehOrders"]["mtdResult"]  / salesObject["vehOrders"]["mtdTarget"])*100 : 0;
-        this.targetObj['vechOrders']['mtdDifference'] = (salesObject["vehOrders"]["mtdTarget"] && salesObject["vehOrders"]["mtdResult"])? (salesObject["vehOrders"]["mtdResult"]  - salesObject["vehOrders"]["mtdTarget"]) : 0;
-        
-        /*Vechicle Profit*/ 
-        this.targetObj['vechProfit']['mtdTarget'] = salesObject["vehProfit"]["mtdTarget"];
-        this.targetObj['vechProfit']['mtdResult'] = salesObject["vehProfit"]["mtdResult"];
-        this.targetObj['vechProfit']['mtdPercentage'] = (salesObject["vehProfit"]["mtdTarget"] && salesObject["vehProfit"]["mtdResult"])? (salesObject["vehProfit"]["mtdResult"]  / salesObject["vehProfit"]["mtdTarget"])*100 : 0;
-        this.targetObj['vechProfit']['mtdDifference'] = (salesObject["vehProfit"]["mtdTarget"] && salesObject["vehProfit"]["mtdResult"])? (salesObject["vehProfit"]["mtdResult"]  - salesObject["vehProfit"]["mtdTarget"]) : 0;
+        if(salesObject &&  this.targetObj['vechOrders'] &&  this.targetObj['vechProfit']){
+            /*Vechicle Orders*/ 
+            this.targetObj['vechOrders']['mtdTarget'] = salesObject["vehOrders"]["mtdTarget"];
+            this.targetObj['vechOrders']['mtdResult'] = salesObject["vehOrders"]["mtdResult"];
+            this.targetObj['vechOrders']['mtdPercentage'] = (salesObject["vehOrders"]["mtdTarget"] && salesObject["vehOrders"]["mtdResult"])? (salesObject["vehOrders"]["mtdResult"]  / salesObject["vehOrders"]["mtdTarget"])*100 : 0;
+            this.targetObj['vechOrders']['mtdDifference'] = (salesObject["vehOrders"]["mtdTarget"] && salesObject["vehOrders"]["mtdResult"])? (salesObject["vehOrders"]["mtdResult"]  - salesObject["vehOrders"]["mtdTarget"]) : 0;
+            
+            /*Vechicle Profit*/ 
+            this.targetObj['vechProfit']['mtdTarget'] = salesObject["vehProfit"]["mtdTarget"];
+            this.targetObj['vechProfit']['mtdResult'] = salesObject["vehProfit"]["mtdResult"];
+            this.targetObj['vechProfit']['mtdPercentage'] = (salesObject["vehProfit"]["mtdTarget"] && salesObject["vehProfit"]["mtdResult"])? (salesObject["vehProfit"]["mtdResult"]  / salesObject["vehProfit"]["mtdTarget"])*100 : 0;
+            this.targetObj['vechProfit']['mtdDifference'] = (salesObject["vehProfit"]["mtdTarget"] && salesObject["vehProfit"]["mtdResult"])? (salesObject["vehProfit"]["mtdResult"]  - salesObject["vehProfit"]["mtdTarget"]) : 0;
+        }
     }
     
 
@@ -596,8 +601,26 @@ export class DashboardComponent implements OnInit {
 
 
     fetchSalePersonsGraph(groupBy?, orderBy?){
+
+        if(orderBy === "Covered"){
+            this.salesPersonGrossLabel = "Covered Vehicles";
+            this.salesPersonVehicleLabel = "Covered Gross";
+
+        }else if(orderBy === "Delivered"){
+            this.salesPersonGrossLabel = "Delivered Vehicles";
+            this.salesPersonVehicleLabel = "Delivered Gross";
+
+        }else{
+            this.salesPersonGrossLabel = "Sold Vehicles";
+            this.salesPersonVehicleLabel = "Sold Gross";
+        }
+
         this.chartLoader=  true;   
         let param = {
+            // "Deptid": (this.decryptedDepartmentId)? this.decryptedDepartmentId:"-1", // if called on GROUP DASHBOARD then this would be -1
+            // "PastMonths": 1, // it will always be 1
+            // "TillDate": this.monthFilter, // take this value from calendar and sent to this API
+            // "OrderBy": orderBy // Possible values are Delivered, Covered, Sold         
             "Deptid": 1118, // it is always called in some department dashboard NOT IN GROUP DASHBOARD
             "PastMonths": 1, // it will always be 1
             "TillDate": "JUN_20", // take this value from calendar and sent to this API
@@ -606,10 +629,8 @@ export class DashboardComponent implements OnInit {
 
         this.dashboardService.generateSalesPersonGraph(param)
         .subscribe(data=>{
-            if(data && data.users !== null && data.users !== undefined){
-                console.log(data['users']);
-                this.salepersonArray = data['users'];
-                this.generateSalesGraph(data);
+            if(data && data.users !== null && data.users !== undefined){                
+                this.generateSalesPersonsGraph(data);
             }else{
                 this.chartLoader=  false;                
             }
@@ -618,121 +639,217 @@ export class DashboardComponent implements OnInit {
         });
     }
 
-    /*Start from here*/ 
+
     generateSalesPersonsGraph(graphData){
-        
         let dataAry=[]; 
         let legendArray : any[]= [];
         this.seriesData = [];
-        
-        this.calculateTableData(graphData);        
-
-        graphData.seriesData.forEach(element => {
-            let salesObject:any = new Object();   
-            let markerObj = new Object();
-            let valuePrefx :any = new Object();
-
-            salesObject["type"] = element.graphType;
-            salesObject["name"] = element.legendName;
-            salesObject["yAxis"] = element.yAxis;
-
-            switch(element.month) { 
-                case 'Jan': {   
-                    salesObject["pointStart"]=Date.UTC(2010, 0, 1);
-                break; 
+        let result = graphData;
+        for(let i =0;i<result.users.length;i++){
+            let data = result.users[i];
+            let gross = 0;
+            let vehicles = 0;
+            data.seriesData.forEach(element => {
+                let salesObject:any = new Object();   
+                let markerObj = new Object();
+                let valuePrefx :any = new Object();
+    
+                salesObject["type"] = element.graphType;
+                salesObject["name"] = element.legendName;
+                salesObject["yAxis"] = element.yAxis;
+                
+                switch(element.month) { 
+                    case 'Jan': {   
+                        salesObject["pointStart"]=Date.UTC(2010, 0, 1);
+                    break; 
+                    } 
+                    case 'Feb': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 1, 1);
+                    break; 
+                    } 
+                    case 'Mar': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 2, 1);
+                    break; 
+                    } 
+                    case 'Apr': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 3, 1);
+                    break; 
+                    } 
+                    case 'May': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 4, 1);
+                    break; 
+                    } 
+                    case 'Jun': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 5, 1);
+                    break; 
+                    } 
+                    case 'Jul': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 6, 1);
+                    break; 
+                    }
+                
+                    case 'Aug': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 7, 1);
+                    break; 
+                    } 
+                    case 'Sep': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 8, 1);
+                    break; 
+                    } 
+                    case 'Oct': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 9, 1);
+                    break; 
+                    }  
+                    case 'Nov': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 10, 1);
+                    break; 
+                    } 
+                    case 'Dec': { 
+                        salesObject["pointStart"]=Date.UTC(2010, 11, 1);
+                    break; 
+                    } 
+                    default: { 
+                    //statements; 
+                    break; 
+                    } 
                 } 
-                case 'Feb': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 1, 1);
-                break; 
-                } 
-                case 'Mar': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 2, 1);
-                break; 
-                } 
-                case 'Apr': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 3, 1);
-                break; 
-                } 
-                case 'May': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 4, 1);
-                break; 
-                } 
-                case 'Jun': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 5, 1);
-                break; 
-                } 
-                case 'Jul': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 6, 1);
-                break; 
+    
+                salesObject["pointInterval"] = element.interval * 3600 * 1000 ;
+                if(element.graphType ==='column') {
+                    valuePrefx["valuePrefix"] = element.tooltip.valuePrefix;
+                    salesObject["tooltip"] = valuePrefx;
+                    salesObject["color"] =  element.color;
                 }
-            
-                case 'Aug': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 7, 1);
-                break; 
-                } 
-                case 'Sep': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 8, 1);
-                break; 
-                } 
-                case 'Oct': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 9, 1);
-                break; 
-                }  
-                case 'Nov': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 10, 1);
-                break; 
-                } 
-                case 'Dec': { 
-                    salesObject["pointStart"]=Date.UTC(2010, 11, 1);
-                break; 
-                } 
-                default: { 
-                //statements; 
-                break; 
-                } 
-            } 
-
-            salesObject["pointInterval"] = element.interval * 3600 * 1000 ;
-            if(element.graphType ==='column') {
-                valuePrefx["valuePrefix"] = element.tooltip.valuePrefix;
-                salesObject["tooltip"] = valuePrefx;
-                salesObject["color"] =  element.color;
-            }
-
-            if(element.columnData!=null) {
-                element.columnData.map(res=>{
-                    let date = res.x.split('-')
-
-                    res.x = Date.UTC(date[0], date[1], date[2]);
-                });
+    
+                if(element.columnData!=null) {
+                    element.columnData.map(res=>{
+                        let date = res.x.split('-')
+    
+                        res.x = Date.UTC(date[0], date[1], date[2]);
+                    });
+                    
+                    salesObject["data"] = element.columnData;
                 
-                salesObject["data"] = element.columnData;
+                } else {
+                    element.splineData.map(res=>{
+                        let date = res.x.split('-')
+                        res.x = Date.UTC(date[0], date[1], date[2]);
+                    });
+                    
+                    salesObject["data"] = element.splineData;
+                }
+                if(element.splineStyle!=null){
+                    markerObj["lineWidth"] = 2;
+                    markerObj["lineColor"] = Highcharts.getOptions().colors[3];
+                    markerObj["fillColor"] = "white";
+                }
+                salesObject["marker"]  = markerObj;
+                this.seriesData.push(salesObject);
+    
+                legendArray.push(element.legendName);
+            });
+
+
+            if (this.router.url.includes("/dashboard") || this.router.url.includes("/group-overview")) {
+                this.isGroupDashboard = true;
+                this.chartOptions = {};
+                this.chartOptions = {
+                    title: {
+                        text: null
+                    },
+                    xAxis: {
+                        tickInterval: 24 * 3600 * 1000,
+                        type: 'datetime'  
+                    },
+                    yAxis: [
+                        {
+                            title: {
+                                text: null
+                            },
+                        },
+                        {
+                            title: {
+                                text: null
+                            },
+                            opposite: true
+                        }
+                    ],
+                    labels: {
+                        items: [{
+                            html: '',
+                        }]
+                    },
+                    legend: {
+                        layout: 'horizontal',
+                        align: 'right',
+                        verticalAlign: 'bottom',
+                    },
+                    plotOptions: {
+                        series: {
+                            pointWidth: 10,
+                            pointStart: 1,
+                        }
+                    },
+                    tooltip: {
+                        formatter: function () {
+                            let s = [];
+                            this.points.map((el, i) => {
+                                s.push(el.point.series.name + ' : <span style="color:#D31B22;font-weight:bold;">' +
+                                    el.point.y + '</span><br>');
+                            });
+                            return s;
+                        },
+                        shared: true,
+                        valueDecimals: 2
+                    },
+                    series: this.seriesData,
+                    responsive: {
+                        rules: [{
+                            condition: {
+                                maxWidth: 500
+                            },
+                            chartOptions: {
+                                legend: {
+                                    floating: false,
+                                    layout: 'horizontal',
+                                    align: 'center',
+                                    verticalAlign: 'bottom',
+                                    x: 0,
+                                    y: 0
+                                },
+                                yAxis: [{
+                                    labels: {
+                                        align: 'right',
+                                        x: 0,
+                                        y: -6
+                                    },
+                                    showLastLabel: false
+                                }, {
+                                    labels: {
+                                        align: 'left',
+                                        x: 0,
+                                        y: -6
+                                    },
+                                    showLastLabel: false
+                                }, {
+                                    visible: false
+                                }]
+                            }
+                        }]
+                    }
+                };
+                Highcharts.chart(this.container.nativeElement, this.chartOptions);
+                this.chartLoader=  false;                
+            }
+    
+            data['chart'] = this.chartOptions;
+            data['gross'] = 0;
+            data['vehicles'] = 0;
             
-            } else {
-                element.splineData.map(res=>{
-                    let date = res.x.split('-')
-                    res.x = Date.UTC(date[0], date[1], date[2]);
-                });
-                
-                salesObject["data"] = element.splineData;
-            }
-            if(element.splineStyle!=null){
-                markerObj["lineWidth"] = 2;
-                markerObj["lineColor"] = Highcharts.getOptions().colors[3];
-                markerObj["fillColor"] = "white";
-            }
-            salesObject["marker"]  = markerObj;
-            this.seriesData.push(salesObject);
-
-            legendArray.push(element.legendName);
-        });
-
-        this.initializeGraph();
+        }
+        this.salepersonArray = result;
+        console.log(this.salepersonArray)
     }
-    /*============================*/ 
-
-
-
 
     constructPivotTableDD(){
         this.pivotLoader = true;
