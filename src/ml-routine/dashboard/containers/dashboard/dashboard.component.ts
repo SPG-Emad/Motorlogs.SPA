@@ -348,7 +348,14 @@ export class DashboardComponent implements OnInit {
             }else{
                 this.monthFilter = event.calender;
             }
-            this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+
+            if(this.dataValue.value ==="By Sale Person"){
+                this.groupBy =2;
+                this.fetchSalePersonsGraph(this.dataValue.value, this.orderValue.value);
+            }else{
+                this.groupBy =1;
+                this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+            }
         }else {
             this.pivotData = this.pivotTab;
             if(event.option === 1){
@@ -603,6 +610,7 @@ export class DashboardComponent implements OnInit {
 
 
     fetchSalePersonsGraph(groupBy?, orderBy?){
+        this.salepersonArray = [];
 
         if(orderBy === "Covered"){
             this.salesPersonGrossLabel = "Covered Vehicles";
@@ -616,17 +624,17 @@ export class DashboardComponent implements OnInit {
             this.salesPersonGrossLabel = "Sold Vehicles";
             this.salesPersonVehicleLabel = "Sold Gross";
         }
-
+        console.log(orderBy);
         this.chartLoader=  true;   
         let param = {
-            // "Deptid": (this.decryptedDepartmentId)? this.decryptedDepartmentId:"-1", // if called on GROUP DASHBOARD then this would be -1
-            // "PastMonths": 1, // it will always be 1
-            // "TillDate": this.monthFilter, // take this value from calendar and sent to this API
-            // "OrderBy": orderBy // Possible values are Delivered, Covered, Sold         
-            "Deptid": 1118, // it is always called in some department dashboard NOT IN GROUP DASHBOARD
+            "Deptid": (this.decryptedDepartmentId)? this.decryptedDepartmentId:"-1", // if called on GROUP DASHBOARD then this would be -1
             "PastMonths": 1, // it will always be 1
-            "TillDate": "JUN_20", // take this value from calendar and sent to this API
-            "OrderBy": "Delivered" // Possible values are Delivered, Covered, Sold
+            "TillDate": this.monthFilter, // take this value from calendar and sent to this API
+            "OrderBy": orderBy // Possible values are Delivered, Covered, Sold         
+            // "Deptid": 1118, // it is always called in some department dashboard NOT IN GROUP DASHBOARD
+            // "PastMonths": 1, // it will always be 1
+            // "TillDate": "JUN_20", // take this value from calendar and sent to this API
+            // "OrderBy": "Delivered" // Possible values are Delivered, Covered, Sold
         }
 
         this.dashboardService.generateSalesPersonGraph(param)
@@ -912,7 +920,7 @@ export class DashboardComponent implements OnInit {
         if(this.tab === 1){
             if(this.dataValue.value ==="By Sale Person"){
                 this.groupBy =2;
-                this.fetchSalePersonsGraph();
+                this.fetchSalePersonsGraph(this.dataValue.value, this.orderValue.value);
             }else{
                 this.groupBy =1;
                 this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
@@ -949,7 +957,15 @@ export class DashboardComponent implements OnInit {
     }
 
     filterByChannge(event) {
-        this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+        if(this.tab === 1){
+            if(this.dataValue.value ==="By Sale Person"){
+                this.groupBy =2;
+                this.fetchSalePersonsGraph(this.dataValue.value, this.orderValue.value);
+            }else{
+                this.groupBy =1;
+                this.fetchSaleGraph(this.dataValue.value, this.orderValue.value);
+            }
+        }
     }
 
     toggleAccordian(rowId) {
