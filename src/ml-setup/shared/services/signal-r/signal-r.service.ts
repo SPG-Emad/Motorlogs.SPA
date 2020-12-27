@@ -15,17 +15,21 @@ private hubConnection: signalR.HubConnection
 
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-                            .withUrl(`${SALESLOG_API}/GetLiveSheetDataForViews`)
+                            .withUrl(`${SALESLOG_API}/GetLiveSheetDataForViews`, {
+                              skipNegotiation: true,
+                              transport: signalR.HttpTransportType.WebSockets
+                            })
                             .build();
 
     this.hubConnection
       .start()
-      .then(() => console.log('Connection started'))
+      .then(() =>console.log('Connection started'))
       .catch(err => console.log('Error while starting connection: ' + err))
   }
 
   public addTransferChartDataListener = () => {
     this.hubConnection.on('transferchartdata', (data) => {
+      alert('here');
       this.data = data;
       console.log(data);
     });

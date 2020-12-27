@@ -28,9 +28,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
   @Input ('itemArray') itemArray :any;
   @Input ('selected') selected : string;
   @Input ('header')  header :string;
-  /** list of banks */
- // protected items: Bank[] = BANKS;
-
+  @Input ('colDef')  colDef :any;
 
   protected items: ItemObj[] = [];
   protected dateitems: ItemObj[] = [];
@@ -145,14 +143,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
 
 
   ngOnInit() {
-    // $.datetimepicker.setLocale('en');
-    //,'search');
-    
-    
-    // console.log("this.itemArray.:",this.itemArray);
 
-
-    // console.log("Selected "+this.selected +" Header "+this.header);
     let itemObjArray: ItemObj[]=[];
     let selected = this.selected;
     if(this.itemArray){
@@ -165,19 +156,16 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
         item.code=k.code;
         item.details=k.details;
         if(item.name!=selected) {
-        itemObjArray.push(item);
+          itemObjArray.push(item);
         }
     
       });
     }
     if(this.dateitems.length >=1) {
-    this.items = this.dateitems.concat( itemObjArray); // add date time to existing combo value from json
-    // console.log( this.items);
+      this.items = this.dateitems.concat( itemObjArray); // add date time to existing combo value from json
     } else {
       this.items =  itemObjArray; // add date time to existing combo value from json
-      // console.log( this.items);
     }
-    //this.selectedItem= this.rowDate!=null?this.rowDate:this.selected_date;
 
     // set initial selection
     this.bankCtrl.setValue(this.items[10]);
@@ -222,10 +210,6 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
         this.singleSelect.compareWith = (a: ItemObj, b: ItemObj) => a && b && a.id === b.id;
       }); 
 
-   
-  
-      
-
   }
 
   private filterBanks() {
@@ -234,7 +218,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
     }
     // get the search keyword
     let search = this.bankFilterCtrl.value!=null?this.bankFilterCtrl.value:this.selectedItem;
-    // console.log(search);
+
     if (!search) {
       this.filteredBanks.next(this.items.slice());
       return;
@@ -270,16 +254,17 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
 
  
   go(event){
-    // console.log($("#_datetimepicker4").val());
-    // console.log(this.selectedItem, this.selected,event);
-    if(event.value && event.value.name){
+
+    console.log(this.colDef);
+
+    if(event.value){
       this.selectedItem  = event.value.name;
       let params = { 
         "userid": this.sessionHandlerService.getSession('userObj').userId, 
         "EntryId": 1005, // Parent ID of the row for which cell he is editing 
         "ViewID": 1, 
-        "colId": "this.paramsObject.colDef.colId", 
-        "ColType": "this.paramsObject.colDef.columnType", // You need to send the column type 
+        "colId": this.colDef.colId, 
+        "ColType": this.colDef.columnType, // You need to send the column type 
         "Value": this.selected 
       }
       this.salesLogService.insertCellValue(params)
@@ -287,7 +272,6 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
   
       })
     }
-    //event.value.name =this.selected_date;
 
   }
   

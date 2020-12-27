@@ -558,8 +558,8 @@ export class SaleslogComponent implements OnInit {
       "PastMonths": (months)? months : 1,
       "ShowDeleted": null
     }
-    // this.signalRService.startConnection();
-    // this.signalRService.addTransferChartDataListener(); 
+    this.signalRService.startConnection();
+    this.signalRService.addTransferChartDataListener(); 
     
     this.saleslog.fetchAllRows(obj)
     .subscribe(res=>{
