@@ -480,7 +480,11 @@ export class SaleslogComponent implements OnInit {
   ngOnInit() {
 
     this.dateTimeCalculation();
-    
+
+    /*Start connection to grid data*/ 
+    this.signalRService.startConnection();
+    this.signalRService.addTransferChartDataListener();
+    /*----------------------------*/ 
   }
 
 
@@ -557,9 +561,7 @@ export class SaleslogComponent implements OnInit {
       "TillDate": (date)? date : moment().format('MMM_YY'),
       "PastMonths": (months)? months : 1,
       "ShowDeleted": null
-    }
-    this.signalRService.startConnection();
-    this.signalRService.addTransferChartDataListener(); 
+    } 
     
     this.saleslog.fetchAllRows(obj)
     .subscribe(res=>{

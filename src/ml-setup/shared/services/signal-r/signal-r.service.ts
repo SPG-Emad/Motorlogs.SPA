@@ -15,10 +15,7 @@ private hubConnection: signalR.HubConnection
 
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
-                            .withUrl(`${SALESLOG_API}/GetLiveSheetDataForViews`, {
-                              skipNegotiation: true,
-                              transport: signalR.HttpTransportType.WebSockets
-                            })
+                            .withUrl('https://motorlogs1.azurewebsites.net/LiveSheetDataForViews')
                             .build();
 
     this.hubConnection
