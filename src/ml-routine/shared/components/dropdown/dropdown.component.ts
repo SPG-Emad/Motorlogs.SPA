@@ -1,6 +1,10 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Input, HostListener } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSelect } from '@angular/material';
+import { SessionHandlerService } from 'app/shared/services/session-handler.service';
+import { ToastHandlerService } from 'app/shared/services/toast-handler.service';
+import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
+import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
@@ -24,6 +28,7 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
   @Input ('itemArray') itemArray :any;
   @Input ('selected') selected : string;
   @Input ('header')  header :string;
+  @Input ('colDef')  colDef :any;
 
   protected items: ItemObj[] = [];
   protected dateitems: ItemObj[] = [];
@@ -43,8 +48,12 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
   private selectedItem : string ;
 
   
-  constructor() {  
-    console.log("here");
+  constructor(
+    private salesLogService: SaleslogService,
+    private sessionHandlerService: SessionHandlerService,
+    private signalRService: SignalRService,
+    private toastNotification: ToastHandlerService,
+  ) {  
   }
 
   
@@ -216,8 +225,24 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
 
  
   go(event){
-    if(event.value && event.value.name){
+    if(event.value){
       this.selectedItem  = event.value.name;
+      let colId = this.itemArray.find(res=>res.code ===this.selected);
+      console.log(this.colDef);
+
+      let params = { 
+        "userid": this.sessionHandlerService.getSession('userObj').userId, 
+        "EntryId": this.colDef.data.rowId, // Parent ID of the row for which cell he is editing 
+        "ViewID": 1, 
+        "colId": this.colDef.colDef.colId, 
+        "ColType": this.colDef.colDef.columnType, // You need to send the column type 
+        "Value": colId.id
+      }
+      this.salesLogService.insertCellValue(params)
+      .subscribe(res=>{
+        this.toastNotification.generateToast('Update successful', 'OK', 2000);
+        this.signalRService.broadcastChartData();
+      })
     }
   }
   

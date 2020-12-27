@@ -8,6 +8,7 @@ import { Bank, BANKS, ItemObj } from '../demo-data';
 import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
 import { SessionHandlerService } from 'app/shared/services/session-handler.service';
 import { ToastHandlerService } from 'app/shared/services/toast-handler.service';
+import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
 
 
 declare var $: any;
@@ -60,6 +61,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
   constructor(
     private salesLogService: SaleslogService,
     private sessionHandlerService: SessionHandlerService,
+    private signalRService: SignalRService,
     private toastNotification: ToastHandlerService,
   ) {
 
@@ -271,6 +273,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
       this.salesLogService.insertCellValue(params)
       .subscribe(res=>{
         this.toastNotification.generateToast('Update successful', 'OK', 2000);
+        this.signalRService.broadcastChartData();
       })
     }
 

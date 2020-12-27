@@ -10,8 +10,9 @@ const SALESLOG_API = `${GlobalConstants.apiURL}ViewsData`;
 })
 export class SignalRService {
   public data: any[];
+  public bradcastedData: any;
 
-private hubConnection: signalR.HubConnection
+  public hubConnection: signalR.HubConnection
 
   public startConnection = () => {
     this.hubConnection = new signalR.HubConnectionBuilder()
@@ -25,10 +26,21 @@ private hubConnection: signalR.HubConnection
   }
 
   public addTransferChartDataListener = () => {
-    this.hubConnection.on('transferchartdata', (data) => {
-      alert('here');
+    this.hubConnection.on('TransferLiveSheetData', (data) => {
       this.data = data;
-      console.log(data);
+      // console.log(data);
     });
   }
+
+
+  public broadcastChartData = () => {
+    this.hubConnection.invoke('broadcastchartdata', this.data)
+    .catch(err => console.error(err));
+  }
+  public addBroadcastChartDataListener = () => {
+    this.hubConnection.on('broadcastchartdata', (data) => {
+      this.bradcastedData = data;
+    })
+  }
+
 }

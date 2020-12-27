@@ -6,6 +6,7 @@ import * as moment from 'moment';
 import { SessionHandlerService } from 'app/shared/services/session-handler.service';
 import { EncryptionService } from 'app/shared/services/encryption.service';
 import { ActivatedRoute } from '@angular/router';
+import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
 
 @Component({
   selector: 'app-new-deal',
@@ -21,6 +22,7 @@ export class NewDealComponent implements OnInit {
       private saleslogService: SaleslogService,
       private sessionHandlerService: SessionHandlerService,
       private encryptionService: EncryptionService,
+      private signalRService: SignalRService,
       private route: ActivatedRoute, 
       @Inject(MAT_DIALOG_DATA) public modalParams?: any,
     ) { 
@@ -59,13 +61,13 @@ export class NewDealComponent implements OnInit {
       "DeptId" : this.decryptedDepartmentId,
       "OrderDate" : this.columnForm.get('orderDate').value,
       "CustomerName": this.columnForm.get('customerName').value,
-      "DealNumber" :  this.columnForm.get('dealNumber').value,
-      "StockNumber" : this.columnForm.get('stockNumber').value
+      "DealNumber" :  String(this.columnForm.get('dealNumber').value),
+      "StockNumber" : String(this.columnForm.get('stockNumber').value)
     };
     this.saleslogService.postRows(params).subscribe(res=>{
       this.loader= false;
+      this.signalRService.broadcastChartData();
       this.closeModal(this.columnForm.get('orderDate').value);
-
     });
   }
 

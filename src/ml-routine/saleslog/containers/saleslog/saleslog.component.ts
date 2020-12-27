@@ -484,9 +484,14 @@ export class SaleslogComponent implements OnInit {
     /*Start connection to grid data*/ 
     this.signalRService.startConnection();
     this.signalRService.addTransferChartDataListener();
+    this.addBroadcastChartDataListener();
     /*----------------------------*/ 
   }
-
+  public addBroadcastChartDataListener = () => {
+    this.signalRService.hubConnection.on('broadcastchartdata', (data) => {
+      this.generateGrid();
+    })
+  }
 
   dateTimeCalculation(){
       
@@ -565,6 +570,7 @@ export class SaleslogComponent implements OnInit {
     
     this.saleslog.fetchAllRows(obj)
     .subscribe(res=>{
+      console.log("Triggered")
       // console.log(res);
       // console.log("data:",(data as any).default);
       this.rowData = [];
@@ -1760,7 +1766,7 @@ export class SaleslogComponent implements OnInit {
     this.saleslog.duplicateRows(params)
     .subscribe(res=>{
       this.gridApi.hideOverlay();
-
+      this.signalRService.broadcastChartData();
       this.gridApi.applyTransaction({ add: newItems });
     })
   }
@@ -1771,7 +1777,7 @@ export class SaleslogComponent implements OnInit {
     }
     this.saleslog.removeCellColor(params)
     .subscribe(res=>{
-      
+      this.signalRService.broadcastChartData();
     })
   }
 
@@ -1783,6 +1789,7 @@ export class SaleslogComponent implements OnInit {
     }
     this.saleslog.deleteRows(params)
     .subscribe(res=>{
+      this.signalRService.broadcastChartData();
       this.gridApi.hideOverlay();
       this.toastHandlerService.generateToast('Row Deleted Successfully','',2000);
     })
@@ -1794,6 +1801,7 @@ export class SaleslogComponent implements OnInit {
     }
     this.saleslog.updateCellColor(params)
     .subscribe(res=>{
+      this.signalRService.broadcastChartData();
     // console.log('pressed',params.node.rowIndex,params,this.rowResponse);
     // this.rowResponse.filter(el=> el.rowID !==params.node.rowIndex)
     })

@@ -4,7 +4,7 @@ import * as moment from 'moment';
 @Component({
   selector: 'custom-dropdown-renderer',
   template:
-    `<app-dropdown [header]="header" [selected]="selected" [itemArray]="itemsArray" [rowDate]="rowDate" [flag]="customFlag" ></app-dropdown>
+    `<app-dropdown [header]="header" [colDef]="colDef" [selected]="selected" [itemArray]="itemsArray" [rowDate]="rowDate" [flag]="customFlag" ></app-dropdown>
   ` ,
 })
 export class CustomDropDownRenderer  {
@@ -16,13 +16,14 @@ export class CustomDropDownRenderer  {
   itemsArray : [];
   selected : string;
   header : string;
- 
+  colDef: any;
+
   agInit(params): void {
     this.header = params.colDef.headerName;
     this.rowDate = params.value;
     this.itemsArray = params.data["cellOptions_"+params.colDef.colCode];
     this.selected = params.value;
-    // var key = Object.keys(params.data)[8];
+    this.colDef = params;
   }
   
 }

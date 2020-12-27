@@ -6,6 +6,7 @@ import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.se
 import { SessionHandlerService } from 'app/shared/services/session-handler.service';
 import { ActivatedRoute } from '@angular/router';
 import { EncryptionService } from 'app/shared/services/encryption.service';
+import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
 
 let ELEMENT_DATA: any[] = [
   // {columnName: "Order Date", display: true, printExport: false },
@@ -37,6 +38,7 @@ export class ColumnOptionComponent implements OnInit {
     private dialog: MatDialog,
     private dialogRef: MatDialogRef<ColumnOptionComponent>,
     private saleslogService: SaleslogService,
+    private signalRService: SignalRService,
     private sessionHandlerService: SessionHandlerService,
     private encryptionService: EncryptionService,
     private route: ActivatedRoute, 
@@ -87,6 +89,7 @@ export class ColumnOptionComponent implements OnInit {
       this.saleslogService.updateColumnOptions(json)
       .subscribe(res=>{
         this.loader= false;
+        this.signalRService.broadcastChartData();
         this.dialogRef.close({
           "column": this.column
         });
@@ -147,6 +150,7 @@ export class ColumnOptionComponent implements OnInit {
     }
     this.saleslogService.resetColumn(params)
     .subscribe(res=>{
+      this.signalRService.broadcastChartData();
       this.getColumns();
     });
   }

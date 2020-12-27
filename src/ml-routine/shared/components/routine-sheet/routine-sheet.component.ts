@@ -507,8 +507,22 @@ export class RoutineSheetComponent implements OnInit {
 
 
   ngOnInit() {
+
     this.dateTimeCalculation();
+
+    /*Start connection to grid data*/ 
+    this.signalRService.startConnection();
+    this.signalRService.addTransferChartDataListener();
+    this.addBroadcastChartDataListener();
+    /*----------------------------*/ 
   }
+  
+  public addBroadcastChartDataListener = () => {
+    this.signalRService.hubConnection.on('broadcastchartdata', (data) => {
+      this.generateGrid();
+    })
+  }
+
 
 
   dateTimeCalculation(){
@@ -746,13 +760,14 @@ export class RoutineSheetComponent implements OnInit {
       this.rowData = [];
       this.columnDefs = [];
       let rows=  [];
-      this.salesData = (data as any).default;
-      // this.salesData = res;
+      this.salesData = res;
       this.monthObject.oneMonth = true;
-
+      console.log(res);
+      
       this.salesData.rowData.row.forEach((element, rowIndex) => {
         this.cellMap = new Object();
         let carryOver = element.isCarryOver;
+        let rowIndexId = element.rowId;
         
         if(carryOver) {
           this.carryOverUnits++;
@@ -765,7 +780,7 @@ export class RoutineSheetComponent implements OnInit {
               colId: element1.colId,
               color:''
             })
-            this.cellMap['rowId'] =rowIndex;
+            this.cellMap['rowId'] =rowIndexId;
 
           if(element1.colCode === "OD"){
             this.cellMap[element1.colId] =moment(element1.currentCellValue).format('MM/DD/YYYY');
@@ -955,6 +970,8 @@ export class RoutineSheetComponent implements OnInit {
         columnMap["sortable"] = true;
         columnMap["filter"] = true,
         columnMap["hide"] = !element.display;
+        columnMap["columnType"] = element.type;
+
         let required = element.required
         columnMap["cellStyle"] = function(params) {
           // console.log(params.data, params.value);
@@ -1020,8 +1037,7 @@ export class RoutineSheetComponent implements OnInit {
     this.saleslog.fetchAllRows(obj).subscribe(res=>{
       this.rowResponse = [];
       this.salesData = [];
-      this.salesData = (data as any).default;
-      // this.salesData = res;
+      this.salesData = res;
 
       let rows=  [];
       this.monthObject.oneMonth = true;
