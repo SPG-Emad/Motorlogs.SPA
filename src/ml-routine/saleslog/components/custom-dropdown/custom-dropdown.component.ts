@@ -7,6 +7,7 @@ import { take, takeUntil } from 'rxjs/operators';
 import { Bank, BANKS, ItemObj } from '../demo-data';
 import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
 import { SessionHandlerService } from 'app/shared/services/session-handler.service';
+import { ToastHandlerService } from 'app/shared/services/toast-handler.service';
 
 
 declare var $: any;
@@ -59,7 +60,10 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
   constructor(
     private salesLogService: SaleslogService,
     private sessionHandlerService: SessionHandlerService,
-  ) {}
+    private toastNotification: ToastHandlerService,
+  ) {
+
+  }
 
 
   open(){
@@ -98,7 +102,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
     // console.log(this.items.some(x => x.code === "TBA"));
     
     if(this.items.length == this.itemArray.length && this.selectedItem!=null){
-      // console.log(this.selectedItem +" "+this.items.length);
+
       // console.log(this.items);
       let item = new ItemObj();
     
@@ -129,7 +133,6 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
     }
     
       this.ngOnInit();
-    //console.log(e);
   }
 
 
@@ -238,7 +241,6 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
     }
     // get the search keyword
     let search = this.bankFilterCtrl.value;
-    // console.log(search);
     if (!search) {
       this.filteredBanks.next(this.items.slice());
       return;
@@ -254,22 +256,21 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
 
  
   go(event){
-
-    console.log(this.colDef);
-
     if(event.value){
       this.selectedItem  = event.value.name;
+      let colId = this.itemArray.find(res=>res.code ===this.selected);
+
       let params = { 
         "userid": this.sessionHandlerService.getSession('userObj').userId, 
-        "EntryId": 1005, // Parent ID of the row for which cell he is editing 
+        "EntryId": this.colDef.data.rowId, // Parent ID of the row for which cell he is editing 
         "ViewID": 1, 
-        "colId": this.colDef.colId, 
-        "ColType": this.colDef.columnType, // You need to send the column type 
-        "Value": this.selected 
+        "colId": this.colDef.colDef.colId, 
+        "ColType": this.colDef.colDef.columnType, // You need to send the column type 
+        "Value": colId.id
       }
       this.salesLogService.insertCellValue(params)
       .subscribe(res=>{
-  
+        this.toastNotification.generateToast('Update successful', 'OK', 2000);
       })
     }
 

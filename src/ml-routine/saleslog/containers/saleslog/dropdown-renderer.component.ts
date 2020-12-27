@@ -18,7 +18,7 @@ export class DropDownRenderer  {
  
   agInit(params): void {
    
-    this.colDef = params.colDef;
+    this.colDef = params;
     this.itemsArray = params.data["cellOptions_"+params.colDef.colCode];
 
     if(params.value!=null) {

@@ -565,17 +565,19 @@ export class SaleslogComponent implements OnInit {
     
     this.saleslog.fetchAllRows(obj)
     .subscribe(res=>{
-
+      // console.log(res);
+      // console.log("data:",(data as any).default);
       this.rowData = [];
       this.columnDefs = [];
       let rows=  [];
-      this.salesData = (data as any).default;
+      this.salesData = res;
       // this.salesData = res;
       this.monthObject.oneMonth = true;
 
       this.salesData.rowData.row.forEach((element, rowIndex) => {
         this.cellMap = new Object();
         let carryOver = element.isCarryOver;
+        let rowIndexId = element.rowId;
         
         if(carryOver) {
           this.carryOverUnits++;
@@ -584,11 +586,11 @@ export class SaleslogComponent implements OnInit {
         let index =0;
         element.cells.forEach((element1, index) => {
           this.rowColor.push({
-              rowId: rowIndex,
-              colId: element1.colId,
-              color:''
-            })
-            this.cellMap['rowId'] =rowIndex;
+            rowId: rowIndex,
+            colId: element1.colId,
+            color:''
+          })
+          this.cellMap['rowId'] =rowIndexId;
 
           if(element1.colCode === "OD"){
             this.cellMap[element1.colId] =moment(element1.currentCellValue).format('MM/DD/YYYY');
@@ -646,6 +648,7 @@ export class SaleslogComponent implements OnInit {
           this.deliveredAmount = this.deliveredAmount + Number( this.cellData[0]['"VEHGRO"']);
         }
         this.cellData[0]['type'] =typeArray;
+        // console.log(this.cellData[0])
         rows.push(this.cellData[0]);
       });
 
@@ -687,7 +690,7 @@ export class SaleslogComponent implements OnInit {
         // console.log(params.node.rowIndex, carryOverCount);
         if (params.data.carryOver===true){
             count = 0;
-            console.log(count);
+            // console.log(count);
             return null;
         }else {
           //i++;
@@ -702,7 +705,6 @@ export class SaleslogComponent implements OnInit {
   
       }
   
-      column.push(rowIdcolumn);
   
       this.salesData.column.forEach(element => {
   
@@ -757,7 +759,7 @@ export class SaleslogComponent implements OnInit {
       this.rowData = rows;
       this.rowResponse = rows;
       // console.log(this.columnDefs );
-      // console.log(this.rowData );
+      // console.log(this.columnDefs );
 
 
     });
@@ -782,7 +784,7 @@ export class SaleslogComponent implements OnInit {
     this.saleslog.fetchAllRows(obj).subscribe(res=>{
       this.rowResponse = [];
       this.salesData = [];
-      // this.salesData = (data as any).default;
+      // this.salesData = res;
       this.salesData = res;
 
       let rows=  [];
@@ -862,7 +864,7 @@ export class SaleslogComponent implements OnInit {
       });
       this.rowResponse = rows;
 
-      // console.log(this.carryOverAmount, this.carryOverUnits,this.cellData[0] )
+      // console.log(this.cellData )
       // console.log(this.soldAmount, this.soldUnits, )
       // console.log(this.coveredAmount, this.coveredUnits, )
       // console.log(this.deliveredAmount, this.deliveredUnits, )

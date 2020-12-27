@@ -20,7 +20,7 @@ export class CustomDropDownRenderer  {
 
   agInit(params): void {
     this.header = params.colDef.headerName;
-    this.colDef = params.colDef;
+    this.colDef = params;
     this.rowDate = params.value;
 
     this.itemsArray = params.data["cellOptions_"+params.colDef.colCode];
