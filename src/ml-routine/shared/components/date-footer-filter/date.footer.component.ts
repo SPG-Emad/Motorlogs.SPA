@@ -51,11 +51,11 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
 
     ngOnInit() {
 
-      this.calcultePreviousMonths();
-      this.calculteUpcomingMonths();
+      this.calculatePreviousMonths();
+      this.calculateUpcomingMonths();
   
-      this.calcultePreviousYears();
-      this.calculteUpcomingYears();
+      this.calculatePreviousYears();
+      this.calculateUpcomingYears();
 
       this.yearCounter = 5;
     
@@ -138,7 +138,7 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
     }
 
 
-    calcultePreviousMonths(){
+    calculatePreviousMonths(){
       for(let i = 4; i>0; i--){
       
         /*Generate Key and value for startFrom Object from momentJs*/ 
@@ -154,7 +154,7 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
     }
 
 
-    calculteUpcomingMonths(){
+    calculateUpcomingMonths(){
       for(let i=0; i<=4; i++){
       
         /*Generate Key and value for startFrom Object from momentJs*/ 
@@ -169,7 +169,7 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
     }
     
     
-    calcultePreviousYears(){
+    calculatePreviousYears(){
       for(let i = 5; i>0; i--){
       
         /*Generate Key and value for startFrom Object from momentJs*/ 
@@ -183,7 +183,7 @@ import {  ChangeDetectionStrategy, Inject, OnChanges } from '@angular/core';
       }
     }
     
-    calculteUpcomingYears(){
+    calculateUpcomingYears(){
       for(let i=0; i<=2; i++){
       
         /*Generate Key and value for startFrom Object from momentJs*/ 

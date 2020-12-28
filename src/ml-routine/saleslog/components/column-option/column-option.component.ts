@@ -89,7 +89,7 @@ export class ColumnOptionComponent implements OnInit {
       this.saleslogService.updateColumnOptions(json)
       .subscribe(res=>{
         this.loader= false;
-        this.signalRService.broadcastChartData();
+        this.signalRService.BroadcastLiveSheetDataForViews();
         this.dialogRef.close({
           "column": this.column
         });
@@ -150,7 +150,7 @@ export class ColumnOptionComponent implements OnInit {
     }
     this.saleslogService.resetColumn(params)
     .subscribe(res=>{
-      this.signalRService.broadcastChartData();
+      this.signalRService.BroadcastLiveSheetDataForViews();
       this.getColumns();
     });
   }

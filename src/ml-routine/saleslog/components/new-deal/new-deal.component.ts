@@ -66,7 +66,7 @@ export class NewDealComponent implements OnInit {
     };
     this.saleslogService.postRows(params).subscribe(res=>{
       this.loader= false;
-      this.signalRService.broadcastChartData();
+      this.signalRService.BroadcastLiveSheetDataForViews();
       this.closeModal(this.columnForm.get('orderDate').value);
     });
   }

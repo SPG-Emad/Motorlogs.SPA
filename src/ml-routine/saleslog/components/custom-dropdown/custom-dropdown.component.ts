@@ -273,7 +273,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
       this.salesLogService.insertCellValue(params)
       .subscribe(res=>{
         this.toastNotification.generateToast('Update successful', 'OK', 2000);
-        this.signalRService.broadcastChartData();
+        this.signalRService.BroadcastLiveSheetDataForViews();
       })
     }
 

@@ -513,12 +513,12 @@ export class RoutineSheetComponent implements OnInit {
     /*Start connection to grid data*/ 
     this.signalRService.startConnection();
     this.signalRService.addTransferChartDataListener();
-    this.addBroadcastChartDataListener();
+    this.addBroadcastLiveSheetDataForViewsListener();
     /*----------------------------*/ 
   }
   
-  public addBroadcastChartDataListener = () => {
-    this.signalRService.hubConnection.on('broadcastchartdata', (data) => {
+  public addBroadcastLiveSheetDataForViewsListener = () => {
+    this.signalRService.hubConnection.on('BroadcastLiveSheetDataForViews', (data) => {
       this.generateGrid();
     })
   }
@@ -527,11 +527,11 @@ export class RoutineSheetComponent implements OnInit {
 
   dateTimeCalculation(){
       
-    this.calcultePreviousMonths();
-    this.calculteUpcomingMonths();
+    this.calculatePreviousMonths();
+    this.calculateUpcomingMonths();
 
-    this.calcultePreviousYears();
-    this.calculteUpcomingYears();
+    this.calculatePreviousYears();
+    this.calculateUpcomingYears();
 
     this.yearCounter = 5;
     
@@ -1820,7 +1820,7 @@ export class RoutineSheetComponent implements OnInit {
   }
 
 
-  calcultePreviousMonths(){
+  calculatePreviousMonths(){
     for(let i = 4; i>0; i--){
     
       /*Generate Key and value for startFrom Object from momentJs*/ 
@@ -1837,7 +1837,7 @@ export class RoutineSheetComponent implements OnInit {
     this.monthModal= !this.monthModal;
   }
 
-  calculteUpcomingMonths(){
+  calculateUpcomingMonths(){
     for(let i=0; i<=4; i++){
     
       /*Generate Key and value for startFrom Object from momentJs*/ 
@@ -1851,7 +1851,7 @@ export class RoutineSheetComponent implements OnInit {
   }
 
 
-  calcultePreviousYears(){
+  calculatePreviousYears(){
     for(let i = 5; i>0; i--){
     
       /*Generate Key and value for startFrom Object from momentJs*/ 
@@ -1865,7 +1865,7 @@ export class RoutineSheetComponent implements OnInit {
     }
   }
 
-  calculteUpcomingYears(){
+  calculateUpcomingYears(){
     for(let i=0; i<=2; i++){
     
       /*Generate Key and value for startFrom Object from momentJs*/ 
