@@ -15,13 +15,16 @@ export class SignalRService {
 
     public startConnection = () => {
         this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl('https://motorlogs1.azurewebsites.net/LiveSheetDataForViews')
+            // .withUrl('https://motorlogs1.azurewebsites.net/LiveSheetDataForViews')
+            .withUrl('http://localhost:5000/LiveSheetDataForViews')
             .build();
 
         this.hubConnection
             .start()
-            .then(() => console.log('Connection started'))
+            .then(() => {console.log('Connection started');  this.BroadcastLiveSheetData();})
             .catch(err => console.log('Error while starting connection: ' + err))
+
+           
     }
 
     public addTransferChartDataListener = () => {
@@ -29,6 +32,13 @@ export class SignalRService {
             this.data = data;
             console.log(data);
         });
+    }
+
+    public BroadcastLiveSheetData = () => {
+        console.log('BroadcastLiveSheetData');
+        this.hubConnection.invoke('TransferLiveSheetData', this.data)
+        .then((x) => console.log(x))
+        .catch(err => console.error(err));
     }
 
     public BroadcastLiveSheetDataForViews = () => {

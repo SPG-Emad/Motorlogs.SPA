@@ -487,9 +487,10 @@ export class SaleslogComponent implements OnInit {
         this.addBroadcastLiveSheetDataForViewsListener();
         /*----------------------------*/
     }
+
     public addBroadcastLiveSheetDataForViewsListener = () => {
         this.signalRService.hubConnection.on('BroadcastLiveSheetDataForViews', (data) => {
-            this.generateGrid();
+            this.generateGrid(data);
         })
     }
 
@@ -552,7 +553,6 @@ export class SaleslogComponent implements OnInit {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
         this.pageCounter = this.pageCounter + 1;
-
         this.generateGrid();
     }
 
