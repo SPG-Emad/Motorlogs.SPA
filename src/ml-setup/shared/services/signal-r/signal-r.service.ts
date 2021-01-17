@@ -15,8 +15,8 @@ export class SignalRService {
 
     public startConnection = () => {
         this.hubConnection = new signalR.HubConnectionBuilder()
-            // .withUrl('https://motorlogs1.azurewebsites.net/LiveSheetDataForViews')
-            .withUrl('http://localhost:5000/LiveSheetDataForViews')
+            .withUrl('https://motorlogs1.azurewebsites.net/LiveSheetDataForViews')
+            //.withUrl('http://localhost:5000/LiveSheetDataForViews')
             .build();
 
         this.hubConnection
