@@ -7,6 +7,7 @@ import { SessionHandlerService } from 'app/shared/services/session-handler.servi
 import { EncryptionService } from 'app/shared/services/encryption.service';
 import { ActivatedRoute } from '@angular/router';
 import {environment} from '../../../../environments/environment';
+import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
 
 @Component({
   selector: 'app-new-deal',
@@ -20,6 +21,7 @@ export class NewDealComponent implements OnInit {
       private dialogRef: MatDialogRef<NewDealComponent>,
       private fb: FormBuilder, 
       private saleslogService: SaleslogService,
+      private signalRService: SignalRService,
       private sessionHandlerService: SessionHandlerService,
       private encryptionService: EncryptionService,
       private route: ActivatedRoute, 
@@ -83,6 +85,8 @@ export class NewDealComponent implements OnInit {
     };
     this.saleslogService.postRows(params).subscribe(res=>{
       this.loader= false;
+      this.signalRService.BroadcastLiveSheetData();
+
       this.closeModal(this.columnForm.get('orderDate').value);
 
     });

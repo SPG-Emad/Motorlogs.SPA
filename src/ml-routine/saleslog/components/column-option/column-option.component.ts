@@ -44,7 +44,7 @@ export class ColumnOptionComponent implements OnInit {
     private route: ActivatedRoute, 
     @Inject(MAT_DIALOG_DATA) public modalParams?: any,
   ) { 
-    console.log(modalParams)
+    console.log("modalParams:",modalParams)
     if (modalParams && modalParams.hasOwnProperty('key')) {
       this.decryptedDepartmentId = modalParams.key;
     }
@@ -89,7 +89,8 @@ export class ColumnOptionComponent implements OnInit {
       this.saleslogService.updateColumnOptions(json)
       .subscribe(res=>{
         this.loader= false;
-        this.signalRService.BroadcastLiveSheetDataForViews();
+
+        this.signalRService.BroadcastLiveSheetData();
         this.dialogRef.close({
           "column": this.column
         });
@@ -115,8 +116,9 @@ export class ColumnOptionComponent implements OnInit {
     }
     this.saleslogService.getColumnOptionsListing(params)
     .subscribe(res=>{
+      this.columnLoader = false;
+      console.log(this.columnLoader);
       res.map(res=>{
-        this.columnLoader = false;
         let field = ""+res.colName.toLowerCase().replace(' ','_');
         this.column.push({
           'colId': res.colId,
@@ -150,7 +152,7 @@ export class ColumnOptionComponent implements OnInit {
     }
     this.saleslogService.resetColumn(params)
     .subscribe(res=>{
-      this.signalRService.BroadcastLiveSheetDataForViews();
+      this.signalRService.BroadcastLiveSheetData();
       this.getColumns();
     });
   }

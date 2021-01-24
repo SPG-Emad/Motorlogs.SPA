@@ -512,13 +512,12 @@ export class RoutineSheetComponent implements OnInit {
 
     /*Start connection to grid data*/ 
     this.signalRService.startConnection();
-    this.signalRService.addTransferChartDataListener();
     this.addBroadcastLiveSheetDataForViewsListener();
     /*----------------------------*/ 
   }
   
   public addBroadcastLiveSheetDataForViewsListener = () => {
-    this.signalRService.hubConnection.on('BroadcastLiveSheetDataForViews', (data) => {
+    this.signalRService.hubConnection.on('TransferLiveSheetData', (data) => {
       this.generateGrid();
     })
   }

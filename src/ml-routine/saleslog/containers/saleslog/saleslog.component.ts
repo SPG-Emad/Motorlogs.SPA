@@ -779,7 +779,6 @@ export class SaleslogComponent implements OnInit {
                     }else{
                         // columnMap["onCellValueChanged"] = this.onCellChanged();
                     }
-                    console.log(element.type)
 
                     column.push(columnMap);
                 });
@@ -1782,6 +1781,7 @@ export class SaleslogComponent implements OnInit {
             if (res && res.column) {
 
                 if (res.column.length > 0) {
+
                     res.column.map(res => {
                         let column = this.columnDefs.find(el => el.headerName === res.columnName);
                         if (column !== undefined) {

@@ -6,6 +6,7 @@ import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.se
 import { SessionHandlerService } from 'app/shared/services/session-handler.service';
 import { EncryptionService } from 'app/shared/services/encryption.service';
 import { ActivatedRoute } from '@angular/router';
+import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
 
 let ELEMENT_DATA: any[] = [];
 
@@ -13,7 +14,6 @@ let ELEMENT_DATA: any[] = [];
   selector: 'app-column-options',
   templateUrl: './column-options.component.html',
   styleUrls: ['./column-options.component.scss'],  
-  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ColumnOptionsComponent implements OnInit {
 
@@ -33,6 +33,8 @@ export class ColumnOptionsComponent implements OnInit {
     private dialogRef: MatDialogRef<ColumnOptionsComponent>,
     private saleslogService: SaleslogService,
     private sessionHandlerService: SessionHandlerService,
+    private signalRService: SignalRService,
+
     private encryptionService: EncryptionService,
     private route: ActivatedRoute, 
     @Inject(MAT_DIALOG_DATA) public modalParams?: any,
@@ -83,6 +85,8 @@ export class ColumnOptionsComponent implements OnInit {
       this.saleslogService.updateColumnOptions(json)
       .subscribe(res=>{
         this.loader= false;
+        this.signalRService.BroadcastLiveSheetData();
+
         this.dialogRef.close({
           "column": this.column
         });
@@ -101,15 +105,16 @@ export class ColumnOptionsComponent implements OnInit {
     this.columnLoader = true;
     ELEMENT_DATA = [];
     let params = {
-      "ViewId" : this.viewId, // For saleslog 1 , for Delivered 2, for Arriving 3
+      "ViewId" : 1, // For saleslog 1 , for Delivered 2, for Arriving 3
       "UserId" : this.sessionHandlerService.getSession('userObj').userId,
       "RoleId" : this.sessionHandlerService.getSession('userObj').roleID,
-      "DeptId" : (this.viewId !== 3)?this.decryptedDepartmentId: this.modalParams.key.depId,
+      "DeptId" : this.decryptedDepartmentId
     }
     this.saleslogService.getColumnOptionsListing(params)
     .subscribe(res=>{
+      this.columnLoader = false;
+      console.log(this.columnLoader)
       res.map(res=>{
-        this.columnLoader = false;
         let field = ""+res.colName.toLowerCase().replace(' ','_');
         this.column.push({
           'colId': res.colId,
@@ -130,10 +135,10 @@ export class ColumnOptionsComponent implements OnInit {
       })
       this.dataSource = new MatTableDataSource(ELEMENT_DATA);
       this.dataSource.sort = this.sort;
+      this.columnLoader = false;
 
     });
   }
-
 
   reset(){
     let params = {
@@ -143,6 +148,7 @@ export class ColumnOptionsComponent implements OnInit {
     }
     this.saleslogService.resetColumn(params)
     .subscribe(res=>{
+      this.signalRService.BroadcastLiveSheetData();
       this.getColumns();
     });
   }
