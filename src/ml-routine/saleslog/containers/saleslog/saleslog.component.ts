@@ -1662,15 +1662,17 @@ export class SaleslogComponent implements OnInit {
             {
                 name: 'BLUE',
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map(el => {
                         if (el.rowId === params.node.rowIndex) {
                             el.color = "blue";
+                            color = el.color;
                             el.colId = params.column.userProvidedColDef.colId;
                         }
                     });
                     let rows = [];
                     rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-                    thisRef.updateCellColor(params.node.rowIndex);
+                    thisRef.updateCellColor(params.node.rowIndex, "blue");
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg('blue-color'),
@@ -1679,15 +1681,17 @@ export class SaleslogComponent implements OnInit {
             {
                 name: 'GREEN',
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map(el => {
                         if (el.rowId === params.node.rowIndex) {
+                            color = el.color;
                             el.color = "green";
                             el.colId = params.column.userProvidedColDef.colId;
                         }
                     });
                     let rows = [];
                     rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-                    thisRef.updateCellColor(params.node.rowIndex);
+                    thisRef.updateCellColor(params.node.rowIndex, "green");
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg('green-color'),
@@ -1696,15 +1700,17 @@ export class SaleslogComponent implements OnInit {
             {
                 name: 'YELLOW',
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map(el => {
                         if (el.rowId === params.node.rowIndex) {
+                            color = el.color;
                             el.color = "yellow";
                             el.colId = params.column.userProvidedColDef.colId;
                         }
                     });
                     let rows = [];
                     rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-                    thisRef.updateCellColor(params.node.rowIndex);
+                    thisRef.updateCellColor(params.node.rowIndex, "yellow");
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg('yellow-color'),
@@ -1713,15 +1719,17 @@ export class SaleslogComponent implements OnInit {
             {
                 name: 'RED',
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map(el => {
                         if (el.rowId === params.node.rowIndex) {
+                            color = el.color;
                             el.color = "red";
                             el.colId = params.column.userProvidedColDef.colId;
                         }
                     });
                     let rows = [];
                     rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-                    thisRef.updateCellColor(params.node.rowIndex);
+                    thisRef.updateCellColor(params.node.rowIndex, "red");
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg('red-color'),
@@ -1730,8 +1738,10 @@ export class SaleslogComponent implements OnInit {
             {
                 name: 'PURPLE',
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map(el => {
                         if (el.rowId === params.node.rowIndex) {
+                            color = el.color;
                             el.color = "purple";
                             el.colId = params.column.userProvidedColDef.colId;
 
@@ -1739,7 +1749,7 @@ export class SaleslogComponent implements OnInit {
                     });
                     let rows = [];
                     rows.push(thisRef.gridApi.getDisplayedRowAtIndex(params.node.rowIndex));
-                    thisRef.updateCellColor(params.node.rowIndex);
+                    thisRef.updateCellColor(params.node.rowIndex, "purple");
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg('purple-color'),
@@ -1808,7 +1818,8 @@ export class SaleslogComponent implements OnInit {
         this.saleslog.duplicateRows(params)
             .subscribe(res => {
                 this.gridApi.hideOverlay();
-                this.signalRService.BroadcastLiveSheetDataForViews();
+                this.signalRService.BroadcastLiveSheetData();
+
                 this.gridApi.applyTransaction({ add: newItems });
             })
     }
@@ -1837,15 +1848,18 @@ export class SaleslogComponent implements OnInit {
             })
     }
 
-    updateCellColor(newItems?) {
+    updateCellColor(newItems?, color?) {
         let params = {
-            EntryId: newItems
+            EntryId: newItems,
+            Code: '',
+            valText: '',
+            details: {
+                color: color
+            }
         }
         this.saleslog.updateCellColor(params)
             .subscribe(res => {
-                this.signalRService.BroadcastLiveSheetDataForViews();
-                // console.log('pressed',params.node.rowIndex,params,this.rowResponse);
-                // this.rowResponse.filter(el=> el.rowID !==params.node.rowIndex)
+                this.signalRService.BroadcastLiveSheetData();
             })
     }
 
@@ -1862,10 +1876,11 @@ export class SaleslogComponent implements OnInit {
     onRemoveSelected() {
         var selectedData = this.gridApi.getSelectedRows();
         var res = this.gridApi.applyTransaction({ remove: selectedData });
-        console.log(res, selectedData);
+
         if (res.remove.length > 0) {
             let index = res.remove[0].rowIndex;
-            console.log(index);
+            this.signalRService.BroadcastLiveSheetData();
+
             this.deleteRow(index);
         }
     }
