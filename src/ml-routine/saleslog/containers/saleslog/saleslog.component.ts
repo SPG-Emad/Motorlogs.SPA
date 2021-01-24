@@ -60,7 +60,7 @@ export class SaleslogComponent implements OnInit {
     public coveredAmount: number = - 0;
     public coveredUnits: number = 0;
     public coveredAvg: number = 0;
-
+    dateFilterApplied: number =0;
 
     public deliveredAmount: number = - 0;
     public deliveredUnits: number = 0;
@@ -166,7 +166,7 @@ export class SaleslogComponent implements OnInit {
     ) {
         this.route.paramMap.subscribe(params => {
             this.decryptedDepartmentId = this.encryptionService.convertToEncOrDecFormat('decrypt', params.get("id"));
-            console.log(this.decryptedDepartmentId)
+            this.dateFilterApplied = 0;
             if (this.pageCounter !== 0) {
                 this.generateGrid();
             }
@@ -483,14 +483,19 @@ export class SaleslogComponent implements OnInit {
 
         /*Start connection to grid data*/
         this.signalRService.startConnection();
-        this.signalRService.addTransferChartDataListener();
         this.addBroadcastLiveSheetDataForViewsListener();
         /*----------------------------*/
     }
 
     public addBroadcastLiveSheetDataForViewsListener = () => {
-        this.signalRService.hubConnection.on('BroadcastLiveSheetDataForViews', (data) => {
-            this.generateGrid(data);
+        this.signalRService.hubConnection.on('TransferLiveSheetData', (data) => {
+            if (this.dateFilterApplied === 0) {
+                this.generateGrid()
+            }else if (this.dateFilterApplied === 1) {
+                this.generateGrid(1, this.sliderItem.replace(' ', '_'))
+            } else {
+                this.generateGrid(this.monthSelected, moment(this.monthActive + "-" + this.yearActive).format('MMM_YY'))
+            }
         })
     }
 
@@ -571,8 +576,7 @@ export class SaleslogComponent implements OnInit {
         this.saleslog.fetchAllRows(obj)
             .subscribe(res => {
                 console.log("Triggered")
-                // console.log(res);
-                // console.log("data:",(data as any).default);
+                
                 this.rowData = [];
                 this.columnDefs = [];
                 let rows = [];
@@ -1915,7 +1919,11 @@ export class SaleslogComponent implements OnInit {
         this.monthSelected = event.monthSelected;
         this.sliderIndex = event.monthSelected;
         this.sliderItem = event.sliderItem;
-        if (event.option === 1) {
+        this.dateFilterApplied = event.option;
+
+        if (this.dateFilterApplied === 0) {
+            this.generateGrid()
+        }else if (this.dateFilterApplied === 1) {
             this.generateGrid(1, this.sliderItem.replace(' ', '_'))
         } else {
             this.generateGrid(this.monthSelected, moment(this.monthActive + "-" + this.yearActive).format('MMM_YY'))
