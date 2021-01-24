@@ -274,7 +274,7 @@ export class SaleslogComponent implements OnInit {
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
             // },
-            // onCellValueChanged: this.setRowTotalValue.bind(this),
+            onCellValueChanged: this.onCellChanged.bind(this),
             // context: {
             //   thisComponent : this
             // },
@@ -487,6 +487,27 @@ export class SaleslogComponent implements OnInit {
         /*----------------------------*/
     }
 
+    onAsyncUpdate() {
+        var startMillis = new Date().getTime();
+        var updatedCount = 0;
+        var api = this.gridApi;
+
+        for (var i = 0; i < this.rowData.length; i++) {
+            console.log('i:',i);
+            var itemToUpdate = this.rowData[i];
+            var newItem = copyObject(itemToUpdate);
+            console.log(newItem);
+            api.applyTransactionAsync({ update: [itemToUpdate] });
+        }
+        function copyObject(object) {
+            var newObject = {};
+            Object.keys(object).forEach(function (key) {
+              newObject[key] = object[key];
+            });
+            return newObject;
+        }
+    }
+
     public addBroadcastLiveSheetDataForViewsListener = () => {
         this.signalRService.hubConnection.on('TransferLiveSheetData', (data) => {
             if (this.dateFilterApplied === 0) {
@@ -558,11 +579,14 @@ export class SaleslogComponent implements OnInit {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
         this.pageCounter = this.pageCounter + 1;
+        this.gridApi.showLoadingOverlay();
         this.generateGrid();
     }
 
     generateGrid(months?, date?) {
-        this.gridApi.showLoadingOverlay();
+        if(this.rowData.length ===0){
+            this.gridApi.showLoadingOverlay();
+        }
         let obj = {
             "UserId": this.sessionHandlerService.getSession('userObj').userId,
             "RoleId": this.sessionHandlerService.getSession('userObj').roleID,
@@ -576,7 +600,7 @@ export class SaleslogComponent implements OnInit {
         this.saleslog.fetchAllRows(obj)
             .subscribe(res => {
                 console.log("Triggered")
-                
+
                 this.rowData = [];
                 this.columnDefs = [];
                 let rows = [];
@@ -679,22 +703,22 @@ export class SaleslogComponent implements OnInit {
 
                 rowIdcolumn["headerName"] = ".",
 
-                    rowIdcolumn["colId"] = 0,
-                    rowIdcolumn["minWidth"] = 40,
-                    rowIdcolumn["maxWidth"] = 40,
-                    rowIdcolumn["cellClass"] = 'row-no',
-                    rowIdcolumn["editable"] = true,
-                    rowIdcolumn["sequence"] = 0;
+                rowIdcolumn["colId"] = 0,
+                rowIdcolumn["minWidth"] = 40,
+                rowIdcolumn["maxWidth"] = 40,
+                rowIdcolumn["cellClass"] = 'row-no',
+                rowIdcolumn["editable"] = true,
+                rowIdcolumn["sequence"] = 0;
                 rowIdcolumn["pinned"] = 'left',
-                    rowIdcolumn["lockPinned"] = true,
-                    rowIdcolumn["filter"] = true,
-                    rowIdcolumn["lockPosition"] = true,
+                rowIdcolumn["lockPinned"] = true,
+                rowIdcolumn["filter"] = true,
+                rowIdcolumn["lockPosition"] = true,
 
-                    rowIdcolumn["cellClass"] = function (params) {
-                        // console.log(params.data);
-                        let i = 1;
-                        return (params.data.carryOver === true ? 'agClassCarryOver' : 'agClassNoCarryOver');
-                    }
+                rowIdcolumn["cellClass"] = function (params) {
+                    // console.log(params.data);
+                    let i = 1;
+                    return (params.data.carryOver === true ? 'agClassCarryOver' : 'agClassNoCarryOver');
+                }
                 let carryOverCount = this.carryOverUnits;
                 rowIdcolumn["valueGetter"] = function (params) {
                     // console.log(params.node.rowIndex, carryOverCount);
@@ -728,7 +752,7 @@ export class SaleslogComponent implements OnInit {
                     columnMap["resizable"] = true;
                     columnMap["sortable"] = true;
                     columnMap["filter"] = true,
-                        columnMap["hide"] = !element.display;
+                    columnMap["hide"] = !element.display;
                     columnMap["columnType"] = element.type;
 
                     let required = element.required
@@ -744,19 +768,18 @@ export class SaleslogComponent implements OnInit {
 
                     if (element.type === 'Date') {
                         columnMap["cellEditor"] = 'datePicker';
-                    }
-                    if (element.type === 'DD-Fixed') {
+                    }else if (element.type === 'DD-Fixed') {
                         columnMap["cellRenderer"] = 'customDropDownRenderer';
-                    }
-                    if (element.type === 'DD-Self') {
+                    }else if (element.type === 'DD-Self') {
                         columnMap["cellRenderer"] = 'customDropDownRenderer';
-                    }
-                    if (element.type === 'DD-Suggest') {
+                    }else if (element.type === 'DD-Suggest') {
                         columnMap["cellRenderer"] = 'customDropDownRenderer';
-                    }
-                    if (element.type === 'Combo') {
+                    }else if (element.type === 'Combo') {
                         columnMap["cellRenderer"] = 'dropDownRenderer';
+                    }else{
+                        // columnMap["onCellValueChanged"] = this.onCellChanged();
                     }
+                    console.log(element.type)
 
                     column.push(columnMap);
                 });
@@ -765,15 +788,30 @@ export class SaleslogComponent implements OnInit {
                     return a.sequence - b.sequence;
                 });
 
-                this.columnDefs = column;
-                this.rowData = rows;
-                this.rowResponse = rows;
-                // console.log(this.columnDefs );
-                // console.log(this.columnDefs );
-
-
+                // if(!months){         
+                    this.columnDefs = column;
+                    this.rowData = rows;
+                    this.rowResponse = rows;
+                // }
+                // this.onAsyncUpdate();
             });
 
+    }
+
+    onCellChanged(event){
+        let params = { 
+            "userid": this.sessionHandlerService.getSession('userObj').userId, 
+            "EntryId": event.data.rowId, // Parent ID of the row for which cell he is editing 
+            "ViewID": 1, 
+            "colId": event.colDef.colId, 
+            "ColType": event.colDef.columnType, // You need to send the column type 
+            "Value": event.newValue
+        }
+        this.saleslog.insertCellValue(params)
+        .subscribe(res=>{
+        // this.toastNotification.generateToast('Update successful', 'OK', 2000);
+            this.signalRService.BroadcastLiveSheetData();
+        })
     }
 
 
