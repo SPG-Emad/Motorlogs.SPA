@@ -331,7 +331,7 @@ export class SaleslogComponent implements OnInit {
         let cid = colId.replace('/"/g', '');
         let params = {
             "userId": this.sessionHandlerService.getSession('userObj').userId,
-            "deptid": 1118,
+            "deptid": this.decryptedDepartmentId,
             "ViewID": 1,
             "colId": cid,
             "config": "{'width':" + width + "}" // or "{'sequence':1}"
@@ -339,7 +339,7 @@ export class SaleslogComponent implements OnInit {
 
         this.saleslog.updateViewColumnOptions(params)
             .subscribe(res => {
-
+                this.signalRService.BroadcastLiveSheetData();
             })
     }
 
@@ -821,7 +821,7 @@ export class SaleslogComponent implements OnInit {
         let obj = {
             "UserId": this.sessionHandlerService.getSession('userObj').userId,
             "RoleId": this.sessionHandlerService.getSession('userObj').roleID,
-            "ViewId": 3,
+            "ViewId": 1,
             "DeptId": this.decryptedDepartmentId,
             "TillDate": (date) ? date : moment().format('MMM_YY'),
             "PastMonths": (months) ? months : 1,

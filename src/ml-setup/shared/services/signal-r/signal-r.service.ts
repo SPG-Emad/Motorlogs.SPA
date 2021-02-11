@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import * as signalR from "@aspnet/signalr";
 import { GlobalConstants } from 'ml-shared/common/global-constants';
 
-const SALESLOG_API = `${GlobalConstants.apiURL}ViewsData`;
+const LIVE_API = `${GlobalConstants.liveURL}`;
 
 @Injectable({
     providedIn: 'root'
@@ -15,7 +15,7 @@ export class SignalRService {
 
     public startConnection = () => {
         this.hubConnection = new signalR.HubConnectionBuilder()
-            .withUrl('https://motorlogs2.azurewebsites.net/LiveSheetDataForViews')
+            .withUrl(LIVE_API)
             //.withUrl('http://localhost:5000/LiveSheetDataForViews')
             .build();
 
@@ -23,8 +23,6 @@ export class SignalRService {
             .start()
             .then(() => {console.log('Connection started'); })
             .catch(err => console.log('Error while starting connection: ' + err))
-
-           
     }
 
     public addTransferChartDataListener = () => {
