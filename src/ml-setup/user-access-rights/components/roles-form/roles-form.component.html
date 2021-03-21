@@ -1,15 +1,16 @@
 <form #f="ngForm" class="w-100-p" [formGroup]="roleForm" novalidate>
     <div
         class="message-box info"
-        style="margin-bottom: 30px;"
+        style="margin-bottom: 30px"
         *ngIf="!editValue"
     >
         <mat-icon
-            style="font-size: 19px; vertical-align: middle; color: #2573d4;"
+            style="font-size: 19px; vertical-align: middle; color: #2573d4"
             >info</mat-icon
         >
         In this screen you can assign a new Role and also you can Select an
-        Existing Role to duplicate its Routine worksheets column permissions on the New Role.
+        Existing Role to duplicate its Routine worksheets column permissions on
+        the New Role.
     </div>
     <div fxLayout="row" fxLayoutAlign="start">
         <mat-form-field
@@ -63,7 +64,18 @@
             class="pl-4 pr-4"
             *ngIf="!editValue"
         >
-            <mat-label>Duplicate Column Permissions From: </mat-label>
+            <mat-label   matTooltip="Info about the action"
+            matTooltipPosition="top"
+                >Duplicate Column Permissions From:
+                <mat-icon
+                    aria-hidden="false"
+                    aria-label="Example home icon"
+                    matTooltip="Info about the action"
+                    matTooltipPosition="top"
+                    >info</mat-icon
+                >
+            </mat-label>
+
             <mat-select formControlName="roleId">
                 <mat-option *ngFor="let role of rolesList" [value]="role.id">
                     {{ role.name }}

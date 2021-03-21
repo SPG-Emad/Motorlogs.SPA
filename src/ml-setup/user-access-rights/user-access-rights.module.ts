@@ -26,6 +26,7 @@ import { MatMenuModule } from '@angular/material/menu';
 import { MatSlideToggleModule } from '@angular/material/slide-toggle';
 import { MatListModule } from '@angular/material/list';
 import { FuseSidebarModule } from '@fuse/components';
+import { MatTooltipModule } from "@angular/material/tooltip";
 
 export const ROUTES: Routes = [
     {

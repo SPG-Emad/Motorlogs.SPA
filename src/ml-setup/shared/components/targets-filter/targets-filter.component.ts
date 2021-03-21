@@ -1,105 +1,105 @@
-import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import * as moment from 'moment';
+import { Component, OnInit, Output, EventEmitter } from "@angular/core";
+import { DepartmentsService } from "ml-setup/shared/services/departments/departments.service";
+import * as moment from "moment";
+import { Subject } from "rxjs";
+import { takeUntil } from "rxjs/operators";
 
 @Component({
-  selector: 'app-targets-filter',
-  templateUrl: './targets-filter.component.html',
-  styleUrls: ['./targets-filter.component.scss']
+    selector: "app-targets-filter",
+    templateUrl: "./targets-filter.component.html",
+    styleUrls: ["./targets-filter.component.scss"],
 })
 export class TargetsFilterComponent implements OnInit {
+    @Output() dateFilter = new EventEmitter<any>();
 
-  @Output() dateFilter = new EventEmitter<any>();
+    constructor( ) {}
 
-  constructor() { }
+    options = [
+        { key: "month1", value: "3 Months", months: 3 },
+        { key: "month2", value: "6 Months", months: 6 },
+        { key: "month3", value: "12 Months", months: 12 },
+    ];
 
-  options = [
-      { "key": "month1", "value": "3 Months", "months": 3 },
-      { "key": "month2", "value": "6 Months", "months": 6 },
-      { "key": "month3", "value": "12 Months", "months": 12 },
-  ];
+    startFrom: any[] = [];
+    startDateValue: any = "";
+    historyValue: any = { key: "month1", value: "3 Months", months: 3 };
+    periodValue: any = { key: "month1", value: "3 Months", months: 3 };
 
+    displayKey = "value";
+    isDisable = false;
 
-  startFrom: any[] = [];
+    styleGuide = {
+        // caretClass: 'caret',
+        selectBoxClass: "dropdown-wrapper",
+        selectMenuClass: "dropdown",
+        optionsClass: "option",
+    };
 
-  historyValue: any = { "key": "month1", "value": "3 Months", "months": 3 };
-  startDateValue: any = "";
-  periodValue: any = { "key": "month1", "value": "3 Months", "months": 3 };
+    styleGuideHistory = {
+        // caretClass: 'caret',
+        selectBoxClass: "dropdown-history",
+        selectMenuClass: "dropdown",
+        optionsClass: "option",
+    };
 
-  displayKey = "value";
-  isDisable = false;
+    isDataList = false;
+    searchKeys = ["key", "value"];
+    private _unsubscribeAll: Subject<any>;
 
-  styleGuide = {
-      // caretClass: 'caret',
-      selectBoxClass: 'dropdown-wrapper',
-      selectMenuClass: 'dropdown',
-      optionsClass: 'option'
-  };
+    ngOnInit() {
+        this.generateMonths();
+        let date = moment().format("MMM YY");
+        let dateFormat = moment().format("MMM YYYY");
 
-  styleGuideHistory = {
-      // caretClass: 'caret',
-      selectBoxClass: 'dropdown-history',
-      selectMenuClass: 'dropdown',
-      optionsClass: 'option'
-  };
+        this.startDateValue = { key: date, value: date, months: dateFormat };
+    }
 
+    generateMonths() {
+        /*Loop 2 years (24 months) and fetch months  */
+        for (let i = 0; i <= 24; i++) {
+            /*Generate Key and value for startFrom Object from momentJs*/
+            let month = moment().subtract(i, "months").format("MMM YY");
+            let key = moment().subtract(i, "months").format("MMM") + i;
+            let dateFormat = moment().subtract(i, "months").format("MMM YYYY");
+            /*---------------------------------------------------------*/
 
-  isDataList = false;
-  searchKeys = ['key', 'value'];
+            /*Push Into startFrom Array*/
+            this.startFrom.push({
+                key: key,
+                value: month,
+                months: dateFormat,
+            });
+            /*------------------*/
+        }
+        /*-------------------------------------------*/
+    }
 
-  ngOnInit() {
-      this.generateMonths();
-      let date = moment().format('MMM YY');
-      let dateFormat = moment().format('MMM YYYY');
+    changePeriod(event) {
+        this.dateFilter.emit({
+            filter: 3,
+            period: event.months,
+            history: this.historyValue.months,
+            startFrom: this.startDateValue.months,
+        });
+    }
 
-      this.startDateValue = { "key": date, "value": date, "months": dateFormat };
-  }
+    changeStartFrom(event) {
+        this.dateFilter.emit({
+            filter: 2,
+            startFrom: event.months,
+            history: this.historyValue.months,
+            period: this.periodValue.months,
+        });
+    }
 
-  generateMonths() {
-      /*Loop 2 years (24 months) and fetch months  */
-      for (let i = 0; i <= 24; i++) {
+    onHistoryChange(event) {
+        this.dateFilter.emit({
+            filter: 1,
+            history: event.months,
+            startFrom: this.startDateValue.months,
+            period: this.periodValue.months,
+        });
+    }
 
-          /*Generate Key and value for startFrom Object from momentJs*/
-          let month = moment().subtract(i, 'months').format('MMM YY');
-          let key = moment().subtract(i, 'months').format('MMM') + i;
-          let dateFormat = moment().subtract(i, 'months').format('MMM YYYY');
-          /*---------------------------------------------------------*/
-
-          /*Push Into startFrom Array*/
-          this.startFrom.push({
-              'key': key,
-              'value': month,
-              'months': dateFormat
-          });
-          /*------------------*/
-      }
-      /*-------------------------------------------*/
-  }
-
-  changePeriod(event) {
-      this.dateFilter.emit({
-          'filter': 3,
-          'period': event.months,
-          'history': this.historyValue.months,
-          'startFrom': this.startDateValue.months,
-      });
-  }
-
-  changeStartFrom(event) {
-      this.dateFilter.emit({
-          'filter': 2,
-          'startFrom': event.months,
-          'history': this.historyValue.months,
-          'period': this.periodValue.months,
-      });
-  }
-
-  onHistoryChange(event) {
-
-      this.dateFilter.emit({
-          'filter': 1,
-          'history': event.months,
-          'startFrom': this.startDateValue.months,
-          'period': this.periodValue.months,
-      });
-  }
+    onDepartmentChange(event) {}
 }

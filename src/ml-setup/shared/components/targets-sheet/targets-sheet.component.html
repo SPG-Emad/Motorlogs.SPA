@@ -1,42 +1,69 @@
-<div class="page-container carded fullwidth " style="margin-top: 80px;margin-bottom: 60px;">
-  <div class="center">
-      <div class="content-card">
-          <div class="content p-24 ">
-              <div class="divSiteTarget">
-                  <!-- Site Target Table Starts-->
-                  <ag-grid-angular
-                    #agGrid
-                    style="width: 100%; height:600px;"
-                    id="myGrid"
-                    class="ag-theme-alpine"
-                    [modules]="modules"
-                    [columnDefs]="columnDefs"
-                    [defaultColDef]="defaultColDef"
-                    [groupUseEntireRow]="true"
-                    [autoGroupColumnDef]="autoGroupColumnDef"
-                    [groupDefaultExpanded]=1
-                    [frameworkComponents]="frameworkComponents"
-                    [loadingOverlayComponent]="loadingOverlayComponent"
-
-                    [getRowNodeId]="getRowNodeId"
-                    [getRowHeight]="getRowHeight"
-                    [animateRows]="true"
-                    [rowData]="rowData"
-                    (gridReady)="onGridReady($event)"
-                  ></ag-grid-angular>
-                  <!-- / Site Target Table Ends-->
-              </div>
-          </div>
-      </div>
-  </div>
+<div
+    class="page-container carded fullwidth"
+    style="margin-top: 80px; margin-bottom: 60px"
+>
+    <div class="center">
+        <div class="content-card">
+            <div class="content p-24">
+                <div class="divSiteTarget">
+                    <div style="width: 25%">
+                        <table style="width: 100%">
+                            <tr>
+                                <td style="width: 35%;">
+                                    <label style="font-weight: bold"
+                                        >Filter Departments</label
+                                    >
+                                </td>
+                                <td style="width: 65%;">
+                                    <mat-search-select
+                                        [data]="departmentsList"
+                                        [defaultValue]="defaultValueOfDepartment"
+                                        class="w-100-p"
+                                        name="department"
+                                        (selectedItem)="onSelectedDepartment($event)"
+                                        ngDefaultControl
+                                    ></mat-search-select>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <!-- Site Target Table Starts-->
+                    <ag-grid-angular
+                        #agGrid
+                        style="width: 100%; height: 600px"
+                        id="myGrid"
+                        class="ag-theme-alpine"
+                        [modules]="modules"
+                        [columnDefs]="columnDefs"
+                        [defaultColDef]="defaultColDef"
+                        [groupUseEntireRow]="true"
+                        [autoGroupColumnDef]="autoGroupColumnDef"
+                        [groupDefaultExpanded]="1"
+                        [frameworkComponents]="frameworkComponents"
+                        [loadingOverlayComponent]="loadingOverlayComponent"
+                        [getRowNodeId]="getRowNodeId"
+                        [getRowHeight]="getRowHeight"
+                        [animateRows]="true"
+                        [rowData]="rowData"
+                        (gridReady)="onGridReady($event)"
+                    ></ag-grid-angular>
+                    <!-- / Site Target Table Ends-->
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 
-
 <div class="topbar">
-  <div class="filter-container" fxLayoutAlign="space-between">
-    <div class="excel-export" (click)="exportGird()">
-      <img alt="" src="../../../../assets/icons/material-icons/xls.png" width="45px" height="45px">
-      <p>XLS Export</p>
+    <div class="filter-container" fxLayoutAlign="space-between">
+        <div class="excel-export" (click)="exportGird()">
+            <img
+                alt=""
+                src="../../../../assets/icons/material-icons/xls.png"
+                width="45px"
+                height="45px"
+            />
+            <p>XLS Export</p>
+        </div>
     </div>
-  </div>
 </div>
