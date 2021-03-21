@@ -27,6 +27,7 @@ import { Ng2CarouselamosModule } from 'ng2-carouselamos';
 import { MatDatepickerModule, MatFormFieldModule, MatIconModule,  MatAutocompleteModule, MatInputModule, MatProgressSpinnerModule, MatSlideToggleModule, MatTableModule, MatSortModule, MatDialogModule, MatCheckboxModule, MatSelectModule } from '@angular/material';
 import { NgxMatSelectSearchModule } from 'ngx-mat-select-search';
 import { HighchartsChartComponent } from 'highcharts-angular';
+import { HighchartsChartModule } from 'highcharts-angular';
 
 export const ROUTES: Routes = [
     {
@@ -73,12 +74,12 @@ export const ROUTES: Routes = [
         MatCheckboxModule,
         MatSelectModule,
         NgxMatSelectSearchModule,
-        FormsModule
+        FormsModule,
+        HighchartsChartModule
     ],
     declarations: [
         DashboardComponent,
         DashboardHeaderComponent,
-        HighchartsChartComponent,
         PivotDataComponent,
         PivotFiltersComponent,
         GroupByDepartmentComponent,

@@ -1611,10 +1611,10 @@ export class TargetsSheetComponent implements OnInit {
 
   target = [
     {
-      value: 'vehicle Orders'
+      value: 'Vehicle Orders'
     },
     {
-      value: 'vehicle Profit'
+      value: 'Vehicle Profit'
     },
     {
       value: 'Trade-in %'
@@ -1644,7 +1644,7 @@ export class TargetsSheetComponent implements OnInit {
 
 
   valueSetter(params) {
-    if(params.data && params.data.target === "vehicle Orders"){
+    if(params.data && params.data.target === "Vehicle Orders"){
       let columnName= params.column.userProvidedColDef.field;
       let rowData=  this.getAllRows(columnName);
       rowData.forEach(res=>{
@@ -1699,13 +1699,13 @@ export class TargetsSheetComponent implements OnInit {
         {
           "id":"total_orders",
           "rowId":"total_orders",
-          "target":"vehicle Orders",
+          "target":"Vehicle Orders",
           "department": departmentName
         },
         {
           "id":"total_profit",
           "rowId":"total_profit",
-          "target":"vehicle Profit",
+          "target":"Vehicle Profit",
           "department": departmentName
         },
         {
@@ -1722,13 +1722,13 @@ export class TargetsSheetComponent implements OnInit {
         {
           "id":"total_orders",
           "rowId":"total_orders",
-          "target":"vehicle Orders",
+          "target":"Vehicle Orders",
           "department": departmentName
         },
         {
           "id":"total_profit",
           "rowId":"total_profit",
-          "target":"vehicle Profit",
+          "target":"Vehicle Profit",
           "department": departmentName
         },
         ...this.emptyRows
@@ -1877,9 +1877,9 @@ export class TargetsSheetComponent implements OnInit {
             }
           }
         }else if(
-            column !== "vehicle Orders" && 
+            column !== "Vehicle Orders" && 
             params.value !== undefined &&
-            column === "vehicle Profit"
+            column === "Vehicle Profit"
         ){
           let rowData = this.target.find(res=>res.value === params.value)
 
@@ -1889,13 +1889,13 @@ export class TargetsSheetComponent implements OnInit {
           }
         }else if(
           params.data.rowId === "total_profit" &&
-          column === "vehicle Profit" &&  
+          column === "Vehicle Profit" &&  
           typeof params.value ==='undefined'
         ){
           return "$0";
         }else if(
           params.data.rowId === "total_orders" &&
-          column === "vehicle Orders" &&  
+          column === "Vehicle Orders" &&  
           typeof params.value ==='undefined'
         ){
           return "0";
@@ -1941,15 +1941,15 @@ export class TargetsSheetComponent implements OnInit {
     ){
 
       /*If target column equal to vehicle orders then allow*/ 
-      if(params.data && params.data.target === "vehicle Orders"){
+      if(params.data && params.data.target === "Vehicle Orders"){
 
-        this.calculateRowData(params,"vehicle Orders","total_orders",0);
+        this.calculateRowData(params,"Vehicle Orders","total_orders",0);
         this.baseCondtion = 1;
         this.insertCellData(params);
 
-      }else if(params.data && params.data.target === "vehicle Profit"){
+      }else if(params.data && params.data.target === "Vehicle Profit"){
 
-        this.calculateRowData(params,"vehicle Profit","total_profit",0);
+        this.calculateRowData(params,"Vehicle Profit","total_profit",0);
         this.baseCondtion = 1;
         this.insertCellData(params);
 
@@ -2050,13 +2050,13 @@ export class TargetsSheetComponent implements OnInit {
     if(option ===1){
       if(total && total > 0){
 
-          /*Set total data calculated of vehicle Orders */ 
+          /*Set total data calculated of Vehicle Orders */ 
           rowNode.setDataValue(params, total);
           /*---------------------------------------------*/
       }
     }else{
 
-      /*Set total data calculated of vehicle Orders */ 
+      /*Set total data calculated of Vehicle Orders */ 
       rowNode.setDataValue(params.colDef.field, total);
       /*---------------------------------------------*/
     }
@@ -2179,13 +2179,13 @@ export class TargetsSheetComponent implements OnInit {
         {
           "id":"total_orders",
           "rowId":"total_orders",
-          "target":"vehicle Orders",
+          "target":"Vehicle Orders",
           "department": "Lennock Phillip Pty Ltd & Lennock Automation Pt"
         },
         {
           "id":"total_profit",
           "rowId":"total_profit",
-          "target":"vehicle Profit",
+          "target":"Vehicle Profit",
           "department": "Lennock Phillip Pty Ltd & Lennock Automation Pt"
         },
         {
@@ -2200,13 +2200,13 @@ export class TargetsSheetComponent implements OnInit {
         {
           "id":"total_orders",
           "rowId":"total_orders",
-          "target":"vehicle Orders",
+          "target":"Vehicle Orders",
           "department": "Lennock Phillip Pty Ltd & Lennock Automation Pt"
         },
         {
           "id":"total_profit",
           "rowId":"total_profit",
-          "target":"vehicle Profit",
+          "target":"Vehicle Profit",
           "department": "Lennock Phillip Pty Ltd & Lennock Automation Pt"
         },
       );
@@ -2236,7 +2236,7 @@ export class TargetsSheetComponent implements OnInit {
                 row1['department'] = depart['userName'];
               }
               row1[res.period] = res.value;
-              row1['target'] = 'vehicle Orders';    
+              row1['target'] = 'Vehicle Orders';    
             });
             departmentRow.push({...row1});
             count++;
@@ -2254,7 +2254,7 @@ export class TargetsSheetComponent implements OnInit {
                 row1['department'] = depart['userName'];
               }
               row1[res.period] = res.value;
-              row1['target'] = 'vehicle Profit';    
+              row1['target'] = 'Vehicle Profit';    
             });
             departmentRow.push({...row1});
             count++;
@@ -2310,8 +2310,8 @@ export class TargetsSheetComponent implements OnInit {
 
       column.map(res=>{
         /*Calculate total orders and profit*/ 
-        this.calculateRowData(res.field,"vehicle Orders","total_orders",1);
-        this.calculateRowData(res.field,"vehicle Profit","total_profit",1);
+        this.calculateRowData(res.field,"Vehicle Orders","total_orders",1);
+        this.calculateRowData(res.field,"Vehicle Profit","total_profit",1);
      
         /*------------------------------------------------------*/ 
       })

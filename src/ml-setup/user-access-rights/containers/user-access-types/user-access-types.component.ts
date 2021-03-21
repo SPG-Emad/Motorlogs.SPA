@@ -75,6 +75,7 @@ export class UserAccessTypesComponent implements OnInit, OnDestroy {
     }
 
     selectedDepartment(event): void {
+        console.log('Selected Department: ', event);
         if (event !== "View all") {
             this.department = event;
         } else {
