@@ -84,8 +84,8 @@
                         <div  class="options-container" formArrayName="options" *ngFor="let option of setupFormOption.controls; let i = index;">
                             <div class="options-container__options-content" [formGroupName]="i">
                                 <mat-form-field class="options-content">
-                                    <mat-label>Option {{i}}</mat-label>
-                                    <input (keypress)="onlyCharacters($event)"  matInput placeholder="Enter Option" value="" formControlName="option">
+                                    <mat-label>Value {{i}}</mat-label>
+                                    <input  matInput placeholder="Enter Option" value="" formControlName="option">
                                     <mat-error *ngIf="option.controls['option'].hasError('required')">
                                         Field is <strong>required</strong>
                                     </mat-error>

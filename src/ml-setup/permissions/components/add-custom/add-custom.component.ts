@@ -165,7 +165,18 @@ export class AddCustomComponent implements OnInit {
     }
 
     onDropDownTypeSelect(event) {
-        const option = event.value;
+        console.log("option", event.value);
+
+        let cellName = "";
+
+        this.dropDownType
+            .filter((x) => x.id == event.value)
+            .map((x) => {
+                cellName = x.code;
+            });
+
+        const option = cellName;
+
         if (option === "DD-Fixed") {
             this.addOptions();
         } else {
@@ -262,17 +273,33 @@ export class AddCustomComponent implements OnInit {
     }
 
     createColumn(resultObj) {
-        const obj = resultObj;
         let cellName = "";
+        let dropDownType = "";
+        let options = [];
+
+        const obj = resultObj;
+
         this.cellTypes
             .filter((x) => x.id == obj.cellType)
             .map((x) => {
                 cellName = x.name;
             });
-        obj.cellType = cellName;
-        console.log(obj);
 
-        this.permissionService.postPermission(resultObj).subscribe(
+        this.dropDownType
+            .filter((x) => x.id == obj.dropDownType)
+            .map((x) => {
+                dropDownType = x.code;
+            });
+
+        obj.cellType = cellName;
+        obj.dropDownType = dropDownType;
+        obj.options.map((x) => options.push(x.option));
+        obj.options = [];
+        obj.options = options;
+
+        console.log(options);
+
+        this.permissionService.postPermission(obj).subscribe(
             (res) => {
                 /*Display success message*/
                 this.toastHandlerService.generateToast(res.message, "OK", 2000);
