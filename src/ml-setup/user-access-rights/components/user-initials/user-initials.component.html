@@ -25,7 +25,6 @@
         <td>
             <mat-form-field class="w-100-p" floatLabel="always">
                 <input
-                    (keypress)="onlyCharacters($event)"
                     matInput
                     formControlName="firstName"
                     placeholder="First Name"
@@ -62,7 +61,6 @@
             >
                 <input
                     matInput
-                    (keypress)="onlyCharacters($event)"
                     formControlName="lastName"
                     placeholder="Last Name"
                 />
@@ -131,7 +129,6 @@
         <td colspan="2">
             <mat-form-field class="w-100-p" floatLabel="always">
                 <input
-                    (keypress)="onlyNumbers($event)"
                     matInput
                     formControlName="mobile"
                     placeholder="Mobile"
@@ -153,7 +150,6 @@
         <td colspan="2">
             <mat-form-field class="w-100-p" floatLabel="always">
                 <input
-                    (keypress)="onlyNumbers($event)"
                     matInput
                     formControlName="phone"
                     placeholder="Direct Phone"
