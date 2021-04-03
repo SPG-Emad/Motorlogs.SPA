@@ -46,7 +46,6 @@
     </div> -->
 
 
-
     <div class="modal-body">
         <form [formGroup]="arrivingForm" class="example-form">
 
@@ -69,7 +68,7 @@
     
             <mat-form-field floatLabel="always" class="example-full-width">
                 <mat-label>Purchase from (Client)</mat-label>
-                <input matInput formControlName="purchaseFrom" (keypress)="onlyNumbers($event)" >
+                <input matInput formControlName="purchaseFrom" >
             </mat-form-field>
             <br>
             <br>

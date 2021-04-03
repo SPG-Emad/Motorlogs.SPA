@@ -109,6 +109,8 @@ export class RolesFormComponent implements OnInit, OnDestroy {
         this._unsubscribeAll.complete();
     }
 
+    oldCode: string;
+
     setUpdateValues(editparam) {
         /**
          * Check isDeletable property from the selected record.
@@ -123,6 +125,7 @@ export class RolesFormComponent implements OnInit, OnDestroy {
             this.roleForm.get('code').enable();
         }
 
+        this.oldCode = editparam.code;
         const cloneObj = Object.assign({}, this.roleForm.getRawValue(), editparam);
         this.roleForm.patchValue(cloneObj);
     }
@@ -224,6 +227,8 @@ export class RolesFormComponent implements OnInit, OnDestroy {
     }
 
     updateRole(): void {
+        this.myNgForm.value.oldCode = this.oldCode;
+        console.log(this.myNgForm.value);
         this.roleService
             .putRole(this.myNgForm.value)
             .pipe(takeUntil(this._unsubscribeAll))
@@ -238,6 +243,7 @@ export class RolesFormComponent implements OnInit, OnDestroy {
                     this.reloadRoles.emit(Object.assign({}, true));
                     /*---------------------------*/
 
+                    this.oldCode = '';
                 },
                 err => {
                     /* In case of Failure, Display Error Message */

@@ -202,13 +202,18 @@
           <!--Footer Starts  -->
           <div fxlayoutalign="space-between" style="width: 100%;background: whitesmoke;place-content: stretch space-between;align-items: stretch;flex-direction: row;box-sizing: border-box;display: flex;">
             <button class="ng-tns-c59-23 mat-button" (click)="addColumn()" mat-button=""><span class="mat-button-wrapper">
-              <span class="addIcon ng-tns-c59-23">+</span>
+              <span class="addIcon ng-tns-c59-23" style="
+              background: #2196f3;
+              padding: 7px;
+              color: white;
+              margin-right: 6px;
+          ">+</span>
               <span class="addBtn ng-tns-c59-23">ADD</span></span>
               <div class="mat-button-ripple mat-ripple" matripple=""></div>
               <div class="mat-button-focus-overlay"></div>
             </button>
             <div>
-                <button class="ng-tns-c59-23 mat-button" (click)="excelExport()">
+                <button class="ng-tns-c59-23 mat-button" (click)="excelExport()" style="display: none;">
                   <span class="mat-button-wrapper">
                     <svg xml:space="preserve" xmlns:xlink="http://www.w3.org/1999/xlink" class="print_export ng-tns-c59-23" height="48" id="Layer_1" style="enable-background:new 0 0 24 24; margin-top: 3px;" version="1.1" viewBox="0 0 24 24" width="48" x="0px" xmlns="http://www.w3.org/2000/svg" y="0px">
                       <g>

@@ -261,7 +261,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
     if(event.value){
       this.selectedItem  = event.value.name;
       let colId = this.itemArray.find(res=>res.code ===this.selected);
-
+      console.log('column id: ' , colId);
       let params = { 
         "userid": this.sessionHandlerService.getSession('userObj').userId, 
         "EntryId": this.colDef.data.rowId, // Parent ID of the row for which cell he is editing 

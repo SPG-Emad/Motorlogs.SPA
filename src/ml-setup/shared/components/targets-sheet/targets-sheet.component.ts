@@ -64,7 +64,7 @@ export class TargetsSheetComponent implements OnInit {
     baseCondtion: number = 0;
 
     history: number = 3;
-    peroid: number = 3;
+    period: number = 3;
     startFrom: number = null;
     public emptyFieldsCount: number = 0;
     getRowHeight;
@@ -1640,7 +1640,7 @@ export class TargetsSheetComponent implements OnInit {
 
         if (this.targetSelected === 0) {
             let apiParams = {
-                Period: this.peroid,
+                Period: this.period,
                 startDate: start.toUpperCase(),
                 ActualHistory: this.history,
                 deptId: this.selectedDepartment,
@@ -1652,7 +1652,7 @@ export class TargetsSheetComponent implements OnInit {
             });
         } else {
             let apiParams = {
-                Period: this.peroid,
+                Period: this.period,
                 startDate: start.toUpperCase(),
                 ActualHistory: this.history,
                 deptId: this.selectedDepartment,
@@ -2169,7 +2169,7 @@ export class TargetsSheetComponent implements OnInit {
 
         if (this.targetSelected === 0) {
             let apiParams = {
-                Period: this.peroid,
+                Period: this.period,
                 startDate: start.toUpperCase(),
                 ActualHistory: this.history,
             };
@@ -2180,7 +2180,7 @@ export class TargetsSheetComponent implements OnInit {
             });
         } else {
             let apiParams = {
-                Period: this.peroid,
+                Period: this.period,
                 startDate: start.toUpperCase(),
                 ActualHistory: this.history,
                 deptId: this.selectedDepartment,
@@ -2481,7 +2481,7 @@ export class TargetsSheetComponent implements OnInit {
     }
 
     fetchPeriods(column) {
-        for (let i = 1; i <= this.peroid; i++) {
+        for (let i = 1; i <= this.period; i++) {
             /*Generate Key and value for startFrom Object from momentJs*/
             let month = this.startFrom
                 ? moment(this.startFrom).add(i, "months").format("MMM YY")
@@ -2503,7 +2503,7 @@ export class TargetsSheetComponent implements OnInit {
         let history = object.history;
         let startFrom = object.startFrom;
 
-        this.peroid = period;
+        this.period = period;
         this.history = history;
         this.startFrom = startFrom;
 
@@ -2511,7 +2511,7 @@ export class TargetsSheetComponent implements OnInit {
         start = start.toLowerCase().replace(" ", "_");
 
         let apiParams = {
-            peroid: this.peroid,
+            period: this.period,
             StartDate: start.toUpperCase(),
             ActualHistory: this.history,
         };
@@ -2524,7 +2524,7 @@ export class TargetsSheetComponent implements OnInit {
 
         if (this.targetSelected === 0) {
             let apiParams = {
-                Period: this.peroid,
+                Period: this.period,
                 startDate: start.toUpperCase(),
                 ActualHistory: this.history,
             };
@@ -2536,7 +2536,7 @@ export class TargetsSheetComponent implements OnInit {
             });
         } else {
             let apiParams = {
-                Period: this.peroid,
+                Period: this.period,
                 startDate: start.toUpperCase(),
                 ActualHistory: this.history,
                 deptId: this.selectedDepartment,

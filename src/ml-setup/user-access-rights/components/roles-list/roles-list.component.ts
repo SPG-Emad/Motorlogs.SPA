@@ -110,8 +110,6 @@ export class RolesListComponent implements OnInit, OnDestroy {
             (response) => {   
                 this.roleService.roleList =  response;
                 this.formatResponse(response);
-
-
                 this.generateRolesTable(0,undefined,response);
                 this.showLoader = false;
         });
@@ -154,8 +152,11 @@ export class RolesListComponent implements OnInit, OnDestroy {
 
 
     editRole(role: IRole) {
-        this.roleService.selectedRole = Object.assign({}, role);
+        const roleFetched = Object.assign({}, role);
+        roleFetched.oldCode = roleFetched.code;
+        this.roleService.selectedRole = Object.assign({}, roleFetched);
         this.editValue.emit(this.roleService.selectedRole);
+        console.log(roleFetched);
     }
 
 

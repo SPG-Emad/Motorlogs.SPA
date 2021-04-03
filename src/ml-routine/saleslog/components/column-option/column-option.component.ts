@@ -148,7 +148,7 @@ export class ColumnOptionComponent implements OnInit {
     let params = {
       "ViewId" : 1, // For saleslog 1 , for Delivered 2, for Arriving 3
       "UserId" : this.sessionHandlerService.getSession('userObj').userId,
-      "DeptId" : 1118
+      "DeptId" : this.decryptedDepartmentId
     }
     this.saleslogService.resetColumn(params)
     .subscribe(res=>{

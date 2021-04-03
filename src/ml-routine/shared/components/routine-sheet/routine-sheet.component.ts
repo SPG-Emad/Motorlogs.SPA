@@ -110,16 +110,16 @@ export class RoutineSheetComponent implements OnInit {
    rowHeight: number;
 
    history: number = 3;
-   peroid: number = 3;
+   period: number = 3;
   departmentName: string = "";
    startFrom: number= null;
   public  emptyFieldsCount: number = 0;
-   statusOption: string[]= ['NEW','DEMO'];
-   payOptions: string[]= ['Cash','OFA','IHP'];
+   statusOption: string[]= [];
+   payOptions: string[]= [];
    salesEngOption: string[]= [''];
-   salesPersonOption: string[]= ['Morgan Mac','Emily Gill','James Over','Robert Knight'];
-   afterMarketManagerOptions: string[]= ['Fleet','No intro'];
-   financeManagerOption: string[]= ['LOCUM','Fleet'];
+   salesPersonOption: string[]= [];
+   afterMarketManagerOptions: string[]= [];
+   financeManagerOption: string[]= [];
    components;
   public rowSelection;
   public thisComponent = this;
@@ -368,7 +368,7 @@ export class RoutineSheetComponent implements OnInit {
 
     this.saleslog.updateViewColumnOptions(params)
     .subscribe(res=>{
-
+        this.signalRService.BroadcastLiveSheetData();
     })
   }
 
@@ -1929,7 +1929,7 @@ export class RoutineSheetComponent implements OnInit {
       },
       'separator',
       {
-        name: 'DUPLICATE -entire record',
+        name: 'DUPLICATE - Entire Record',
         action: function() {                
           var newItems = [params.node.data];
           // console.log(params);
@@ -1940,7 +1940,7 @@ export class RoutineSheetComponent implements OnInit {
       },
       'separator',
       {
-        name: 'DELETE -entire record',
+        name: 'DELETE - Entire Record',
         action: thisRef.onRemoveSelected.bind(thisRef),
         icon: createFlagImg('close'),
       },
@@ -2102,8 +2102,8 @@ export class RoutineSheetComponent implements OnInit {
     this.saleslog.duplicateRows(params)
     .subscribe(res=>{
       this.gridApi.hideOverlay();
-
       this.gridApi.applyTransaction({ add: newItems });
+      this.signalRService.BroadcastLiveSheetData();
     })
   }
 
@@ -2113,7 +2113,7 @@ export class RoutineSheetComponent implements OnInit {
     }
     this.saleslog.removeCellColor(params)
     .subscribe(res=>{
-      
+        this.signalRService.BroadcastLiveSheetData();        
     })
   }
 
@@ -2127,6 +2127,7 @@ export class RoutineSheetComponent implements OnInit {
     .subscribe(res=>{
       this.gridApi.hideOverlay();
       this.toastHandlerService.generateToast('Row Deleted Successfully','',2000);
+      this.signalRService.BroadcastLiveSheetData();
     })
   }
 
@@ -2136,8 +2137,7 @@ export class RoutineSheetComponent implements OnInit {
     }
     this.saleslog.updateCellColor(params)
     .subscribe(res=>{
-    // console.log('pressed',params.node.rowIndex,params,this.rowResponse);
-    // this.rowResponse.filter(el=> el.rowID !==params.node.rowIndex)
+        this.signalRService.BroadcastLiveSheetData();
     })
   }
 

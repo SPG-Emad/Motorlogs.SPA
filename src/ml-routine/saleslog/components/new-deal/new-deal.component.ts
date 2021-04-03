@@ -7,6 +7,7 @@ import { SessionHandlerService } from 'app/shared/services/session-handler.servi
 import { EncryptionService } from 'app/shared/services/encryption.service';
 import { ActivatedRoute } from '@angular/router';
 import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
+import { DateAdapter } from '@angular/material';
 
 @Component({
   selector: 'app-new-deal',
@@ -16,6 +17,7 @@ import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.servi
 export class NewDealComponent implements OnInit {
 
     constructor(
+      private dateAdapter: DateAdapter<Date>,
       private dialog: MatDialog,
       private dialogRef: MatDialogRef<NewDealComponent>,
       private fb: FormBuilder, 
@@ -31,6 +33,7 @@ export class NewDealComponent implements OnInit {
         this.decryptedDepartmentId = modalParams.key;
       }
 
+      this.dateAdapter.setLocale('en-GB'); 
     }
   
   modalTitle : string = "New Deal";

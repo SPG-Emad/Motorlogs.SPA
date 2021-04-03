@@ -83,7 +83,7 @@ export class SaleslogComponent implements OnInit {
     rowHeight: number;
 
     history: number = 3;
-    peroid: number = 3;
+    period: number = 3;
     startFrom: number = null;
     public emptyFieldsCount: number = 0;
     statusOption: string[] = ['NEW', 'DEMO'];
@@ -627,9 +627,9 @@ export class SaleslogComponent implements OnInit {
                         this.cellMap['rowId'] = rowIndexId;
 
                         if (element1.colCode === "OD") {
-                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format('MM/DD/YYYY');
+                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format('DD/MM/YYYY');
 
-                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format('MM/DD/YYYY');
+                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format('DD/MM/YYYY');
                         } else {
                             this.cellMap['' + element1.colId + ''] = element1.currentCellValue;
                             this.cellMap['"' + element1.colCode + '"'] = element1.currentCellValue;
@@ -702,7 +702,6 @@ export class SaleslogComponent implements OnInit {
                 let rowIdcolumn = new Object();
 
                 rowIdcolumn["headerName"] = ".",
-
                 rowIdcolumn["colId"] = 0,
                 rowIdcolumn["minWidth"] = 40,
                 rowIdcolumn["maxWidth"] = 40,
@@ -715,7 +714,7 @@ export class SaleslogComponent implements OnInit {
                 rowIdcolumn["lockPosition"] = true,
 
                 rowIdcolumn["cellClass"] = function (params) {
-                    // console.log(params.data);
+                     console.log(params.data);
                     let i = 1;
                     return (params.data.carryOver === true ? 'agClassCarryOver' : 'agClassNoCarryOver');
                 }
@@ -844,19 +843,19 @@ export class SaleslogComponent implements OnInit {
                 if (carryOver) {
                     this.carryOverUnits++;
                 }
+
                 this.cellData = [];
                 let index = 0;
+                
                 element.cells.forEach(element1 => {
                     this.cellMap['' + element1.colId + ''] = element1.currentCellValue;
                     if (element1.colCode === "OD") {
-                        this.cellMap['' + element1.colId + ''] = moment(element1.currentCellValue).format('MM/DD/YYYY');
-
-                        this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format('MM/DD/YYYY');
-                        // console.log(this.cellMap['"'+element1.colCode+'"'])
+                        this.cellMap['' + element1.colId + ''] = moment(element1.currentCellValue).format('DD/MM/YYYY');
+                        this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format('DD/MM/YYYY');
+                        console.log(this.cellMap['"'+element1.colCode+'"'])
                     } else {
                         this.cellMap['' + element1.colId + ''] = element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] = element1.currentCellValue;
-
                     }
                     if (element1.cellOptions.length > 0) {
                         this.cellMap["cellOptions_" + element1.colCode] = element1.cellOptions;
@@ -906,12 +905,12 @@ export class SaleslogComponent implements OnInit {
                     this.deliveredAmount = this.deliveredAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
                 this.cellData[0]['type'] = typeArray;
-
                 rows.push(this.cellData[0]);
             });
+            
             this.rowResponse = rows;
 
-            // console.log(this.cellData )
+            console.log(this.cellData )
             // console.log(this.soldAmount, this.soldUnits, )
             // console.log(this.coveredAmount, this.coveredUnits, )
             // console.log(this.deliveredAmount, this.deliveredUnits, )
@@ -1637,7 +1636,7 @@ export class SaleslogComponent implements OnInit {
             },
             'separator',
             {
-                name: 'DUPLICATE -entire record',
+                name: 'DUPLICATE - Entire Record',
                 action: function () {
                     var newItems = [params.node.data];
                     // console.log(params);
@@ -1648,7 +1647,7 @@ export class SaleslogComponent implements OnInit {
             },
             'separator',
             {
-                name: 'DELETE -entire record',
+                name: 'DELETE - Entire Record',
                 action: thisRef.onRemoveSelected.bind(thisRef),
                 icon: createFlagImg('close'),
             },
