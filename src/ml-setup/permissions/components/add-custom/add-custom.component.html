@@ -70,14 +70,14 @@
                         <br>
                         <div *ngIf="setupForm.get('dropDownType').status!=='DISABLED'">
                             <mat-form-field fxFlex="100" floatLabel="always">
-                                <mat-label>Drop-down type</mat-label>
+                                <mat-label>Dropdown type</mat-label>
                                 <mat-select formControlName="dropDownType" (selectionChange)="onDropDownTypeSelect($event)">
                                     <mat-option *ngFor="let type of dropDownType" [value]="type.id">
                                         {{type.name}}
                                     </mat-option>
                                 </mat-select>
                                 <mat-error *ngIf="setupForm.controls['dropDownType'].hasError('required')">
-                                    Drop-down type is <strong>required</strong>
+                                    Dropdown type is <strong>required</strong>
                                 </mat-error>
                             </mat-form-field>
                         </div>
