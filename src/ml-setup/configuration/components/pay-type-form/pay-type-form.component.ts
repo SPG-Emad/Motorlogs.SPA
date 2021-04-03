@@ -41,11 +41,11 @@ export class PayTypeFormComponent implements OnInit, OnDestroy {
     });
 
     get valText() {
-        return this.payTypeForm.get('valText').value;
+        return this.payTypeForm.get('valText').value.trim();
     }
 
     get code() {
-        return this.payTypeForm.get('code').value;
+        return this.payTypeForm.get('code').value.trim();
     }
 
     get backgrounds() {
@@ -78,13 +78,18 @@ export class PayTypeFormComponent implements OnInit, OnDestroy {
         this.loading = true;
 
         const params = {
-            valText: this.valText,
-            code: this.code,
+            valText: this.valText.trim(),
+            code: this.code.trim(),
             details: JSON.stringify({ background: this.backgrounds }),
             columnCode: 'PT'
         };
 
-       
+        if(params.code === '' || params.valText === ''){
+            this.toastHandlerService.generateToast('Please enter the requried fields', 'OK', 2000);
+            this.loading = false;
+            return;
+        }
+
 
         this.configurationService.insertConfiguration(params)
         .pipe(takeUntil(this._unsubscribeAll))
@@ -94,7 +99,6 @@ export class PayTypeFormComponent implements OnInit, OnDestroy {
                     /*Execute Default Form Submission Methods */
                     this.onFormSubmission(POST_SUCCESS);
                     /*---------------------------*/
-
 
                     /* Fetch the Updated Records */
                     this.reloadPayType.emit(Object.assign({}, true));
@@ -111,6 +115,7 @@ export class PayTypeFormComponent implements OnInit, OnDestroy {
     }
 
     updatePayType() {
+      
         this.loading = true;
 
         const object = Object.assign({}, this.payTypeForm.getRawValue());
@@ -118,6 +123,12 @@ export class PayTypeFormComponent implements OnInit, OnDestroy {
         object.colID = this.colID;
         object.columnCode= 'PT';
         
+        if(object.code === '' || object.valText === ''){
+            this.toastHandlerService.generateToast('Please enter the requried fields', 'OK', 2000);
+            this.loading = false;
+            return;
+        }
+
         this.configurationService
             .updateConfiguration(object)
             .pipe(takeUntil(this._unsubscribeAll))
