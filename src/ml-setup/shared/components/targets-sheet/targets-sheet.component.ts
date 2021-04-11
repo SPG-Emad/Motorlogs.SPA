@@ -5,6 +5,7 @@ import {
     Input,
     SimpleChanges,
     ViewEncapsulation,
+    ChangeDetectorRef,
 } from "@angular/core";
 import { ClientSideRowModelModule } from "@ag-grid-community/client-side-row-model";
 import { RowGroupingModule } from "@ag-grid-enterprise/row-grouping";
@@ -28,6 +29,7 @@ import { Subject, Subscription } from "rxjs";
 import { CustomLoadingOverlayComponent } from "../custom-loading-overlay/custom-loading-overlay.component";
 import { IndividualTargetsService } from "ml-setup/shared/services/individual-targets/individual-targets.service";
 import { DepartmentsService } from "ml-setup/shared/services/departments/departments.service";
+import { environment } from "../../../../environments/environment";
 
 @Component({
     selector: "app-targets-sheet",
@@ -83,7 +85,8 @@ export class TargetsSheetComponent implements OnInit {
         private toastHandlerService: ToastHandlerService,
         private siteTargetSerivce: SiteTargetsService,
         private individualTargetsService: IndividualTargetsService,
-        private departmentsService: DepartmentsService
+        private departmentsService: DepartmentsService,
+        private cd: ChangeDetectorRef
     ) {
         this.columnDefs = [];
 
@@ -147,6 +150,8 @@ export class TargetsSheetComponent implements OnInit {
         this.loadingOverlayComponentParams = {
             loadingMessage: "One moment please...",
         };
+
+      
     }
 
     configSuccess: MatSnackBarConfig = {
@@ -1615,7 +1620,7 @@ export class TargetsSheetComponent implements OnInit {
     selectedDepartment: any = "-1";
 
     onSelectedDepartment($event) {
-        this.selectedDepartment = '-1';
+        this.selectedDepartment = "-1";
 
         this.departmentsList
             .filter((x) => x.code === $event)
@@ -1673,7 +1678,8 @@ export class TargetsSheetComponent implements OnInit {
     defaultValueOfDepartment;
 
     getAllDepartmentsByUserId() {
-        this.selectedDepartment = '-1';
+        this.selectedDepartment = "-1";
+        console.log("targetSelected", this.targetSelected);
         this.departmentsService.getAllDepartmentsByUserId().subscribe((res) => {
             res.map((res) => {
                 this.departmentsList.push({
@@ -1682,20 +1688,20 @@ export class TargetsSheetComponent implements OnInit {
                 });
             });
             if (this.targetSelected != 0) {
-                this.selectedDepartment = this.departmentsList[0].code;
+                // this.selectedDepartment = this.departmentsList[0].code;
                 this.defaultValueOfDepartment = this.selectedDepartment;
-                console.log('0: ', this.selectedDepartment);
-            }else{
-                this.defaultValueOfDepartment = 'View all';
-                console.log('1: ', this.selectedDepartment);
+                console.log("0: ", this.selectedDepartment);
+            } else {
+                this.defaultValueOfDepartment = "View all";
+                console.log("1: ", this.selectedDepartment);
             }
-
             this.generateGridForcefully();
         });
     }
 
     ngOnInit() {
         this.getAllDepartmentsByUserId();
+       
     }
 
     ngOnDestroy(): void {
@@ -1708,7 +1714,7 @@ export class TargetsSheetComponent implements OnInit {
                 switch (propName) {
                     case "dateFilters": {
                         if (this.dateFilters) {
-                            console.log('date filter');
+                            console.log("date filter");
                             this.dateFilter(this.dateFilters);
                         }
                     }
@@ -1734,8 +1740,7 @@ export class TargetsSheetComponent implements OnInit {
         if (params.colDef) {
             if (
                 params.colDef.type === "current" &&
-                params.data.department !==
-                    "Lennock Phillip Pty Ltd & Lennock Automation Pt"
+                params.data.department !== environment.PARENT_SITE_NAME
             ) {
                 // console.log(params.value, isNaN(params.value));
                 return (
@@ -1769,7 +1774,7 @@ export class TargetsSheetComponent implements OnInit {
 
         let departmentRow = [];
 
-        let departmentName = "Lennock Phillip Pty Ltd & Lennock Automation Pt";
+        let departmentName = environment.PARENT_SITE_NAME;
         if (this.targetSelected === 0) {
             departmentRow.push(
                 {
@@ -1826,7 +1831,7 @@ export class TargetsSheetComponent implements OnInit {
         this.gridApi.setFilterModel(null);
     }
 
-    getAllRows(currentColumn?: string, targetColum?: string) {
+    getAllRows(currentColumn?: string, targetColumn?: string) {
         var rowData = [];
         let columnData = this.getAllColumn();
         this.gridApi.forEachNode((node) => {
@@ -1834,7 +1839,7 @@ export class TargetsSheetComponent implements OnInit {
                 if (node.data && node.data.rowId) {
                     if (
                         node.data &&
-                        node.data.target === targetColum &&
+                        node.data.target === targetColumn &&
                         column.userProvidedColDef.field === currentColumn &&
                         node.data.rowId !== "total_orders" &&
                         node.data.rowId !== "total_profit"
@@ -1855,7 +1860,7 @@ export class TargetsSheetComponent implements OnInit {
         return rowData;
     }
 
-    getRows(currentColumn?: string, targetColum?: string, column?, rows?) {
+    getRows(currentColumn?: string, targetColumn?: string, column?, rows?) {
         var rowData = [];
 
         rows.forEachNode((node) => {
@@ -1863,7 +1868,7 @@ export class TargetsSheetComponent implements OnInit {
                 if (node.data && node.data.rowId) {
                     if (
                         node.data &&
-                        node.data.target === targetColum &&
+                        node.data.target === targetColumn &&
                         column.userProvidedColDef.field === currentColumn
                     ) {
                         let value = Number(
@@ -2110,6 +2115,7 @@ export class TargetsSheetComponent implements OnInit {
         rowName: string,
         option?: number
     ) {
+        console.log("params.colDef", params.colDef);
         let columnName;
 
         if (option === 1) {
@@ -2219,6 +2225,7 @@ export class TargetsSheetComponent implements OnInit {
         this.emptyFieldsCount = 0;
         /*------------------------*/
 
+        console.log("targetResponse", targetResponse);
         response = targetResponse;
 
         /*Generate History, Current and Period Columns*/
@@ -2265,22 +2272,19 @@ export class TargetsSheetComponent implements OnInit {
                     id: "total_orders",
                     rowId: "total_orders",
                     target: "Vehicle Orders",
-                    department:
-                        "Lennock Phillip Pty Ltd & Lennock Automation Pt",
+                    department: environment.PARENT_SITE_NAME,
                 },
                 {
                     id: "total_profit",
                     rowId: "total_profit",
                     target: "Vehicle Profit",
-                    department:
-                        "Lennock Phillip Pty Ltd & Lennock Automation Pt",
+                    department: environment.PARENT_SITE_NAME,
                 },
                 {
                     id: "trade_in",
                     rowId: "trade_in",
                     target: "Trade-in %",
-                    department:
-                        "Lennock Phillip Pty Ltd & Lennock Automation Pt",
+                    department: environment.PARENT_SITE_NAME,
                 }
             );
         } else {
@@ -2289,15 +2293,13 @@ export class TargetsSheetComponent implements OnInit {
                     id: "total_orders",
                     rowId: "total_orders",
                     target: "Vehicle Orders",
-                    department:
-                        "Lennock Phillip Pty Ltd & Lennock Automation Pt",
+                    department: environment.PARENT_SITE_NAME,
                 },
                 {
                     id: "total_profit",
                     rowId: "total_profit",
                     target: "Vehicle Profit",
-                    department:
-                        "Lennock Phillip Pty Ltd & Lennock Automation Pt",
+                    department: environment.PARENT_SITE_NAME,
                 }
             );
         }
@@ -2370,7 +2372,7 @@ export class TargetsSheetComponent implements OnInit {
         });
         /*------------------------------*/
 
-        // console.log('Column:',column);
+        console.log("Column:", column);
         // console.log('DepartmentRow:',departmentRow);
 
         /*Load Fetched data into Grid*/
@@ -2420,11 +2422,11 @@ export class TargetsSheetComponent implements OnInit {
                 let message = "1 filter applied";
                 this.openSnackBar(message);
             } else {
-                /*If empty rows exist show toast*/
-                if (emptyRows > 0) {
-                    let message = emptyRows + " Values missing.";
-                    this.openSnackBar(message);
-                }
+                // /*If empty rows exist show toast*/
+                // if (emptyRows > 0) {
+                //     let message = emptyRows + " Values missing.";
+                //     this.openSnackBar(message);
+                // }
             }
             /*------------------------------*/
         }, 1000);
@@ -2531,7 +2533,6 @@ export class TargetsSheetComponent implements OnInit {
             /*Fetch all columns data*/
             this.siteTargetSerivce.getTarget(apiParams).subscribe((res) => {
                 this.response = res;
-
                 this.generateGrid(this.response, "department");
             });
         } else {
@@ -2546,7 +2547,6 @@ export class TargetsSheetComponent implements OnInit {
                 .getTarget(apiParams)
                 .subscribe((res) => {
                     this.response = res;
-
                     this.generateGrid(this.response, "user");
                 });
         }

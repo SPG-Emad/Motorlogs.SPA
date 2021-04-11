@@ -1,8 +1,6 @@
 import { Component, OnInit, Output, EventEmitter } from "@angular/core";
-import { DepartmentsService } from "ml-setup/shared/services/departments/departments.service";
 import * as moment from "moment";
 import { Subject } from "rxjs";
-import { takeUntil } from "rxjs/operators";
 
 @Component({
     selector: "app-targets-filter",
@@ -11,8 +9,6 @@ import { takeUntil } from "rxjs/operators";
 })
 export class TargetsFilterComponent implements OnInit {
     @Output() dateFilter = new EventEmitter<any>();
-
-    constructor( ) {}
 
     options = [
         { key: "month1", value: "3 Months", months: 3 },
@@ -46,12 +42,23 @@ export class TargetsFilterComponent implements OnInit {
     searchKeys = ["key", "value"];
     private _unsubscribeAll: Subject<any>;
 
+    constructor() {}
+
     ngOnInit() {
         this.generateMonths();
         let date = moment().format("MMM YY");
         let dateFormat = moment().format("MMM YYYY");
-
         this.startDateValue = { key: date, value: date, months: dateFormat };
+
+        console.log("this.historyValue", this.historyValue);
+        setTimeout(() => {
+            this.dateFilter.emit({
+                filter: 1,
+                history: this.historyValue.months,
+                startFrom: this.startDateValue.months,
+                period: this.periodValue.months,
+            });
+        }, 500);
     }
 
     generateMonths() {

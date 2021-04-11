@@ -6,15 +6,42 @@
         <div class="content-card">
             <div class="content p-24">
                 <div class="divSiteTarget">
-                    <div style="width: 25%">
-                        <table style="width: 100%">
+                    <div style="width: 45%">
+                        <table
+                            style="width: 100%"
+                            *ngIf="this.targetSelected != 0"
+                        >
                             <tr>
-                                <td style="width: 35%;">
+                                <td colspan="2">
+                                    <div *ngIf="this.targetSelected != 0">
+                                        <div
+                                            style="
+                                                background: #fffbde;
+                                                color: black;
+                                                padding: 1px;
+                                                padding-left: 25px;
+                                                border-radius: 5px;
+                                                border: 1px solid #e8e0a3;
+                                            "
+                                            *ngIf="
+                                                this.selectedDepartment === '-1'
+                                            "
+                                        >
+                                            <h3>
+                                                Please select a department to
+                                                generate the data in the sheet.
+                                            </h3>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="width: 35%">
                                     <label style="font-weight: bold"
                                         >Filter Departments</label
                                     >
                                 </td>
-                                <td style="width: 65%;">
+                                <td style="width: 65%">
                                     <mat-search-select
                                         [data]="departmentsList"
                                         [defaultValue]="defaultValueOfDepartment"

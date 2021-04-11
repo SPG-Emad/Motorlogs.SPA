@@ -9,6 +9,7 @@ import * as moment from 'moment';
 export class FunctionFiltersComponent implements OnInit {
 
     @Output() dateFilter = new EventEmitter<any>();
+    @Output() fakeTrigger = new EventEmitter<any>();
 
     constructor() { }
 
@@ -50,8 +51,8 @@ export class FunctionFiltersComponent implements OnInit {
         this.generateMonths();
         let date = moment().format('MMM YY');
         let dateFormat = moment().format('MMM YYYY');
-
         this.startDateValue = { "key": date, "value": date, "months": dateFormat };
+        this.fakeTrigger.emit({});
     }
 
     generateMonths() {

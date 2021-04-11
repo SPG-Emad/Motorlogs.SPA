@@ -12,8 +12,8 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 })
 export class LoginComponent implements OnInit {
     loginForm = this._fb.group({
-        email: ['', [Validators.required, Validators.email]],
-        password: ['', Validators.required]
+        email: ['emadkhanqai@gmail.com', [Validators.required, Validators.email]],
+        password: ['crystal123', Validators.required]
     });
 
     loading: boolean;
@@ -58,7 +58,6 @@ export class LoginComponent implements OnInit {
                 /*Authenticate User*/
                 await this.authService.loginUser(email, password);
                 /*-----------------*/
-
 
                 /*Display success message*/
                 this.responseMessage('Authentication Successful', 2000);
