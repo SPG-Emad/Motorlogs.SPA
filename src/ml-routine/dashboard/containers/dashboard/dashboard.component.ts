@@ -23,29 +23,29 @@ export interface SalesGraphUser {
 }
 
 export interface SalesGraphUserObject {
-  name:       string;
-  seriesData: SeriesDatum[];
+    name: string;
+    seriesData: SeriesDatum[];
 }
 
 export interface SeriesDatum {
-  graphType:  string;
-  legendName: string;
-  yAxis:      number;
-  isYAxis:    boolean;
-  isXAxis:    boolean;
-  tooltip:    SalesGraphUserTooltip;
-  columnData: Datum[] | null;
-  color:      string;
-  splineData: Datum[] | null;
+    graphType: string;
+    legendName: string;
+    yAxis: number;
+    isYAxis: boolean;
+    isXAxis: boolean;
+    tooltip: SalesGraphUserTooltip;
+    columnData: Datum[] | null;
+    color: string;
+    splineData: Datum[] | null;
 }
 
 export interface Datum {
-  x: Date;
-  y: number;
+    x: Date;
+    y: number;
 }
 
 export interface SalesGraphUserTooltip {
-  valuePrefix: string;
+    valuePrefix: string;
 }
 
 /** Added */ @Component({
@@ -164,7 +164,7 @@ export class DashboardComponent implements OnInit {
     dataValue: any = { key: "Group by: Total", value: "By Total" };
     orderValue: any = { key: "Order covered", value: "Covered" };
     filter = "";
-    salepersonArray:SalesGraphUser[] = [];
+    salepersonArray = [];
     displayKey = "value";
     isDisable = false;
 
@@ -349,6 +349,10 @@ export class DashboardComponent implements OnInit {
                     this.orderValue.value
                 );
             } else {
+                // { key: "Group by: By Sale Person", value: "By Sale Person" },
+                this.options = this.options.filter(
+                    (x) => x.key !== "Group by: By Sale Person"
+                );
                 this.constructPivotTableDD();
                 this.fetchSaleGraph(
                     this.dataValue.value,
@@ -613,6 +617,9 @@ export class DashboardComponent implements OnInit {
                 title: {
                     text: null,
                 },
+                boost: {
+                    useGPUTranslations: true,
+                },
                 xAxis: {
                     tickInterval: 24 * 3600 * 1000,
                     type: "datetime",
@@ -753,6 +760,9 @@ export class DashboardComponent implements OnInit {
         );
     }
 
+    objectKeys = Object.keys;
+    jsonObj = {};
+
     generateSalesPersonsGraph(graphData) {
         let dataAry = [];
         let legendArray: any[] = [];
@@ -765,6 +775,8 @@ export class DashboardComponent implements OnInit {
             let vehicles = 0;
             let grandTotalOrders = 0;
             let grandTotalProfit = 0;
+
+            console.log("data", data);
 
             data.seriesData.forEach((element) => {
                 let salesObject: any = new Object();
@@ -842,14 +854,16 @@ export class DashboardComponent implements OnInit {
                     element.columnData.map((res) => {
                         let date = res.x.split("-");
                         res.x = Date.UTC(date[0], date[1], date[2]);
+                        console.log('1 - date', res.x);
                         grandTotalProfit += Number(res.y);
                     });
-
+                    
                     salesObject["data"] = element.columnData;
                 } else {
                     element.splineData.map((res) => {
                         let date = res.x.split("-");
                         res.x = Date.UTC(date[0], date[1], date[2]);
+                        console.log('2 - date', res.x);
                         grandTotalOrders += Number(res.y);
                     });
 
@@ -863,19 +877,29 @@ export class DashboardComponent implements OnInit {
                 salesObject["marker"] = markerObj;
                 this.seriesData.push(salesObject);
 
-                legendArray.push(element.legendName);
+                if (legendArray.length != 4) {
+                    legendArray.push(element.legendName);
+                    console.log("legendArray", legendArray);
+                }
             });
+
+            console.log("legendArray -- out loop", legendArray);
 
             if (
                 this.router.url.includes("/dashboard") ||
                 this.router.url.includes("/group-overview")
             ) {
-                this.isGroupDashboard = true;
+                this.isGroupDashboard = false;
                 this.chartOptions = {};
                 this.chartOptions = {
                     title: {
                         text: null,
                     },
+                    boost: {
+                        useGPUTranslations: true,
+                        // Chart-level boost when there are more than 5 series in the chart
+                    },
+
                     xAxis: {
                         tickInterval: 24 * 3600 * 1000,
                         type: "datetime",
@@ -981,7 +1005,7 @@ export class DashboardComponent implements OnInit {
             data["grandTotalOrders"] = grandTotalOrders;
             data["grandTotalProfit"] = grandTotalProfit;
         }
-        console.log('Results Object ::::');
+        console.log("Results Object ::::");
         console.log(result);
 
         this.salepersonArray = result;

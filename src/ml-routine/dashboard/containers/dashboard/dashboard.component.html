@@ -1014,81 +1014,89 @@
                     id="divDashboardTabTwoPage"
                     [ngClass]="{ other: groupBy === 2 }"
                 >
-                    <div >
+                    <!-- *ngFor="let person of salepersonArray  | keyvalue ; let i = index" -->
+
+                    <div
+                        *ngFor="
+                            let person of objectKeys(salepersonArray);
+                            let i = index
+                        "
+                    >
+
                         <div
-                            *ngFor="let person of salepersonArray"
-                            id="div_sp_stAZPjeHvb8g0l581a5"
+                            *ngFor="let obj of salepersonArray[person]; let x = index"
+                            id="{{ x }}"
                             class="graphview new"
                             style="cursor: pointer; width: 430px"
                             [ngClass]="{ 'chart-show': !chartLoader }"
                         >
-                            <h2>{{ person.users[0].name }}</h2>
-                            <div
-                                id="div_sp_stAZPjeHvb8g0l581a5_highcharts"
-                                style="width: 430px; height: 100%"
-                                class="dashboard"
-                                data-highcharts-chart="77"
+                        <h2>{{ obj.name }}</h2> 
+                        <div
+                        id="{{x}}"
+                        style="width: 430px; height: 100%"
+                        class="dashboard"
+                        data-highcharts-chart="77"
+                    >
+                        <div
+                            id="{{x}}"
+                            dir="ltr"
+                            class="highcharts-container"
+                            style="
+                                overflow: hidden;
+                                width: 430px;
+                                height: 430px;
+                                text-align: left;
+                                line-height: normal;
+                                z-index: 0;
+                                -webkit-tap-highlight-color: rgba(
+                                    0,
+                                    0,
+                                    0,
+                                    0
+                                );
+                            "
+                        >
+                            <highcharts-chart
+                                [Highcharts]="highcharts"
+                                [options]="obj.chart"
+                                style="
+                                    width: 100%;
+                                    height: 430px;
+                                    display: block;
+                                "
                             >
-                                <div
-                                    id="highcharts-avapo86-616"
-                                    dir="ltr"
-                                    class="highcharts-container"
-                                    style="
-                                        overflow: hidden;
-                                        width: 430px;
-                                        height: 153px;
-                                        text-align: left;
-                                        line-height: normal;
-                                        z-index: 0;
-                                        -webkit-tap-highlight-color: rgba(
-                                            0,
-                                            0,
-                                            0,
-                                            0
-                                        );
-                                    "
-                                >
-                                    <highcharts-chart
-                                        [Highcharts]="highcharts"
-                                        [options]="person.chart"
-                                        style="
-                                            width: 100%;
-                                            height: 400px;
-                                            display: block;
-                                        "
-                                    >
-                                    </highcharts-chart>
-                                </div>
-                            </div>
-                            <div class="deptsDetail">
-                                <table>
-                                    <tbody>
-                                        <tr>
-                                            <td class="caption">
-                                                {{ salesPersonGrossLabel }}
-                                            </td>
-                                            <td class="caption">
-                                                {{ salesPersonVehicleLabel }}
-                                            </td>
-                                        </tr>
-                                        <tr>
-                                            <td class="value">
-                                                {{
-                                                    person.grandTotalOrders
-                                                        | number: "1.0-0"
-                                                }}
-                                            </td>
-                                            <td class="value">
-                                                ${{
-                                                    person.grandTotalProfit
-                                                        | number: "1.0-0"
-                                                }}
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            </highcharts-chart>
                         </div>
+                    </div>
+                    <div class="deptsDetail">
+                        <table>
+                            <tbody>
+                                <tr>
+                                    <td class="caption">
+                                        {{ salesPersonGrossLabel }}
+                                    </td>
+                                    <td class="caption">
+                                        {{ salesPersonVehicleLabel }}
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="value">
+                                        {{
+                                            obj.grandTotalOrders
+                                                | number: "1.0-0"
+                                        }}
+                                    </td>
+                                    <td class="value">
+                                        ${{
+                                            obj.grandTotalProfit
+                                                | number: "1.0-0"
+                                        }}
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    </div>
                     </div>
                     <div
                         class="loader-container"
@@ -1240,7 +1248,7 @@
             </div>
         </div>
     </div>
-    <div style="margin-left: 17%" id="divuldaterange">
+    <div style="width: 100%" id="divuldaterange">
         <date-footer
             [rowData]="rowData"
             (dateFilterObj)="dateSetting($event)"

@@ -54,7 +54,7 @@
         <div class="content p-24 ">
           <!-- Header Starts -->
           <div fxlayoutalign="space-between" style="padding: 0px 0px 20px 0px;place-content: stretch space-between; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex;">
-            <h2 style="margin: 0px;">Lennock Hyundai - New Car <b style="margin-left: 10px;color: #ef1e75;">(Saleslog)</b></h2>
+            <h2 style="margin: 0px;">{{departmentNameRendered}} <b style="margin-left: 10px;color: #ef1e75;">(Saleslog)</b></h2>
             <div class="secondary-options">
               <app-search (click)="toggleShowDiv('divA')"></app-search>
               <app-print [printData]="printdata" (generatePrint)="onBtPrint()"></app-print>

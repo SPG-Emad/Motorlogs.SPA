@@ -6,6 +6,7 @@ import { HttpClient } from '@angular/common/http';
 import { GlobalConstants } from 'ml-shared/common/global-constants';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { FuseConfigService } from '@fuse/services/config.service';
 
 @Component({
     selector: 'ml-forgot-password',
@@ -23,11 +24,30 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     loading: boolean;
     error: string;
 
-    constructor(private _fb: FormBuilder, private _router: Router, private _matSnackBar: MatSnackBar, private http: HttpClient) { }
+    constructor(private _fb: FormBuilder, private _router: Router, private _matSnackBar: MatSnackBar, private http: HttpClient,
+        private _fuseConfigService: FuseConfigService) { }
 
     ngOnInit() {
-        
+        setTimeout(() => {
+            this._fuseConfigService.config = {
+                layout: {
+                    navbar: {
+                        hidden: true
+                    },
+                    toolbar: {
+                        hidden: true
+                    },
+                    footer: {
+                        hidden: true
+                    },
+                    sidepanel: {
+                        hidden: true
+                    }
+                }
+            };
+        });
     }
+
     ngOnDestroy(): void {
         // Unsubscribe from all subscriptions
         this._unsubscribeAll.next();
