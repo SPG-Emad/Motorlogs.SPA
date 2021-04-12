@@ -18,6 +18,16 @@ import * as pivotDD from "../pivotTable.json";
 import * as _ from "lodash";
 import { DashboardService } from "ml-routine/shared/services/dashboard/dashboard.service";
 
+
+declare var require: any;
+let Boost = require('highcharts/modules/boost');
+let noData = require('highcharts/modules/no-data-to-display');
+let More = require('highcharts/highcharts-more');
+
+Boost(Highcharts);
+noData(Highcharts);
+More(Highcharts);
+
 export interface SalesGraphUser {
     users: SalesGraphUserObject[];
 }
@@ -381,7 +391,7 @@ export class DashboardComponent implements OnInit {
                     data.seriesData !== null &&
                     data.seriesData !== undefined
                 ) {
-                    console.log(data.seriesData);
+                    // console(data.seriesData);
                     this.generateSalesGraph(data);
                 } else {
                     this.chartLoader = false;
@@ -731,7 +741,7 @@ export class DashboardComponent implements OnInit {
             this.salesPersonGrossLabel = "Sold Vehicles";
             this.salesPersonVehicleLabel = "Sold Gross";
         }
-        console.log(orderBy);
+        // console(orderBy);
         this.chartLoader = true;
         let param = {
             Deptid: this.decryptedDepartmentId
@@ -766,17 +776,17 @@ export class DashboardComponent implements OnInit {
     generateSalesPersonsGraph(graphData) {
         let dataAry = [];
         let legendArray: any[] = [];
-        this.seriesData = [];
         let result = null;
         result = graphData;
         for (let i = 0; i < result.users.length; i++) {
+            this.seriesData = [];
             let data = result.users[i];
             let gross = 0;
             let vehicles = 0;
             let grandTotalOrders = 0;
             let grandTotalProfit = 0;
 
-            console.log("data", data);
+            // console("data", data);
 
             data.seriesData.forEach((element) => {
                 let salesObject: any = new Object();
@@ -786,6 +796,7 @@ export class DashboardComponent implements OnInit {
                 salesObject["type"] = element.graphType;
                 salesObject["name"] = element.legendName;
                 salesObject["yAxis"] = element.yAxis;
+                salesObject["turboThreshold"] = 500000;
 
                 switch (element.month) {
                     case "Jan": {
@@ -853,8 +864,8 @@ export class DashboardComponent implements OnInit {
                 if (element.columnData != null) {
                     element.columnData.map((res) => {
                         let date = res.x.split("-");
-                        res.x = Date.UTC(date[0], date[1], date[2]);
-                        console.log('1 - date', res.x);
+                        res.x = Date.UTC(date[0], date[1] - 1, date[2]);
+                        // console(res.x);
                         grandTotalProfit += Number(res.y);
                     });
                     
@@ -862,8 +873,8 @@ export class DashboardComponent implements OnInit {
                 } else {
                     element.splineData.map((res) => {
                         let date = res.x.split("-");
-                        res.x = Date.UTC(date[0], date[1], date[2]);
-                        console.log('2 - date', res.x);
+                        res.x = Date.UTC(date[0], date[1] - 1 , date[2]);
+                        // console(res.x);
                         grandTotalOrders += Number(res.y);
                     });
 
@@ -879,11 +890,11 @@ export class DashboardComponent implements OnInit {
 
                 if (legendArray.length != 4) {
                     legendArray.push(element.legendName);
-                    console.log("legendArray", legendArray);
+                    // console("legendArray", legendArray);
                 }
             });
 
-            console.log("legendArray -- out loop", legendArray);
+            // console("legendArray -- out loop", legendArray);
 
             if (
                 this.router.url.includes("/dashboard") ||
@@ -1005,8 +1016,8 @@ export class DashboardComponent implements OnInit {
             data["grandTotalOrders"] = grandTotalOrders;
             data["grandTotalProfit"] = grandTotalProfit;
         }
-        console.log("Results Object ::::");
-        console.log(result);
+        // console("Results Object ::::");
+        // console(result);
 
         this.salepersonArray = result;
     }
