@@ -37,7 +37,6 @@ export class AuthService {
             this.userProfile.currentUser = user;
             this.userProfile.generateApplicationMenu();
         }
-
     }
 
     auth$ = this.authenticatedState.do((next) => {
