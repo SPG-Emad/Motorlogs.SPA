@@ -61,7 +61,7 @@ export class AuthService {
     }
 
     loginUser(email: string, password: string) {
-        const promise = new Promise((resolve, reject) => {
+        const promise = new Promise<void>((resolve, reject) => {
             this.http
                 .post(GlobalConstants.apiURL + `auth/login`, {
                     login: email,

@@ -1,5 +1,5 @@
 
-::ng-deep .dropdown{
+::ng-deep .dropdown2{
     background: #fff !important;
     margin: 1px 0px !important;
     padding: 0px 16px !important;
@@ -537,10 +537,10 @@ ul >.option{
 
 
 
-#divddlSalesGraph #ddldepttype + div.btn-group.open > ul.dropdown-menu > li > a
-,#divDashboardSale2 #ddldepttypeFA + div.btn-group.open > ul.dropdown-menu > li > a
-,#divddl #ddldepttype_pivot + div.btn-group.open > ul.dropdown-menu > li > a
-,#divMode #ddldepttype + div.btn-group.open > ul.dropdown-menu > li > a
+#divddlSalesGraph #ddldepttype + div.btn-group.open > ul.dropdown-menu2 > li > a
+,#divDashboardSale2 #ddldepttypeFA + div.btn-group.open > ul.dropdown-menu2 > li > a
+,#divddl #ddldepttype_pivot + div.btn-group.open > ul.dropdown-menu2 > li > a
+,#divMode #ddldepttype + div.btn-group.open > ul.dropdown-menu2 > li > a
 {
     background-color: #fff;
     color: #454545;
@@ -549,10 +549,10 @@ ul >.option{
 }
 
 
-#divddlSalesGraph div.btn-group.open > ul.dropdown-menu
-,#divDashboardSale2 div.btn-group.open > ul.dropdown-menu
-,#divddl div.btn-group.open > ul.dropdown-menu
-,#divMode div.btn-group.open > ul.dropdown-menu
+#divddlSalesGraph div.btn-group.open > ul.dropdown-menu2
+,#divDashboardSale2 div.btn-group.open > ul.dropdown-menu2
+,#divddl div.btn-group.open > ul.dropdown-menu2
+,#divMode div.btn-group.open > ul.dropdown-menu2
 {
     top: 100%;
     left: 0;
@@ -564,9 +564,9 @@ ul >.option{
     border-color:#7A9CD3;
 }
 
-#divddlSalesGraph #ddlGraphMode + div.btn-group.open > ul.dropdown-menu
-,#divDashboardSale2 #ddlMode + div.btn-group.open > ul.dropdown-menu
-,#divMode #ddlGraphMode + div.btn-group.open > ul.dropdown-menu
+#divddlSalesGraph #ddlGraphMode + div.btn-group.open > ul.dropdown-menu2
+,#divDashboardSale2 #ddlMode + div.btn-group.open > ul.dropdown-menu2
+,#divMode #ddlGraphMode + div.btn-group.open > ul.dropdown-menu2
 {
     min-width:  158px;
 }

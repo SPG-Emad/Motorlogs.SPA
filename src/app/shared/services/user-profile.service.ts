@@ -98,7 +98,8 @@ export class UserProfileService {
                                 id: child.title.toLowerCase(),
                                 title: child.title,
                                 type: 'item',
-                                url: this.encryptDepartmentId(child.url)
+                                url: this.encryptDepartmentId(child.url),
+                                openInNewTab: true
                             }
                         );
                     });

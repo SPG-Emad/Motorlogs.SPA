@@ -1,11 +1,11 @@
 {
 	"target":{
-		"vechOrders": {
+		"vehOrders": {
 			"target": 140,
 			"mtdTarget": 164,
 			"mtdResult": 272
 		},
-		"vechProfit": {
+		"vehProfit": {
 			"target": 35000,
 			"mtdTarget": 164,
 			"mtdResult": 272

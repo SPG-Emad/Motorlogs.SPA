@@ -1,15 +1,8 @@
 import { CustomLoadingOverlayComponent } from "../../components/custom-loading-overlay/custom-loading-overlay.component";
 
 import {
-    AllCommunityModules,
-    ColumnResizedEvent,
-} from "@ag-grid-community/all-modules";
-import {
     Component,
     OnInit,
-    ChangeDetectionStrategy,
-    Inject,
-    OnChanges,
     Input,
     ViewChild,
     ElementRef,
@@ -17,7 +10,7 @@ import {
 } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ToastHandlerService } from "app/shared/services/toast-handler.service";
-import { MatDialog, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { HistoryComponent } from "ml-routine/saleslog/components/history/history.component";
 import { NewDealComponent } from "ml-routine/saleslog/components/new-deal/new-deal.component";
 import { ExcelExportComponent } from "ml-routine/saleslog/components/excel-export/excel-export.component";
@@ -26,12 +19,11 @@ import { ColumnOptionComponent } from "ml-routine/saleslog/components/column-opt
 import { AllModules } from "@ag-grid-enterprise/all-modules";
 import { CustomHeaderComponent } from "ml-routine/shared/components/custom-header/custom-header.component";
 import { SlideInOutAnimation } from "app/shared/animation/animation";
-import { FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { FormBuilder, FormGroup } from "@angular/forms";
 import * as moment from "moment";
 import { EncryptionService } from "app/shared/services/encryption.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import * as data from "app/RoutineSheetJSON.json";
 import { AuthService } from "ml-auth/shared/services/ml-auth/ml-auth.service";
 import { CalenderRenderer } from "./calander-renderer.component";
 // import * as Selectize from '../../../../../node_modules/selectize/dist/js/standalone/selectize.js';
@@ -56,7 +48,6 @@ export class SaleslogComponent implements OnInit {
     @Input()
     public routineSelected: number = 1;
     @ViewChild("myGrid", { static: true }) agGrid: ElementRef;
-    private renderer: Renderer2;
 
     public carryOverAmount: number = -0;
     public carryOverUnits: number = 0;
@@ -95,17 +86,12 @@ export class SaleslogComponent implements OnInit {
     period: number = 3;
     startFrom: number = null;
     public emptyFieldsCount: number = 0;
-    statusOption: string[] = ["NEW", "DEMO"];
-    payOptions: string[] = ["Cash", "OFA", "IHP"];
-    salesEngOption: string[] = [""];
-    salesPersonOption: string[] = [
-        "Morgan Mac",
-        "Emily Gill",
-        "James Over",
-        "Robert Knight",
-    ];
-    afterMarketManagerOptions: string[] = ["Fleet", "No intro"];
-    financeManagerOption: string[] = ["LOCUM", "Fleet"];
+    statusOption: string[] = [];
+    payOptions: string[] = [];
+    salesEngOption: string[] = [];
+    salesPersonOption: string[] = [];
+    afterMarketManagerOptions: string[] = [];
+    financeManagerOption: string[] = [];
     components;
     public rowSelection;
     public thisComponent = this;
@@ -176,17 +162,14 @@ export class SaleslogComponent implements OnInit {
     });
 
     constructor(
-        private http: HttpClient,
         private toastHandlerService: ToastHandlerService,
         public dialog: MatDialog,
         private fb: FormBuilder,
         public sharedService: SharedService,
         private sessionHandlerService: SessionHandlerService,
-        private router: Router,
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private encryptionService: EncryptionService,
-        private authService: AuthService,
         private saleslog: SaleslogService,
         private signalRService: SignalRService // private siteTargetSerivce: SiteTargetsService
     ) {
@@ -194,17 +177,18 @@ export class SaleslogComponent implements OnInit {
             this.decryptedDepartmentId = this.encryptionService.convertToEncOrDecFormat(
                 "decrypt",
                 params.get("id")
-            );
-            this.dateFilterApplied = 0;
+                );
+                this.dateFilterApplied = 0;
             if (this.pageCounter !== 0) {
                 this.generateGrid();
             }
         });
 
         this.columnDefs = [];
-
+        
         this.defaultColDef = {
             flex: 1,
+            minWidth: 200,
             editable: true,
             filter: true,
             cellClass: "row-text-style",
@@ -220,7 +204,7 @@ export class SaleslogComponent implements OnInit {
                 },
 
                 "green-mark": function (params) {
-                    // console.log(params)
+                    // // console.log(params)
                     let thisRef = params.context.thisComponent;
                     let currentRow;
                     if (params.colDef) {
@@ -310,14 +294,13 @@ export class SaleslogComponent implements OnInit {
                             ).isBefore(date);
                             choice = isBefore;
                         }
-                        // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
+                        // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
                         return params.value === "" && choice;
                     } else if (params.colDef.colCode === "PT") {
                         let date = moment().format("DD-MMM-YY");
                         let isAfter = moment(
                             params.data.orderDate
                         ).isSameOrAfter(date);
-                        let isBefore;
                         let choice;
                         if (!isAfter) {
                             choice = moment(params.data.orderDate).isBefore(
@@ -326,7 +309,7 @@ export class SaleslogComponent implements OnInit {
                         } else {
                             choice = isAfter;
                         }
-                        // console.log(params.data.orderDate);
+                        // // console.log(params.data.orderDate);
 
                         return params.value === "" && choice;
                     } else {
@@ -338,7 +321,6 @@ export class SaleslogComponent implements OnInit {
             // menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
             headerComponentParams: { menuIcon: "fa-chevron-down" },
             // cellStyle: this.cellStyling.bind(this),
-            minWidth: 200,
             // maxWidth: 100,
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
@@ -352,6 +334,7 @@ export class SaleslogComponent implements OnInit {
             // maxWidth: 105,
             // resizable: true,
         };
+
 
         this.autoGroupColumnDef = {
             minWidth: 400,
@@ -405,142 +388,9 @@ export class SaleslogComponent implements OnInit {
             config: "{'width':" + width + "}", // or "{'sequence':1}"
         };
 
-        this.saleslog.updateViewColumnOptions(params).subscribe((res) => {
-            this.signalRService.BroadcastLiveSheetData();
+        this.saleslog.updateViewColumnOptions(params).subscribe(() => {
+           this.signalRService.BroadcastLiveSheetData();
         });
-    }
-
-    getContextMenuItems1(params) {
-        var result = [
-            {
-                name: "Alert " + params.value,
-                action: function () {
-                    window.alert("Alerting about " + params.value);
-                },
-                cssClasses: ["redFont", "bold"],
-            },
-            {
-                name: "Always Disabled",
-                disabled: true,
-                tooltip:
-                    "Very long tooltip, did I mention that I am very long, well I am! Long!  Very Long!",
-            },
-            {
-                name: "Country",
-                subMenu: [
-                    {
-                        name: "Ireland",
-                        action: function () {
-                            console.log("Ireland was pressed");
-                        },
-                        icon: createFlagImg("ie"),
-                    },
-                    {
-                        name: "UK",
-                        action: function () {
-                            console.log("UK was pressed");
-                        },
-                        icon: createFlagImg("gb"),
-                    },
-                    {
-                        name: "France",
-                        action: function () {
-                            console.log("France was pressed");
-                        },
-                        icon: createFlagImg("fr"),
-                    },
-                ],
-            },
-            {
-                name: "Person",
-                subMenu: [
-                    {
-                        name: "Niall",
-                        action: function () {
-                            console.log("Niall was pressed");
-                        },
-                    },
-                    {
-                        name: "Sean",
-                        action: function () {
-                            console.log("Sean was pressed");
-                        },
-                    },
-                    {
-                        name: "John",
-                        action: function () {
-                            console.log("John was pressed");
-                        },
-                    },
-                    {
-                        name: "Alberto",
-                        action: function () {
-                            console.log("Alberto was pressed");
-                        },
-                    },
-                    {
-                        name: "Tony",
-                        action: function () {
-                            console.log("Tony was pressed");
-                        },
-                    },
-                    {
-                        name: "Andrew",
-                        action: function () {
-                            console.log("Andrew was pressed");
-                        },
-                    },
-                    {
-                        name: "Kev",
-                        action: function () {
-                            console.log("Kev was pressed");
-                        },
-                    },
-                    {
-                        name: "Will",
-                        action: function () {
-                            console.log("Will was pressed");
-                        },
-                    },
-                    {
-                        name: "Armaan",
-                        action: function () {
-                            console.log("Armaan was pressed");
-                        },
-                    },
-                ],
-            },
-            "separator",
-            {
-                name: "Windows",
-                shortcut: "Alt + W",
-                action: function () {
-                    console.log("Windows Item Selected");
-                },
-                icon: '<img src="../images/skills/windows.png"/>',
-            },
-            {
-                name: "Mac",
-                shortcut: "Alt + M",
-                action: function () {
-                    console.log("Mac Item Selected");
-                },
-                icon: '<img src="../images/skills/mac.png"/>',
-            },
-            "separator",
-            {
-                name: "Checked",
-                checked: true,
-                action: function () {
-                    console.log("Checked Selected");
-                },
-                icon: '<img src="../images/skills/mac.png"/>',
-            },
-            "copy",
-            "separator",
-            "chartRange",
-        ];
-        return result;
     }
 
     ngOnInit() {
@@ -553,15 +403,13 @@ export class SaleslogComponent implements OnInit {
     }
 
     onAsyncUpdate() {
-        var startMillis = new Date().getTime();
-        var updatedCount = 0;
         var api = this.gridApi;
 
         for (var i = 0; i < this.rowData.length; i++) {
-            console.log("i:", i);
+            // console.log("i:", i);
             var itemToUpdate = this.rowData[i];
             var newItem = copyObject(itemToUpdate);
-            console.log(newItem);
+            // console.log(newItem);
             api.applyTransactionAsync({ update: [itemToUpdate] });
         }
         function copyObject(object) {
@@ -574,23 +422,20 @@ export class SaleslogComponent implements OnInit {
     }
 
     public addBroadcastLiveSheetDataForViewsListener = () => {
-        this.signalRService.hubConnection.on(
-            "TransferLiveSheetData",
-            (data) => {
-                if (this.dateFilterApplied === 0) {
-                    this.generateGrid();
-                } else if (this.dateFilterApplied === 1) {
-                    this.generateGrid(1, this.sliderItem.replace(" ", "_"));
-                } else {
-                    this.generateGrid(
-                        this.monthSelected,
-                        moment(this.monthActive + "-" + this.yearActive).format(
-                            "MMM_YY"
-                        )
-                    );
-                }
+        this.signalRService.hubConnection.on("TransferLiveSheetData", () => {
+            if (this.dateFilterApplied === 0) {
+                this.generateGrid();
+            } else if (this.dateFilterApplied === 1) {
+                this.generateGrid(1, this.sliderItem.replace(" ", "_"));
+            } else {
+                this.generateGrid(
+                    this.monthSelected,
+                    moment(this.monthActive + "-" + this.yearActive).format(
+                        "MMM_YY"
+                    )
+                );
             }
-        );
+        });
     };
 
     dateTimeCalculation() {
@@ -633,7 +478,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     public loadScript() {
-        console.log("preparing to load...");
+        // console.log("preparing to load...");
         let node = document.createElement("script");
         node.src = this.url;
         node.type = "text/javascript";
@@ -647,6 +492,7 @@ export class SaleslogComponent implements OnInit {
         this.gridColumnApi = params.columnApi;
         this.pageCounter = this.pageCounter + 1;
         this.gridApi.showLoadingOverlay();
+      
         this.generateGrid();
     }
 
@@ -658,7 +504,6 @@ export class SaleslogComponent implements OnInit {
             .departmentAccess;
         this.departmentIDs = department;
         let count = 0;
-        let ID = 0;
         department = department.find((el) => {
             if (count === 0) {
                 count++;
@@ -688,7 +533,7 @@ export class SaleslogComponent implements OnInit {
         this.renderDepartmentNameHeading();
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
-            console.log("Triggered");
+            // console.log("Triggered");
 
             this.rowData = [];
             this.columnDefs = [];
@@ -706,7 +551,6 @@ export class SaleslogComponent implements OnInit {
                     this.carryOverUnits++;
                 }
                 this.cellData = [];
-                let index = 0;
                 element.cells.forEach((element1, index) => {
                     this.rowColor.push({
                         rowId: rowIndex,
@@ -743,8 +587,6 @@ export class SaleslogComponent implements OnInit {
                     index++;
                 });
 
-                /** Calculate Aggregared Header */
-                let columnData = this.cellData[0];
                 let typeArray = [];
                 if (
                     moment(this.cellData[0]['"OD"']).isBefore(
@@ -800,15 +642,15 @@ export class SaleslogComponent implements OnInit {
                         Number(this.cellData[0]['"VEHGRO"']);
                 }
                 this.cellData[0]["type"] = typeArray;
-                // console.log(this.cellData[0])
+                // // console.log(this.cellData[0])
                 rows.push(this.cellData[0]);
             });
 
-            // console.log(this.carryOverAmount, this.carryOverUnits,this.cellData[0] )
-            // console.log(this.soldAmount, this.soldUnits, )
-            // console.log(this.coveredAmount, this.coveredUnits, )
-            // console.log(this.deliveredAmount, this.deliveredUnits, )
-            // console.log(this.rowColor);
+            // // console.log(this.carryOverAmount, this.carryOverUnits,this.cellData[0] )
+            // // console.log(this.soldAmount, this.soldUnits, )
+            // // console.log(this.coveredAmount, this.coveredUnits, )
+            // // console.log(this.deliveredAmount, this.deliveredUnits, )
+            // // console.log(this.rowColor);
 
             this.carryOverAvg =
                 this.carryOverUnits > 0
@@ -831,34 +673,34 @@ export class SaleslogComponent implements OnInit {
             let count = 0;
             let rowIdcolumn = new Object();
 
-            (rowIdcolumn["headerName"] = "."),
-                (rowIdcolumn["colId"] = 0),
-                (rowIdcolumn["minWidth"] = 40),
-                (rowIdcolumn["maxWidth"] = 40),
-                (rowIdcolumn["cellClass"] = "row-no"),
-                (rowIdcolumn["editable"] = true),
-                (rowIdcolumn["sequence"] = 0);
-            (rowIdcolumn["pinned"] = "left"),
-                (rowIdcolumn["lockPinned"] = true),
-                (rowIdcolumn["filter"] = true),
-                (rowIdcolumn["lockPosition"] = true),
-                (rowIdcolumn["cellClass"] = function (params) {
-                    console.log(params.data);
-                    let i = 1;
-                    return params.data.carryOver === true
-                        ? "agClassCarryOver"
-                        : "agClassNoCarryOver";
-                });
+            rowIdcolumn["headerName"] = ".";
+            rowIdcolumn["colId"] = 0;
+            rowIdcolumn["minWidth"] = 40;
+            rowIdcolumn["maxWidth"] = 40;
+            rowIdcolumn["cellClass"] = "row-no";
+            rowIdcolumn["editable"] = true;
+            rowIdcolumn["sequence"] = 0;
+            rowIdcolumn["hide"] = false;
+            rowIdcolumn["pinned"] = "left";
+            rowIdcolumn["lockPinned"] = true;
+            rowIdcolumn["filter"] = true;
+            rowIdcolumn["lockPosition"] = true;
+            rowIdcolumn["cellClass"] = function (params) {
+                // console.log(params.data);
+                return params.data.carryOver === true
+                    ? "agClassCarryOver"
+                    : "agClassNoCarryOver";
+            };
+
             let carryOverCount = this.carryOverUnits;
             rowIdcolumn["valueGetter"] = function (params) {
-                // console.log(params.node.rowIndex, carryOverCount);
+                // // console.log(params.node.rowIndex, carryOverCount);
                 if (params.data.carryOver === true) {
                     count = 0;
-                    // console.log(count);
+                    // // console.log(count);
                     return null;
                 } else {
                     //i++;
-                    let l = params.node.rowIndex + 1 - carryOverCount;
                     if (params.node.rowIndex >= carryOverCount) {
                         return params.node.rowIndex + 1 - carryOverCount;
                     } else {
@@ -868,19 +710,22 @@ export class SaleslogComponent implements OnInit {
                 }
             };
 
+            column.push(rowIdcolumn);
+
             this.salesData.column.forEach((element) => {
                 let columnMap = new Object();
                 columnMap["headerName"] = element.colName;
                 columnMap["field"] = "" + element.colId + "";
                 columnMap["colId"] = element.colId;
-
                 columnMap["colCode"] = element.colCode;
+
                 columnMap["sequence"] = element.sequence;
                 columnMap["resizable"] = true;
                 columnMap["sortable"] = true;
-                (columnMap["filter"] = true),
-                    (columnMap["hide"] = !element.display);
+                columnMap["filter"] = true;
+                columnMap["hide"] = !element.display;
                 columnMap["columnType"] = element.type;
+                columnMap["width"] = element.colWidth;
 
                 let required = element.required;
                 columnMap["cellStyle"] = function (params) {
@@ -915,26 +760,38 @@ export class SaleslogComponent implements OnInit {
 
             // if(!months){
             this.columnDefs = column;
+            // console.log("columns::::", column);
             this.rowData = rows;
             this.rowResponse = rows;
             // }
             // this.onAsyncUpdate();
+            this.gridApi.sizeColumnsToFit();
         });
     }
 
     onCellChanged(event) {
-        let params = {
-            userid: this.sessionHandlerService.getSession("userObj").userId,
-            EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
-            ViewID: 1,
-            colId: event.colDef.colId,
-            ColType: event.colDef.columnType, // You need to send the column type
-            Value: event.newValue,
-        };
-        this.saleslog.insertCellValue(params).subscribe((res) => {
-            // this.toastNotification.generateToast('Update successful', 'OK', 2000);
-            this.signalRService.BroadcastLiveSheetData();
-        });
+        if (event.newValue === undefined) {
+            event.newValue = "";
+        }
+        console.log(event);
+        if (
+            event.newValue ||
+            event.newValue === "" ||
+            event.newValue === null
+        ) {
+            let params = {
+                userid: this.sessionHandlerService.getSession("userObj").userId,
+                EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
+                ViewID: 1,
+                colId: event.colDef.colId,
+                ColType: event.colDef.columnType, // You need to send the column type
+                Value: event.newValue,
+            };
+            this.saleslog.insertCellValue(params).subscribe(() => {
+                // this.toastNotification.generateToast('Update successful', 'OK', 2000);
+                this.signalRService.BroadcastLiveSheetData();
+            });
+        }
     }
 
     gridFilter(months?, date?, searchValue?) {
@@ -982,7 +839,7 @@ export class SaleslogComponent implements OnInit {
                         this.cellMap['"' + element1.colCode + '"'] = moment(
                             element1.currentCellValue
                         ).format("DD/MM/YYYY");
-                        console.log(this.cellMap['"' + element1.colCode + '"']);
+                        // console.log(this.cellMap['"' + element1.colCode + '"']);
                     } else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
@@ -1001,8 +858,6 @@ export class SaleslogComponent implements OnInit {
                     index++;
                 });
 
-                /** Calculate Aggregared Header */
-                let columnData = this.cellData[0];
                 let typeArray = [];
 
                 if (
@@ -1064,10 +919,10 @@ export class SaleslogComponent implements OnInit {
 
             this.rowResponse = rows;
 
-            console.log(this.cellData);
-            // console.log(this.soldAmount, this.soldUnits, )
-            // console.log(this.coveredAmount, this.coveredUnits, )
-            // console.log(this.deliveredAmount, this.deliveredUnits, )
+            // console.log(this.cellData);
+            // // console.log(this.soldAmount, this.soldUnits, )
+            // // console.log(this.coveredAmount, this.coveredUnits, )
+            // // console.log(this.deliveredAmount, this.deliveredUnits, )
 
             this.carryOverAvg =
                 this.carryOverUnits > 0
@@ -1086,9 +941,8 @@ export class SaleslogComponent implements OnInit {
                     ? Number(this.deliveredAmount) / Number(this.deliveredUnits)
                     : 0;
 
-            // console.log(rows);
+            // // console.log(rows);
             let searchResult = rows.filter((resp) => {
-                let orderDate = resp['"OD"'];
                 let payType = resp['"PT"'];
                 let financeManager = resp['"FM"'];
                 let email = resp['"EM"'];
@@ -1124,7 +978,7 @@ export class SaleslogComponent implements OnInit {
         this.records = this.rowData;
         this.rowData = [];
         this.rowData = searchResult;
-        console.log(this.rowResponse);
+        // console.log(this.rowResponse);
         this.toastHandlerService.generateToast(
             searchResult.length + " Record found",
             "",
@@ -1148,7 +1002,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     getStatusColor(params) {
-        // console.log(params);
+        // // console.log(params);
         if (params.value) {
             switch (params.value) {
                 case "status":
@@ -1170,13 +1024,9 @@ export class SaleslogComponent implements OnInit {
         let searchVal = this.searchForm.get("searchbar").value;
         let previousMonthFilter = this.searchForm.get("previousMonth").value;
         let currentMonthFilter = this.searchForm.get("currentMonth").value;
-        let currentMonth = moment();
-        let startMonth = moment()
-            .subtract(Number(previousMonthFilter) + 1, "months")
-            .format("MMM_YYYY");
 
         let searchResult = [];
-        console.log(this.rowResponse);
+        // console.log(this.rowResponse);
 
         if (
             this.searchForm.get("searchbar").value !== "" &&
@@ -1189,8 +1039,8 @@ export class SaleslogComponent implements OnInit {
                     let financeManager = resp['"FM"'];
                     let email = resp['"EM"'];
                     let dept = resp['"Dept"'];
-                    console.log(resp['"OD"'], resp['"EM"']);
-                    console.log(email, searchVal);
+                    // console.log(resp['"OD"'], resp['"EM"']);
+                    // console.log(email, searchVal);
                     return (
                         moment(orderDate).isSame(moment()) &&
                         ((email &&
@@ -1317,7 +1167,6 @@ export class SaleslogComponent implements OnInit {
             .subtract(Number(previousMonthFilter) + 1, "months")
             .format("MMM-YYYY");
         return (searchResult = this.rowResponse.filter((resp) => {
-            let datafilter;
             let endDate = moment().format("MMM-YYYY");
             let orderDate = resp['"OD"'];
             let payType = resp['"PT"'];
@@ -1325,15 +1174,15 @@ export class SaleslogComponent implements OnInit {
             let email = resp['"EM"'];
             let dept = resp['"Dept"'];
 
-            console.log(
-                email,
-                searchVal,
-                email && email.toLowerCase().includes(searchVal.toLowerCase())
-            );
-            console.log(
-                moment(orderDate).isAfter(searchedDate) &&
-                    moment(orderDate).isBefore(endDate)
-            );
+            // console.log(
+            //     email,
+            //     searchVal,
+            //     email && email.toLowerCase().includes(searchVal.toLowerCase())
+            // );
+            // console.log(
+            //     moment(orderDate).isAfter(searchedDate) &&
+            //         moment(orderDate).isBefore(endDate)
+            // );
 
             if (previousMonthFilter !== "all") {
                 return (
@@ -1376,7 +1225,7 @@ export class SaleslogComponent implements OnInit {
             }
             // datefilter = Object.keys(resp).filter(res=> {
             //   // if(res !=="" && isNaN(Number(resp[res]))){
-            //   //   console.log(resp[res], Number(resp[res]))
+            //   //   // console.log(resp[res], Number(resp[res]))
             //   //   return resp[res].toLowerCase()=== searchVal;
             //   // }
             // });
@@ -1396,7 +1245,7 @@ export class SaleslogComponent implements OnInit {
             let row = this.rowResponse.filter((res) => {
                 return res.type.find((el) => el === "carryOver");
             });
-            console.log(this.rowResponse, row);
+            // console.log(this.rowResponse, row);
             if (row.length > 0) {
                 this.rowData = [];
                 this.rowData = row;
@@ -1408,7 +1257,7 @@ export class SaleslogComponent implements OnInit {
             }
         } else if (option === 1) {
             let row = this.rowResponse.filter((res) => {
-                // console.log(res.type);
+                // // console.log(res.type);
                 return res.type.find((el) => el === "sold");
             });
             if (row.length > 0) {
@@ -1422,7 +1271,7 @@ export class SaleslogComponent implements OnInit {
             }
         } else if (option === 2) {
             let row = this.rowResponse.filter((res) => {
-                // console.log(res.type);
+                // // console.log(res.type);
                 return res.type.find((el) => el === "covered");
             });
             if (row.length > 0) {
@@ -1436,7 +1285,7 @@ export class SaleslogComponent implements OnInit {
             }
         } else if (option === 3) {
             let row = this.rowResponse.filter((res) => {
-                // console.log(res.type);
+                // // console.log(res.type);
                 return res.type.find((el) => el === "delivered");
             });
             if (row.length > 0) {
@@ -1452,7 +1301,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     calenderSearch(searchingFormat, month, startingMonth) {
-        console.log(searchingFormat, startingMonth);
+        // console.log(searchingFormat, startingMonth);
         let searchResult = [];
 
         searchResult = this.rowData.filter((resp) => {
@@ -1478,11 +1327,11 @@ export class SaleslogComponent implements OnInit {
                             moment(resp[res]).isBefore(startingMonth)
                         );
                     }
-                    console.log(
-                        date,
-                        searchingFormat,
-                        moment(resp[res]).isAfter(searchingFormat)
-                    );
+                    // console.log(
+                    //     date,
+                    //     searchingFormat,
+                    //     moment(resp[res]).isAfter(searchingFormat)
+                    // );
                 }
             });
             if (filter.length > 0) {
@@ -1502,7 +1351,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     monthSliderSearch(searchingFormat) {
-        console.log(searchingFormat);
+        // console.log(searchingFormat);
         let searchResult = [];
 
         this.monthFilter = searchingFormat + " - " + searchingFormat;
@@ -1538,7 +1387,7 @@ export class SaleslogComponent implements OnInit {
             let month = moment().format("MMM");
             let year = moment().format("YYYY");
             this.monthActive = "";
-            this.years.map((res, index) => {
+            this.years.map((res) => {
                 res.active = false;
             });
 
@@ -1561,7 +1410,7 @@ export class SaleslogComponent implements OnInit {
             let year = moment().format("YYYY");
             this.monthActive = "";
 
-            this.years.map((res, index) => {
+            this.years.map((res) => {
                 res.active = false;
             });
 
@@ -1587,7 +1436,7 @@ export class SaleslogComponent implements OnInit {
         }
     }
 
-    previousMonth(event) {
+    previousMonth() {
         if (this.searchForm.get("currentMonth").value === true) {
             this.searchForm.get("currentMonth").setValue(false);
         }
@@ -1599,7 +1448,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     applyCalenderFilter() {
-        console.log(this.monthSelected);
+        // console.log(this.monthSelected);
         this.monthModal = false;
         this.generateFilter(this.monthSelected);
     }
@@ -1664,7 +1513,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     cellEditorSelector(params) {
-        console.log(params.colDef.type);
+        // console.log(params.colDef.type);
 
         if (params.colDef.type === "number") {
             return false;
@@ -1890,7 +1739,7 @@ export class SaleslogComponent implements OnInit {
                     {
                         name: "Only this cell",
                         action: function () {
-                            console.log(params);
+                            // console.log(params);
                             thisRef.openModal(
                                 thisRef,
                                 HistoryComponent,
@@ -1907,8 +1756,8 @@ export class SaleslogComponent implements OnInit {
                     {
                         name: "Show All",
                         action: function () {
-                            console.log(params.column.colId);
-                            console.log(params.node.rowIndex);
+                            // console.log(params.column.colId);
+                            // console.log(params.node.rowIndex);
                             thisRef.openModal(
                                 thisRef,
                                 HistoryComponent,
@@ -1936,7 +1785,7 @@ export class SaleslogComponent implements OnInit {
                 name: "DUPLICATE - Entire Record",
                 action: function () {
                     var newItems = [params.node.data];
-                    // console.log(params);
+                    // // console.log(params);
                     thisRef.duplicateRow(newItems, params.node.rowIndex);
                     // thisRef.gridApi.applyTransaction({ add: newItems });
                 },
@@ -2096,7 +1945,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     openModal(thisRef, component, width, key?: any) {
-        console.log(key);
+        // console.log(key);
         thisRef.dialogRef = thisRef.dialog.open(component, {
             panelClass: "custom-dialog-container",
             width: width,
@@ -2133,7 +1982,7 @@ export class SaleslogComponent implements OnInit {
         let params = {
             EntryId: index + 1,
         };
-        this.saleslog.duplicateRows(params).subscribe((res) => {
+        this.saleslog.duplicateRows(params).subscribe(() => {
             this.gridApi.hideOverlay();
             this.signalRService.BroadcastLiveSheetData();
 
@@ -2141,11 +1990,11 @@ export class SaleslogComponent implements OnInit {
         });
     }
 
-    removeCellColor(newItems?) {
+    removeCellColor() {
         let params = {
             EntryId: "",
         };
-        this.saleslog.removeCellColor(params).subscribe((res) => {
+        this.saleslog.removeCellColor(params).subscribe(() => {
             this.signalRService.BroadcastLiveSheetDataForViews();
         });
     }
@@ -2155,7 +2004,7 @@ export class SaleslogComponent implements OnInit {
         let params = {
             EntryId: index + 1,
         };
-        this.saleslog.deleteRows(params).subscribe((res) => {
+        this.saleslog.deleteRows(params).subscribe(() => {
             this.signalRService.BroadcastLiveSheetDataForViews();
             this.gridApi.hideOverlay();
             this.toastHandlerService.generateToast(
@@ -2175,7 +2024,7 @@ export class SaleslogComponent implements OnInit {
                 color: color,
             },
         };
-        this.saleslog.updateCellColor(params).subscribe((res) => {
+        this.saleslog.updateCellColor(params).subscribe(() => {
             this.signalRService.BroadcastLiveSheetData();
         });
     }
@@ -2223,20 +2072,6 @@ export class SaleslogComponent implements OnInit {
                     add: [
                         {
                             orderDate: moment(res.date).format("DD-MMM-YY"),
-                            estimated_delivery: "",
-                            actual_delivery: "",
-                            reported_date: "",
-                            status: "",
-                            pay: "",
-                            sales_eng: "",
-                            sales_person: "",
-                            aftermarket_manager: "",
-                            finance_manager: "",
-                            client: "",
-                            company_name: "",
-                            drivers_name: "",
-                            phone_number: "",
-                            cust_no: "",
                         },
                     ],
                 });

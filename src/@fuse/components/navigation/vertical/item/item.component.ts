@@ -17,6 +17,7 @@ export class FuseNavVerticalItemComponent implements OnInit, OnDestroy {
     @Input()
     item: FuseNavigationItem;
 
+
     // Private
     private _unsubscribeAll: Subject<any>;
 

@@ -5,6 +5,7 @@ import {
     ElementRef,
     ViewChild,
     ViewChildren,
+    ViewEncapsulation,
 } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { EncryptionService } from "app/shared/services/encryption.service";
@@ -58,7 +59,7 @@ export interface SalesGraphUserTooltip {
     valuePrefix: string;
 }
 
-/** Added */ @Component({
+@Component({
     selector: "ml-dashboard",
     templateUrl: "./dashboard.component.html",
     styleUrls: ["./dashboard.component.scss"],
@@ -69,8 +70,8 @@ export class DashboardComponent implements OnInit {
 
     @ViewChildren(DashboardComponent) collapses: DashboardComponent[];
 
-    vehicleProfit = 180;
-    vehicleOrders = 1800000;
+    vehicleProfit = 0;
+    vehicleOrders = 0;
     highcharts = Highcharts;
 
     sliderIndex: number;
@@ -180,8 +181,8 @@ export class DashboardComponent implements OnInit {
 
     styleGuide = {
         // caretClass: 'caret',
-        selectBoxClass: "dropdown-wrapper",
-        selectMenuClass: "dropdown",
+        selectBoxClass: "ng-dropdown-wrapper",
+        selectMenuClass: "dropdown2",
         optionsClass: "option",
     };
 
@@ -291,14 +292,14 @@ export class DashboardComponent implements OnInit {
 
     isGroupDashboard = false;
     targetObj: any = {
-        vechOrders: {
+        vehOrders: {
             target: 0,
             mtdTarget: 0,
             mtdResult: 0,
             mtdDifference: 0,
             mdtPercentage: 0,
         },
-        vechProfit: {
+        vehProfit: {
             target: 0,
             mtdTarget: 0,
             mtdResult: 0,
@@ -451,45 +452,33 @@ export class DashboardComponent implements OnInit {
 
         if (
             salesObject &&
-            this.targetObj["vechOrders"] &&
-            this.targetObj["vechProfit"]
+            this.targetObj["vehOrders"] &&
+            this.targetObj["vehProfit"]
         ) {
             /*Vechicle Orders*/
-            this.targetObj["vechOrders"]["mtdTarget"] =
-                salesObject["vehOrders"]["mtdTarget"];
-            this.targetObj["vechOrders"]["mtdResult"] =
-                salesObject["vehOrders"]["mtdResult"];
-            this.targetObj["vechOrders"]["mtdPercentage"] =
-                salesObject["vehOrders"]["mtdTarget"] &&
-                salesObject["vehOrders"]["mtdResult"]
-                    ? (salesObject["vehOrders"]["mtdResult"] /
-                          salesObject["vehOrders"]["mtdTarget"]) *
-                      100
-                    : 0;
-            this.targetObj["vechOrders"]["mtdDifference"] =
-                salesObject["vehOrders"]["mtdTarget"] &&
-                salesObject["vehOrders"]["mtdResult"]
-                    ? salesObject["vehOrders"]["mtdResult"] -
-                      salesObject["vehOrders"]["mtdTarget"]
+            this.targetObj["vehOrders"]["target"] = salesObject["vehOrders"]["target"];
+            this.targetObj["vehOrders"]["mtdTarget"] = salesObject["vehOrders"]["mtdTarget"];
+            this.targetObj["vehOrders"]["mtdResult"] = salesObject["vehOrders"]["mtdResult"];
+            this.targetObj["vehOrders"]["mtdPercentage"] = salesObject["vehOrders"]["mtdTarget"] &&
+                salesObject["vehOrders"]["mtdResult"] ? (salesObject["vehOrders"]["mtdResult"] /
+                          salesObject["vehOrders"]["mtdTarget"]) * 100 : 0;
+            this.targetObj["vehOrders"]["mtdDifference"] = salesObject["vehOrders"]["mtdTarget"] &&
+                salesObject["vehOrders"]["mtdResult"] 
+                    ? salesObject["vehOrders"]["mtdResult"] - salesObject["vehOrders"]["mtdTarget"]
                     : 0;
 
             /*Vechicle Profit*/
-            this.targetObj["vechProfit"]["mtdTarget"] =
-                salesObject["vehProfit"]["mtdTarget"];
-            this.targetObj["vechProfit"]["mtdResult"] =
-                salesObject["vehProfit"]["mtdResult"];
-            this.targetObj["vechProfit"]["mtdPercentage"] =
-                salesObject["vehProfit"]["mtdTarget"] &&
+            this.targetObj["vehProfit"]["target"] = salesObject["vehProfit"]["target"];
+            this.targetObj["vehProfit"]["mtdTarget"] = salesObject["vehProfit"]["mtdTarget"];
+            this.targetObj["vehProfit"]["mtdResult"] = salesObject["vehProfit"]["mtdResult"];
+            this.targetObj["vehProfit"]["mtdPercentage"] = salesObject["vehProfit"]["mtdTarget"] &&
                 salesObject["vehProfit"]["mtdResult"]
-                    ? (salesObject["vehProfit"]["mtdResult"] /
-                          salesObject["vehProfit"]["mtdTarget"]) *
+                    ? (salesObject["vehProfit"]["mtdResult"] / salesObject["vehProfit"]["mtdTarget"]) *
                       100
                     : 0;
-            this.targetObj["vechProfit"]["mtdDifference"] =
-                salesObject["vehProfit"]["mtdTarget"] &&
+            this.targetObj["vehProfit"]["mtdDifference"] = salesObject["vehProfit"]["mtdTarget"] &&
                 salesObject["vehProfit"]["mtdResult"]
-                    ? salesObject["vehProfit"]["mtdResult"] -
-                      salesObject["vehProfit"]["mtdTarget"]
+                    ? salesObject["vehProfit"]["mtdResult"] - salesObject["vehProfit"]["mtdTarget"]
                     : 0;
         }
     }

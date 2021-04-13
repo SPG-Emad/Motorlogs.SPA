@@ -171,15 +171,12 @@
               class="ag-theme-alpine"
               [modules]="modules"
               [columnDefs]="columnDefs"
-              [blockLoadDebounceMillis]="true"
               [defaultColDef]="defaultColDef"
               [autoGroupColumnDef]="autoGroupColumnDef"
               [suppressMenuHide]="true"
               [postProcessPopup]="postProcessPopup"
-              
               [components]="components"
               [rowHeight]="rowHeight"
-              
               [allowContextMenuWithControlKey]="true"
               [rowSelection]="rowSelection"
               [context]="thisComponent"
@@ -187,13 +184,14 @@
               [getMainMenuItems]="getMainMenuItems"
               [frameworkComponents]="frameworkComponents"
               [loadingOverlayComponent]="loadingOverlayComponent"
-              [rowBuffer]="10"
               [components]="components"
-              
               [getContextMenuItems]="getContextMenuItems"
               [rowData]="rowData"
               (gridReady)="onGridReady($event)"
               (columnResized)="onColumnResized($event)"
+              
+              [blockLoadDebounceMillis]="true"
+              [rowBuffer]="10"
               ></ag-grid-angular>
             <!-- / Sales Log Table Ends-->
           </div>
