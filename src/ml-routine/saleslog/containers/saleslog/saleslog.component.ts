@@ -32,7 +32,7 @@ declare var $: any;
 import { CustomDropDownRenderer } from "./custom-dropdown-renderer.component";
 import { DropDownRenderer } from "./dropdown-renderer.component";
 import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.service";
-import { SessionHandlerService } from "app/shared/services/session-handler.service";
+import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { SharedService } from "ml-setup/shared/services/shared/shared.service";
 import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.service";
 
@@ -166,7 +166,7 @@ export class SaleslogComponent implements OnInit {
         public dialog: MatDialog,
         private fb: FormBuilder,
         public sharedService: SharedService,
-        private sessionHandlerService: SessionHandlerService,
+        private LocalStorageHandlerService: LocalStorageHandlerService,
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private encryptionService: EncryptionService,
@@ -381,7 +381,7 @@ export class SaleslogComponent implements OnInit {
     storeColumnResizeValue(width, colId) {
         let cid = colId.replace('/"/g', "");
         let params = {
-            userId: this.sessionHandlerService.getSession("userObj").userId,
+            userId: this.LocalStorageHandlerService.getSession("userObj").userId,
             deptid: this.decryptedDepartmentId,
             ViewID: 1,
             colId: cid,
@@ -500,7 +500,7 @@ export class SaleslogComponent implements OnInit {
     public departmentID: number = 0;
 
     renderDepartmentNameHeading() {
-        let department = this.sessionHandlerService.getSession("userObj")
+        let department = this.LocalStorageHandlerService.getSession("userObj")
             .departmentAccess;
         this.departmentIDs = department;
         let count = 0;
@@ -521,8 +521,8 @@ export class SaleslogComponent implements OnInit {
             this.gridApi.showLoadingOverlay();
         }
         let obj = {
-            UserId: this.sessionHandlerService.getSession("userObj").userId,
-            RoleId: this.sessionHandlerService.getSession("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getSession("userObj").userId,
+            RoleId: this.LocalStorageHandlerService.getSession("userObj").roleID,
             ViewId: 1,
             DeptId: this.decryptedDepartmentId,
             TillDate: date ? date : moment().format("MMM_YY"),
@@ -780,7 +780,7 @@ export class SaleslogComponent implements OnInit {
             event.newValue === null
         ) {
             let params = {
-                userid: this.sessionHandlerService.getSession("userObj").userId,
+                userid: this.LocalStorageHandlerService.getSession("userObj").userId,
                 EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
                 ViewID: 1,
                 colId: event.colDef.colId,
@@ -798,8 +798,8 @@ export class SaleslogComponent implements OnInit {
         this.gridApi.showLoadingOverlay();
 
         let obj = {
-            UserId: this.sessionHandlerService.getSession("userObj").userId,
-            RoleId: this.sessionHandlerService.getSession("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getSession("userObj").userId,
+            RoleId: this.LocalStorageHandlerService.getSession("userObj").roleID,
             ViewId: 1,
             DeptId: this.decryptedDepartmentId,
             TillDate: date ? date : moment().format("MMM_YY"),

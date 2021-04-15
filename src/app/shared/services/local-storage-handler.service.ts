@@ -3,11 +3,12 @@ import { EncryptionService } from './encryption.service';
 import { MatDialog } from '@angular/material/dialog';
 import { Router } from '@angular/router';
 import { AuthService } from 'ml-auth/shared/services/ml-auth/ml-auth.service';
+import { CookieService } from 'ngx-cookie-service';
 
 @Injectable({
     providedIn: 'root'
 })
-export class SessionHandlerService {
+export class LocalStorageHandlerService {
 
     /**
     * Developed by @AhmedKhan
@@ -32,8 +33,8 @@ export class SessionHandlerService {
     getSession(key: string): any {
 
         /*Fetch Token & key value from session storage */
-        let token = window.sessionStorage.getItem('token');
-        let stringValue = window.sessionStorage.getItem(key);
+        let token = localStorage.getItem('token');
+        let stringValue = localStorage.getItem(key);
         /*----------------------------------------------*/
 
         if (token && stringValue !== null) {
@@ -64,7 +65,7 @@ export class SessionHandlerService {
             /*-----------------------------------*/
 
             /*Set session storage*/
-            window.sessionStorage.setItem(key, JSON.stringify(encryptVal));
+            localStorage.setItem(key, JSON.stringify(encryptVal));
             /*-------------------*/
 
         }
@@ -75,7 +76,7 @@ export class SessionHandlerService {
     getToken(): any {
 
         /*Fetch Token from session */
-        let token = window.sessionStorage.getItem('token');
+        let token = localStorage.getItem('token');
         /*-------------------------*/
 
         /*Check if token exists */
@@ -90,14 +91,14 @@ export class SessionHandlerService {
     }
 
     setToken(key: string, value: string) {
-        window.sessionStorage.setItem(key, value);
+        localStorage.setItem(key, value);
     }
 
     redirection() {
         /*Close all modal and Clear sessions 
           and redirect to login*/
         this.dialogRefs.closeAll();
-        window.sessionStorage.clear();
+        localStorage.clear();
         this.router.navigate(['/']);
         /*---------------------------------*/
     }

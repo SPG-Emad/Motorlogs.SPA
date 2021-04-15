@@ -7,7 +7,7 @@ import {
 } from "@angular/material/dialog";
 import { FormBuilder, FormGroup, Validators } from "@angular/forms";
 import * as moment from "moment";
-import { SessionHandlerService } from "app/shared/services/session-handler.service";
+import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { EncryptionService } from "app/shared/services/encryption.service";
 import { ActivatedRoute } from "@angular/router";
 import { environment } from "../../../../environments/environment";
@@ -27,7 +27,7 @@ export class NewDealComponent implements OnInit {
         private fb: FormBuilder,
         private saleslogService: SaleslogService,
         private signalRService: SignalRService,
-        private sessionHandlerService: SessionHandlerService,
+        private LocalStorageHandlerService: LocalStorageHandlerService,
         private encryptionService: EncryptionService,
         private route: ActivatedRoute,
         @Inject(MAT_DIALOG_DATA) public modalParams?: any
@@ -80,7 +80,7 @@ export class NewDealComponent implements OnInit {
         this.loader = true;
         console.log(this.decryptedDepartmentId);
         let params = {
-            UserId: this.sessionHandlerService.getSession("userObj").userId,
+            UserId: this.LocalStorageHandlerService.getSession("userObj").userId,
             ViewId: this.viewId, // Always be 1
             DeptId: this.decryptedDepartmentId,
             OrderDate: this.columnForm.get("orderDate").value,

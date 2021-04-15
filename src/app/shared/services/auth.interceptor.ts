@@ -3,15 +3,15 @@ import { HttpEvent, HttpHandler, HttpInterceptor, HttpRequest, HttpResponse } fr
 import { Observable } from 'rxjs';
 import { Router } from '@angular/router';
 import { tap } from 'rxjs/operators';
-import { SessionHandlerService } from './session-handler.service';
+import { LocalStorageHandlerService } from './local-storage-handler.service';
 
 @Injectable()
 export class AuthInterceptor implements HttpInterceptor {
 
-    constructor(private sessionHandler: SessionHandlerService){}
+    constructor(private cookieHandler: LocalStorageHandlerService){}
 
     intercept(request: HttpRequest<any>, newRequest: HttpHandler): Observable<HttpEvent<any>> {
-        const tokenInfo = this.sessionHandler.getToken();
+        const tokenInfo = this.cookieHandler.getToken();
         if (tokenInfo) {
             request = request.clone({
                 setHeaders: {

@@ -3,7 +3,7 @@ import { Component, OnInit, Inject } from '@angular/core';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import * as moment from 'moment';
-import { SessionHandlerService } from 'app/shared/services/session-handler.service';
+import { LocalStorageHandlerService } from 'app/shared/services/local-storage-handler.service';
 import { EncryptionService } from 'app/shared/services/encryption.service';
 import { ActivatedRoute } from '@angular/router';
 import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
@@ -22,7 +22,7 @@ export class NewDealComponent implements OnInit {
       private dialogRef: MatDialogRef<NewDealComponent>,
       private fb: FormBuilder, 
       private saleslogService: SaleslogService,
-      private sessionHandlerService: SessionHandlerService,
+      private LocalStorageHandlerService: LocalStorageHandlerService,
       private encryptionService: EncryptionService,
       private signalRService: SignalRService,
       private route: ActivatedRoute, 
@@ -59,7 +59,7 @@ export class NewDealComponent implements OnInit {
     this.loader= true;
     console.log(this.decryptedDepartmentId);
     let params = {
-      "UserId" : this.sessionHandlerService.getSession('userObj').userId,
+      "UserId" : this.LocalStorageHandlerService.getSession('userObj').userId,
       "ViewId" : this.viewId, // Always be 1
       "DeptId" : this.decryptedDepartmentId,
       "OrderDate" : this.columnForm.get('orderDate').value,

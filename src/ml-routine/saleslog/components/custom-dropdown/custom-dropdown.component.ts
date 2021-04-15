@@ -6,7 +6,7 @@ import { take, takeUntil } from 'rxjs/operators';
 
 import { Bank, BANKS, ItemObj } from '../demo-data';
 import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
-import { SessionHandlerService } from 'app/shared/services/session-handler.service';
+import { LocalStorageHandlerService } from 'app/shared/services/local-storage-handler.service';
 import { ToastHandlerService } from 'app/shared/services/toast-handler.service';
 import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
 
@@ -60,7 +60,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
   
   constructor(
     private salesLogService: SaleslogService,
-    private sessionHandlerService: SessionHandlerService,
+    private LocalStorageHandlerService: LocalStorageHandlerService,
     private signalRService: SignalRService,
     private toastNotification: ToastHandlerService,
   ) {
@@ -263,7 +263,7 @@ export class SingleSelectionExampleComponent implements OnInit, AfterViewInit, O
       let colId = this.itemArray.find(res=>res.code ===this.selected);
       console.log('column id: ' , colId);
       let params = { 
-        "userid": this.sessionHandlerService.getSession('userObj').userId, 
+        "userid": this.LocalStorageHandlerService.getSession('userObj').userId, 
         "EntryId": this.colDef.data.rowId, // Parent ID of the row for which cell he is editing 
         "ViewID": 1, 
         "colId": this.colDef.colDef.colId, 

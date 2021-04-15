@@ -10,9 +10,13 @@ import { Router } from "@angular/router";
 import { DeviceDetectorService } from "ngx-device-detector";
 
 import "rxjs/add/operator/do";
-import { SessionHandlerService } from 'app/shared/services/session-handler.service';
-import { UserProfile, UserProfileService } from 'app/shared/services/user-profile.service';
-import { navigation } from 'app/shared/navigation/navigation';
+import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
+import {
+    UserProfile,
+    UserProfileService,
+} from "app/shared/services/user-profile.service";
+import { navigation } from "app/shared/navigation/navigation";
+import { CookieService } from "ngx-cookie-service";
 
 @Injectable()
 export class AuthService {
@@ -25,14 +29,13 @@ export class AuthService {
         private http: HttpClient,
         private router: Router,
         private _deviceService: DeviceDetectorService,
-        private sessionHandler: SessionHandlerService,
-        private userProfile: UserProfileService
+        private cookieHandler: LocalStorageHandlerService,
+        private userProfile: UserProfileService,
+        private cookieService: CookieService
     ) {
-
         if (this.validToken) {
-
             navigation.splice(0, navigation.length);
-            const user: any = this.sessionHandler.getSession("userObj");
+            const user: any = this.cookieHandler.getSession("userObj");
             this.authenticatedState.next(user);
             this.userProfile.currentUser = user;
             this.userProfile.generateApplicationMenu();
@@ -48,7 +51,7 @@ export class AuthService {
     });
 
     get authState() {
-        const token = this.sessionHandler.getToken();
+        const token = this.cookieHandler.getToken();
         return of(!this.jwtHelper.isTokenExpired(token));
     }
 
@@ -57,7 +60,7 @@ export class AuthService {
     }
 
     get validToken() {
-        return this.sessionHandler.getToken() != null ? true : false;
+        return this.cookieHandler.getToken() != null ? true : false;
     }
 
     loginUser(email: string, password: string) {
@@ -66,7 +69,7 @@ export class AuthService {
                 .post(GlobalConstants.apiURL + `auth/login`, {
                     login: email,
                     password,
-                    deviceDetails: this.getDeviceInformation()
+                    deviceDetails: this.getDeviceInformation(),
                 })
                 .toPromise()
                 .then(
@@ -83,13 +86,27 @@ export class AuthService {
 
                             /*Assign properties from response to currentUser subject */
                             this.userProfile.currentUser.authenticated = true;
-                            this.authenticatedState.next(this.userProfile.currentUser);
+                            this.authenticatedState.next(
+                                this.userProfile.currentUser
+                            );
                             /*------------------------------------------*/
 
-                            window.sessionStorage.setItem('userObj', JSON.stringify(this.userProfile.currentUser));
+                            localStorage.setItem(
+                                "userObj",
+                                JSON.stringify(this.userProfile.currentUser)
+                            );
+
+                            console.log(
+                                "Non parsed",
+                                localStorage.getItem("userObj")
+                            );
+                            console.log(
+                                "Parsed ",
+                                JSON.parse(localStorage.getItem("userObj"))
+                            );
 
                             /*Set Authentication Token in session storage for API */
-                            this.sessionHandler.setToken("token", user.token);
+                            localStorage.setItem("token", user.token);
                             /*----------------------------------------------------*/
 
                             /*Store Auth User session data*/
@@ -109,10 +126,11 @@ export class AuthService {
         navigation.splice(0, navigation.length);
         this.http.post(GlobalConstants.apiURL + `auth/logout`, {}).subscribe();
         this.userProfile.currentUser = null;
-        window.sessionStorage.clear();
+        localStorage.clear();
+        this.cookieService.deleteAll();
 
         this.authenticatedState.next(null);
-        this.store.set('notifications', null);
+        this.store.set("notifications", null);
         this.router.navigate(["/auth/login"]);
     }
 
@@ -128,5 +146,4 @@ export class AuthService {
         }
         return JSON.stringify(this.deviceInfo);
     }
-
 }

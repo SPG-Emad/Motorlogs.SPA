@@ -1,4 +1,4 @@
-import { SessionHandlerService } from "./../../../../app/shared/services/session-handler.service";
+import { LocalStorageHandlerService } from "../../../../app/shared/services/local-storage-handler.service";
 import {
     Component,
     OnInit,
@@ -312,7 +312,7 @@ export class DashboardComponent implements OnInit {
     constructor(
         private router: Router,
         private route: ActivatedRoute,
-        private sessionHandlerService: SessionHandlerService,
+        private LocalStorageHandlerService: LocalStorageHandlerService,
         private dashboardService: DashboardService,
         private encryptionService: EncryptionService,
         private toastHandlerService: ToastHandlerService
@@ -345,7 +345,7 @@ export class DashboardComponent implements OnInit {
                     "decrypt",
                     params.get("id")
                 );
-                this.departmentName = this.sessionHandlerService
+                this.departmentName = this.LocalStorageHandlerService
                     .getSession("userObj")
                     .departmentAccess.find((res) => {
                         return (

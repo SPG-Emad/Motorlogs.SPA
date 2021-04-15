@@ -5,6 +5,7 @@ import { AuthGuard } from "./guards/auth-guard";
 import { AuthService } from "./services/ml-auth/ml-auth.service";
 import { FuseSharedModule } from '@fuse/shared.module';
 import { ML_SharedModule } from 'ml-shared/ml-shared.module';
+import { CookieService } from "ngx-cookie-service";
 
 @NgModule({
 
@@ -15,7 +16,7 @@ export class SharedModule {
     static forRoot(): ModuleWithProviders {
         return {
             ngModule: SharedModule,
-            providers: [AuthService, AuthGuard]
+            providers: [AuthService, AuthGuard, CookieService]
         };
     }
 }

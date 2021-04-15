@@ -25,7 +25,7 @@ import * as data from "app/RoutineSheetJSON.json";
 import { AuthService } from "ml-auth/shared/services/ml-auth/ml-auth.service";
 
 import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.service";
-import { SessionHandlerService } from "app/shared/services/session-handler.service";
+import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { SharedService } from "ml-setup/shared/services/shared/shared.service";
 import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.service";
 
@@ -193,7 +193,7 @@ export class RoutineSheetComponent implements OnInit {
         public dialog: MatDialog,
         private fb: FormBuilder,
         public sharedService: SharedService,
-        private sessionHandlerService: SessionHandlerService,
+        private LocalStorageHandlerService: LocalStorageHandlerService,
         private router: Router,
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
@@ -410,7 +410,7 @@ export class RoutineSheetComponent implements OnInit {
     storeColumnResizeValue(width, colId) {
         let cid = colId.replace('/"/g', "");
         let params = {
-            userId: this.sessionHandlerService.getSession("userObj").userId,
+            userId: this.LocalStorageHandlerService.getSession("userObj").userId,
             deptid: this.decryptedDepartmentId
                 ? this.decryptedDepartmentId
                 : this.departmentID,
@@ -746,7 +746,7 @@ export class RoutineSheetComponent implements OnInit {
     generateGrid(months?, date?) {
         this.gridApi.showLoadingOverlay();
         if (this.routineSelected !== 3) {
-            let department = this.sessionHandlerService.getSession("userObj")
+            let department = this.LocalStorageHandlerService.getSession("userObj")
                 .departmentAccess;
             this.departmentIDs = department;
             let count = 0;
@@ -763,7 +763,7 @@ export class RoutineSheetComponent implements OnInit {
             });
             this.departmentName = department.departmentName;
         } else {
-            let department = this.sessionHandlerService.getSession("userObj")
+            let department = this.LocalStorageHandlerService.getSession("userObj")
                 .departmentAccess;
 
             department.map((res) => {
@@ -787,8 +787,8 @@ export class RoutineSheetComponent implements OnInit {
         }
 
         let obj = {
-            UserId: this.sessionHandlerService.getSession("userObj").userId,
-            RoleId: this.sessionHandlerService.getSession("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getSession("userObj").userId,
+            RoleId: this.LocalStorageHandlerService.getSession("userObj").roleID,
             ViewId: this.routineSelected,
             DeptId: this.decryptedDepartmentId
                 ? this.decryptedDepartmentId
@@ -1118,8 +1118,8 @@ export class RoutineSheetComponent implements OnInit {
         this.gridApi.showLoadingOverlay();
 
         let obj = {
-            UserId: this.sessionHandlerService.getSession("userObj").userId,
-            RoleId: this.sessionHandlerService.getSession("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getSession("userObj").userId,
+            RoleId: this.LocalStorageHandlerService.getSession("userObj").roleID,
             ViewId: this.routineSelected,
             DeptId: this.decryptedDepartmentId
                 ? this.decryptedDepartmentId

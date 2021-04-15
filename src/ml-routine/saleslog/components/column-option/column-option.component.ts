@@ -3,7 +3,7 @@ import { MatDialog, MAT_DIALOG_DATA, MatDialogRef } from '@angular/material/dial
 import { MatTableDataSource } from '@angular/material/table';
 import { MatSort } from '@angular/material/sort';
 import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
-import { SessionHandlerService } from 'app/shared/services/session-handler.service';
+import { LocalStorageHandlerService } from 'app/shared/services/local-storage-handler.service';
 import { ActivatedRoute } from '@angular/router';
 import { EncryptionService } from 'app/shared/services/encryption.service';
 import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
@@ -39,7 +39,7 @@ export class ColumnOptionComponent implements OnInit {
     private dialogRef: MatDialogRef<ColumnOptionComponent>,
     private saleslogService: SaleslogService,
     private signalRService: SignalRService,
-    private sessionHandlerService: SessionHandlerService,
+    private LocalStorageHandlerService: LocalStorageHandlerService,
     private encryptionService: EncryptionService,
     private route: ActivatedRoute, 
     @Inject(MAT_DIALOG_DATA) public modalParams?: any,
@@ -82,7 +82,7 @@ export class ColumnOptionComponent implements OnInit {
 
       let json = {
         "ViewId" : 1, // For saleslog 1 , for Delivered 2, for Arriving 3
-        "userId" : this.sessionHandlerService.getSession('userObj').userId,
+        "userId" : this.LocalStorageHandlerService.getSession('userObj').userId,
         "deptId" : this.decryptedDepartmentId,
         "columns": options
       }
@@ -110,8 +110,8 @@ export class ColumnOptionComponent implements OnInit {
     ELEMENT_DATA = [];
     let params = {
       "ViewId" : 1, // For saleslog 1 , for Delivered 2, for Arriving 3
-      "UserId" : this.sessionHandlerService.getSession('userObj').userId,
-      "RoleId" : this.sessionHandlerService.getSession('userObj').roleID,
+      "UserId" : this.LocalStorageHandlerService.getSession('userObj').userId,
+      "RoleId" : this.LocalStorageHandlerService.getSession('userObj').roleID,
       "DeptId" : this.decryptedDepartmentId
     }
     this.saleslogService.getColumnOptionsListing(params)
@@ -147,7 +147,7 @@ export class ColumnOptionComponent implements OnInit {
   reset(){
     let params = {
       "ViewId" : 1, // For saleslog 1 , for Delivered 2, for Arriving 3
-      "UserId" : this.sessionHandlerService.getSession('userObj').userId,
+      "UserId" : this.LocalStorageHandlerService.getSession('userObj').userId,
       "DeptId" : this.decryptedDepartmentId
     }
     this.saleslogService.resetColumn(params)

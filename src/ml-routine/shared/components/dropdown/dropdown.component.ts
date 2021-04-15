@@ -1,7 +1,7 @@
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Input, HostListener } from '@angular/core';
 import { FormControl, FormGroup } from '@angular/forms';
 import { MatSelect } from '@angular/material';
-import { SessionHandlerService } from 'app/shared/services/session-handler.service';
+import { LocalStorageHandlerService } from 'app/shared/services/local-storage-handler.service';
 import { ToastHandlerService } from 'app/shared/services/toast-handler.service';
 import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
 import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.service';
@@ -50,7 +50,7 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
 
     constructor(
         private salesLogService: SaleslogService,
-        private sessionHandlerService: SessionHandlerService,
+        private LocalStorageHandlerService: LocalStorageHandlerService,
         private signalRService: SignalRService,
         private toastNotification: ToastHandlerService,
     ) {
@@ -231,7 +231,7 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
             console.log(this.colDef);
 
             let params = {
-                "userid": this.sessionHandlerService.getSession('userObj').userId,
+                "userid": this.LocalStorageHandlerService.getSession('userObj').userId,
                 "EntryId": this.colDef.data.rowId, // Parent ID of the row for which cell he is editing 
                 "ViewID": 1,
                 "colId": this.colDef.colDef.colId,

@@ -6,6 +6,7 @@ import { Store } from 'ml-shared/common/store';
 import { UserProfileService } from 'app/shared/services/user-profile.service';
 import { Subject } from 'rxjs';
 import { takeUntil } from 'rxjs/operators';
+import { CookieService } from 'ngx-cookie-service';
 
 @Component({
     selector: 'ml-general',
@@ -20,7 +21,8 @@ export class GeneralComponent implements OnInit, OnDestroy {
         private myProfileService: MyProfileService,
         private userProfileService: UserProfileService,
         private fb: FormBuilder,
-        private store: Store) { }
+        private store: Store,
+        private cookieService: CookieService) { }
 
     public imgURL: any;
     public imgDbString: any;
@@ -84,7 +86,8 @@ export class GeneralComponent implements OnInit, OnDestroy {
                     Object.assign(this.myProfileService.userProfile, this.generalForm.value);
                     const cloneObj = Object.assign(this.userProfileService.currentUser, this.generalForm.value);
                     this.store.set("user", cloneObj);
-                    window.sessionStorage.setItem('userObj', JSON.stringify(this.userProfileService.currentUser));
+                    localStorage.setItem('userObj', JSON.stringify(this.userProfileService.currentUser));
+                    this.cookieService.set('userObj', JSON.stringify(this.userProfileService.currentUser));
                     this.loading = false;
                 },
                 err => {

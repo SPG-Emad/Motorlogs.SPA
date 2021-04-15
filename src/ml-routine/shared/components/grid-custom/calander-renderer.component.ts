@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import * as moment from 'moment';
 import { SaleslogService } from 'ml-routine/shared/services/saleslog/saleslog.service';
-import { SessionHandlerService } from 'app/shared/services/session-handler.service';
+import { LocalStorageHandlerService } from 'app/shared/services/local-storage-handler.service';
 declare var $: any;
 
 
@@ -23,7 +23,7 @@ export class CalenderRenderer  {
   paramsObject:any;
   constructor(
     private salesLogService: SaleslogService,
-    private sessionHandlerService: SessionHandlerService,
+    private LocalStorageHandlerService: LocalStorageHandlerService,
   ){}
   
   agInit(params): void {
@@ -46,7 +46,7 @@ export class CalenderRenderer  {
   insertData(dateText){
     console.log("Selected date: " + dateText);
     let params = { 
-      "userid": this.sessionHandlerService.getSession('userObj').userId, 
+      "userid": this.LocalStorageHandlerService.getSession('userObj').userId, 
       "EntryId": 1005, // Parent ID of the row for which cell he is editing 
       "ViewID": 1, 
       "colId": this.paramsObject.colDef.colId, 

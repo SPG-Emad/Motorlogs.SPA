@@ -2,9 +2,7 @@ import { ErrorHandler, Injectable, Injector } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { ErrorService } from './error.service';
 import { LoggingService } from './logging.service';
-import { AuthService } from 'ml-auth/shared/services/ml-auth/ml-auth.service';
 import { navigation } from 'app/shared/navigation/navigation';
-import { Router } from '@angular/router';
 import { Store } from "ml-shared/common/store";
 
 @Injectable()
@@ -46,7 +44,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 
     logoutUser() {
         navigation.splice(0, navigation.length);
-        window.sessionStorage.clear();
+        localStorage.clear();
         this.store.set('notifications', null);
     }
 }
