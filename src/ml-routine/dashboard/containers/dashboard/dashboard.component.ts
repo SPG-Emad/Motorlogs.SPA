@@ -346,7 +346,7 @@ export class DashboardComponent implements OnInit {
                     params.get("id")
                 );
                 this.departmentName = this.LocalStorageHandlerService
-                    .getSession("userObj")
+                    .getFromStorage("userObj")
                     .departmentAccess.find((res) => {
                         return (
                             Number(res.departmentId) ===

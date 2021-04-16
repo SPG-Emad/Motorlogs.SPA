@@ -177,15 +177,15 @@ export class SaleslogComponent implements OnInit {
             this.decryptedDepartmentId = this.encryptionService.convertToEncOrDecFormat(
                 "decrypt",
                 params.get("id")
-                );
-                this.dateFilterApplied = 0;
+            );
+            this.dateFilterApplied = 0;
             if (this.pageCounter !== 0) {
                 this.generateGrid();
             }
         });
 
         this.columnDefs = [];
-        
+
         this.defaultColDef = {
             flex: 1,
             minWidth: 200,
@@ -335,7 +335,6 @@ export class SaleslogComponent implements OnInit {
             // resizable: true,
         };
 
-
         this.autoGroupColumnDef = {
             minWidth: 400,
         };
@@ -381,16 +380,20 @@ export class SaleslogComponent implements OnInit {
     storeColumnResizeValue(width, colId) {
         let cid = colId.replace('/"/g', "");
         let params = {
-            userId: this.LocalStorageHandlerService.getSession("userObj").userId,
+            userId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .userId,
             deptid: this.decryptedDepartmentId,
             ViewID: 1,
             colId: cid,
             config: "{'width':" + width + "}", // or "{'sequence':1}"
         };
 
-        this.saleslog.updateViewColumnOptions(params).subscribe(() => {
-           this.signalRService.BroadcastLiveSheetData();
-        });
+        console.log("store column resize");
+
+        // uncomment it
+        // this.saleslog.updateViewColumnOptions(params).subscribe(() => {
+        //    this.signalRService.BroadcastLiveSheetData();
+        // });
     }
 
     ngOnInit() {
@@ -492,7 +495,7 @@ export class SaleslogComponent implements OnInit {
         this.gridColumnApi = params.columnApi;
         this.pageCounter = this.pageCounter + 1;
         this.gridApi.showLoadingOverlay();
-      
+
         this.generateGrid();
     }
 
@@ -500,8 +503,9 @@ export class SaleslogComponent implements OnInit {
     public departmentID: number = 0;
 
     renderDepartmentNameHeading() {
-        let department = this.LocalStorageHandlerService.getSession("userObj")
-            .departmentAccess;
+        let department = this.LocalStorageHandlerService.getFromStorage(
+            "userObj"
+        ).departmentAccess;
         this.departmentIDs = department;
         let count = 0;
         department = department.find((el) => {
@@ -521,8 +525,10 @@ export class SaleslogComponent implements OnInit {
             this.gridApi.showLoadingOverlay();
         }
         let obj = {
-            UserId: this.LocalStorageHandlerService.getSession("userObj").userId,
-            RoleId: this.LocalStorageHandlerService.getSession("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .userId,
+            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .roleID,
             ViewId: 1,
             DeptId: this.decryptedDepartmentId,
             TillDate: date ? date : moment().format("MMM_YY"),
@@ -780,7 +786,9 @@ export class SaleslogComponent implements OnInit {
             event.newValue === null
         ) {
             let params = {
-                userid: this.LocalStorageHandlerService.getSession("userObj").userId,
+                userid: this.LocalStorageHandlerService.getFromStorage(
+                    "userObj"
+                ).userId,
                 EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
                 ViewID: 1,
                 colId: event.colDef.colId,
@@ -798,8 +806,10 @@ export class SaleslogComponent implements OnInit {
         this.gridApi.showLoadingOverlay();
 
         let obj = {
-            UserId: this.LocalStorageHandlerService.getSession("userObj").userId,
-            RoleId: this.LocalStorageHandlerService.getSession("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .userId,
+            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .roleID,
             ViewId: 1,
             DeptId: this.decryptedDepartmentId,
             TillDate: date ? date : moment().format("MMM_YY"),
@@ -1722,6 +1732,12 @@ export class SaleslogComponent implements OnInit {
 
     getContextMenuItems(params) {
         let thisRef = params.context.thisComponent;
+
+        console.log("********************");
+        console.log("thisRef: ", thisRef);
+        console.log("params: ", params);
+        console.log("********************");
+
         var result = [
             {
                 name: "CELL OPTIONS",
@@ -1977,6 +1993,9 @@ export class SaleslogComponent implements OnInit {
     }
 
     duplicateRow(newItems, index) {
+        console.log("************");
+        console.log("duplicate row method called", newItems, index);
+        console.log("************");
         this.gridApi.showLoadingOverlay();
 
         let params = {
@@ -1985,7 +2004,6 @@ export class SaleslogComponent implements OnInit {
         this.saleslog.duplicateRows(params).subscribe(() => {
             this.gridApi.hideOverlay();
             this.signalRService.BroadcastLiveSheetData();
-
             this.gridApi.applyTransaction({ add: newItems });
         });
     }
@@ -2189,3 +2207,25 @@ function getDatePicker() {
     };
     return Datepicker;
 }
+
+
+// FOR DD-SELF, DD-Suggest IT IS NOT RENDERING THE VALUE AS COMPARE TO COLVALUETEXT
+// FOR DD-FIXED IT IS NOT ACCEPTING VALUES
+
+
+// ColType: "Combo"
+// EntryId: 1050
+// Value: "16.04.2021 16:16"
+// ViewID: 1
+// colId: 9
+// userid: 3
+
+
+// column is autoresizing after data insert
+
+
+// ViewsData/UpdateColorTagOnCell	400 Bad Request
+// {EntryId: 0, Code: "", valText: "", details: {color: "yellow"}}
+
+
+// https://motorlogs.azurewebsites.net/api/ViewsData/DuplicateRowInView/1

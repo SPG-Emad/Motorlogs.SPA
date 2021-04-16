@@ -29,6 +29,7 @@ export class LoginComponent implements OnInit {
     }
 
     ngOnInit() {
+        localStorage.clear();
         setTimeout(() => {
             this._fuseConfigService.config = {
                 layout: {

@@ -231,7 +231,7 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
             console.log(this.colDef);
 
             let params = {
-                "userid": this.LocalStorageHandlerService.getSession('userObj').userId,
+                "userid": this.LocalStorageHandlerService.getFromStorage('userObj').userId,
                 "EntryId": this.colDef.data.rowId, // Parent ID of the row for which cell he is editing 
                 "ViewID": 1,
                 "colId": this.colDef.colDef.colId,

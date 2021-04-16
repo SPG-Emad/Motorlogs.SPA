@@ -51,7 +51,7 @@ export class CalenderRenderer  {
   insertData(dateText){
     console.log("Selected date: " + dateText);
     let params = { 
-      "userid": this.LocalStorageHandlerService.getSession('userObj').userId, 
+      "userid": this.LocalStorageHandlerService.getFromStorage('userObj').userId, 
       "EntryId": 1005, // Parent ID of the row for which cell he is editing 
       "ViewID": 1, 
       "colId": this.paramsObject.colDef.colId, 

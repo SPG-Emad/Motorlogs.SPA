@@ -35,7 +35,7 @@ export class AuthService {
     ) {
         if (this.validToken) {
             navigation.splice(0, navigation.length);
-            const user: any = this.cookieHandler.getSession("userObj");
+            const user: any = this.cookieHandler.getFromStorage("userObj");
             this.authenticatedState.next(user);
             this.userProfile.currentUser = user;
             this.userProfile.generateApplicationMenu();

@@ -63,9 +63,7 @@
 .custom-date-style {
 	background-color: red !important;
 }
-
-.input{	
-}
+ 
 .input-wide{
 	width: 500px;
 }
@@ -802,3 +800,11 @@ input::-webkit-calendar-picker-indicator {
 }
 
 
+::ng-deep .xdsoft_datetimepicker .xdsoft_datepicker {
+    width: 234px !important;
+    float: left;
+    margin-left: 8px;
+} 
+.xdsoft_datetimepicker {
+    width: 321px !important;
+}

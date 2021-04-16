@@ -59,7 +59,7 @@ export class NewDealComponent implements OnInit {
     this.loader= true;
     console.log(this.decryptedDepartmentId);
     let params = {
-      "UserId" : this.LocalStorageHandlerService.getSession('userObj').userId,
+      "UserId" : this.LocalStorageHandlerService.getFromStorage('userObj').userId,
       "ViewId" : this.viewId, // Always be 1
       "DeptId" : this.decryptedDepartmentId,
       "OrderDate" : this.columnForm.get('orderDate').value,

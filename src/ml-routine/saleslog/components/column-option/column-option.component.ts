@@ -82,7 +82,7 @@ export class ColumnOptionComponent implements OnInit {
 
       let json = {
         "ViewId" : 1, // For saleslog 1 , for Delivered 2, for Arriving 3
-        "userId" : this.LocalStorageHandlerService.getSession('userObj').userId,
+        "userId" : this.LocalStorageHandlerService.getFromStorage('userObj').userId,
         "deptId" : this.decryptedDepartmentId,
         "columns": options
       }
@@ -110,8 +110,8 @@ export class ColumnOptionComponent implements OnInit {
     ELEMENT_DATA = [];
     let params = {
       "ViewId" : 1, // For saleslog 1 , for Delivered 2, for Arriving 3
-      "UserId" : this.LocalStorageHandlerService.getSession('userObj').userId,
-      "RoleId" : this.LocalStorageHandlerService.getSession('userObj').roleID,
+      "UserId" : this.LocalStorageHandlerService.getFromStorage('userObj').userId,
+      "RoleId" : this.LocalStorageHandlerService.getFromStorage('userObj').roleID,
       "DeptId" : this.decryptedDepartmentId
     }
     this.saleslogService.getColumnOptionsListing(params)
@@ -147,7 +147,7 @@ export class ColumnOptionComponent implements OnInit {
   reset(){
     let params = {
       "ViewId" : 1, // For saleslog 1 , for Delivered 2, for Arriving 3
-      "UserId" : this.LocalStorageHandlerService.getSession('userObj').userId,
+      "UserId" : this.LocalStorageHandlerService.getFromStorage('userObj').userId,
       "DeptId" : this.decryptedDepartmentId
     }
     this.saleslogService.resetColumn(params)

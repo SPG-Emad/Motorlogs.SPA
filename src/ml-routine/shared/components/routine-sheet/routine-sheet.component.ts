@@ -410,7 +410,7 @@ export class RoutineSheetComponent implements OnInit {
     storeColumnResizeValue(width, colId) {
         let cid = colId.replace('/"/g', "");
         let params = {
-            userId: this.LocalStorageHandlerService.getSession("userObj").userId,
+            userId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
             deptid: this.decryptedDepartmentId
                 ? this.decryptedDepartmentId
                 : this.departmentID,
@@ -746,7 +746,7 @@ export class RoutineSheetComponent implements OnInit {
     generateGrid(months?, date?) {
         this.gridApi.showLoadingOverlay();
         if (this.routineSelected !== 3) {
-            let department = this.LocalStorageHandlerService.getSession("userObj")
+            let department = this.LocalStorageHandlerService.getFromStorage("userObj")
                 .departmentAccess;
             this.departmentIDs = department;
             let count = 0;
@@ -763,7 +763,7 @@ export class RoutineSheetComponent implements OnInit {
             });
             this.departmentName = department.departmentName;
         } else {
-            let department = this.LocalStorageHandlerService.getSession("userObj")
+            let department = this.LocalStorageHandlerService.getFromStorage("userObj")
                 .departmentAccess;
 
             department.map((res) => {
@@ -787,8 +787,8 @@ export class RoutineSheetComponent implements OnInit {
         }
 
         let obj = {
-            UserId: this.LocalStorageHandlerService.getSession("userObj").userId,
-            RoleId: this.LocalStorageHandlerService.getSession("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
+            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj").roleID,
             ViewId: this.routineSelected,
             DeptId: this.decryptedDepartmentId
                 ? this.decryptedDepartmentId
@@ -1118,8 +1118,8 @@ export class RoutineSheetComponent implements OnInit {
         this.gridApi.showLoadingOverlay();
 
         let obj = {
-            UserId: this.LocalStorageHandlerService.getSession("userObj").userId,
-            RoleId: this.LocalStorageHandlerService.getSession("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
+            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj").roleID,
             ViewId: this.routineSelected,
             DeptId: this.decryptedDepartmentId
                 ? this.decryptedDepartmentId
