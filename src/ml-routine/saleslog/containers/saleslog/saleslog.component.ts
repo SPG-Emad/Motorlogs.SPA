@@ -779,7 +779,9 @@ export class SaleslogComponent implements OnInit {
         if (event.newValue === undefined) {
             event.newValue = "";
         }
-        console.log(event);
+        console.log("------------------");
+        console.log("event::", event);
+        console.log("------------------");
         if (
             event.newValue ||
             event.newValue === "" ||
@@ -1802,7 +1804,7 @@ export class SaleslogComponent implements OnInit {
                 action: function () {
                     var newItems = [params.node.data];
                     // // console.log(params);
-                    thisRef.duplicateRow(newItems, params.node.rowIndex);
+                    thisRef.duplicateRow(newItems, params.node.data.rowId);
                     // thisRef.gridApi.applyTransaction({ add: newItems });
                 },
                 icon: createFlagImg("plus"),
@@ -1810,7 +1812,10 @@ export class SaleslogComponent implements OnInit {
             "separator",
             {
                 name: "DELETE - Entire Record",
-                action: thisRef.onRemoveSelected.bind(thisRef),
+                action: function () {
+                    var newItems = [params.node.data];
+                    thisRef.deleteRow(newItems, params.node.data.rowId);
+                },
                 icon: createFlagImg("close"),
             },
             {
@@ -1999,7 +2004,7 @@ export class SaleslogComponent implements OnInit {
         this.gridApi.showLoadingOverlay();
 
         let params = {
-            EntryId: index + 1,
+            EntryId: index,
         };
         this.saleslog.duplicateRows(params).subscribe(() => {
             this.gridApi.hideOverlay();
@@ -2017,13 +2022,14 @@ export class SaleslogComponent implements OnInit {
         });
     }
 
-    deleteRow(index) {
+    deleteRow(newItems, index) {
         this.gridApi.showLoadingOverlay();
         let params = {
-            EntryId: index + 1,
+            EntryId: index,
         };
         this.saleslog.deleteRows(params).subscribe(() => {
             this.signalRService.BroadcastLiveSheetDataForViews();
+            this.gridApi.applyTransaction({ remove: newItems });
             this.gridApi.hideOverlay();
             this.toastHandlerService.generateToast(
                 "Row Deleted Successfully",
@@ -2055,18 +2061,6 @@ export class SaleslogComponent implements OnInit {
             }
         });
         this.monthSliderSearch(this.sliderItem);
-    }
-
-    onRemoveSelected() {
-        var selectedData = this.gridApi.getSelectedRows();
-        var res = this.gridApi.applyTransaction({ remove: selectedData });
-
-        if (res.remove.length > 0) {
-            let index = res.remove[0].rowIndex;
-            this.signalRService.BroadcastLiveSheetData();
-
-            this.deleteRow(index);
-        }
     }
 
     getRowData() {
@@ -2208,10 +2202,8 @@ function getDatePicker() {
     return Datepicker;
 }
 
-
 // FOR DD-SELF, DD-Suggest IT IS NOT RENDERING THE VALUE AS COMPARE TO COLVALUETEXT
 // FOR DD-FIXED IT IS NOT ACCEPTING VALUES
-
 
 // ColType: "Combo"
 // EntryId: 1050
@@ -2220,12 +2212,9 @@ function getDatePicker() {
 // colId: 9
 // userid: 3
 
-
 // column is autoresizing after data insert
-
 
 // ViewsData/UpdateColorTagOnCell	400 Bad Request
 // {EntryId: 0, Code: "", valText: "", details: {color: "yellow"}}
-
 
 // https://motorlogs.azurewebsites.net/api/ViewsData/DuplicateRowInView/1
