@@ -122,7 +122,7 @@ export class AddCustomComponent implements OnInit {
 
         if (this.updateColumnID) {
             const obj = {
-                colName: "Ahmed",
+                colName: "test",
                 columnWidth: "150",
                 cellType: 6,
                 dropDownType: 2,

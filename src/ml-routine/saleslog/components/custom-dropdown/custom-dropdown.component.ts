@@ -332,7 +332,26 @@ export class SingleSelectionExampleComponent
             } else {
                 if (colId !== undefined) {
                     let params = {};
-                    if (this.colDef.colDef.columnType === "Combo") {
+                    if (this.colDef.colDef.columnType === "DD-Self" || this.colDef.colDef.columnType === "DD-Suggest") {
+                        let params = {};
+                        params = {
+                            userid: this.LocalStorageHandlerService.getFromStorage(
+                                "userObj"
+                            ).userId,
+                            EntryId: this.colDef.data.rowId, // Parent ID of the row for which cell he is editing
+                            ViewID: 1,
+                            colId: this.colDef.colDef.colId,
+                            ColType: this.colDef.colDef.columnType, // You need to send the column type
+                            Value: event.value,
+                        };
+                        
+                        console.log('params', params);
+        
+                        this.salesLogService
+                            .insertCellValue(params)
+                            .subscribe((res) => {
+                                this.signalRService.BroadcastLiveSheetData();
+                            });
                     } else {
                         params = {
                             userid: this.LocalStorageHandlerService.getFromStorage(

@@ -1,14 +1,6 @@
 import { CustomLoadingOverlayComponent } from "../../components/custom-loading-overlay/custom-loading-overlay.component";
 
-import {
-    Component,
-    OnInit,
-    Input,
-    ViewChild,
-    ElementRef,
-    Renderer2,
-} from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+import { Component, OnInit, Input, ViewChild, ElementRef } from "@angular/core";
 import { ToastHandlerService } from "app/shared/services/toast-handler.service";
 import { MatDialog } from "@angular/material/dialog";
 import { HistoryComponent } from "ml-routine/saleslog/components/history/history.component";
@@ -16,15 +8,14 @@ import { NewDealComponent } from "ml-routine/saleslog/components/new-deal/new-de
 import { ExcelExportComponent } from "ml-routine/saleslog/components/excel-export/excel-export.component";
 import { ColumnOptionComponent } from "ml-routine/saleslog/components/column-option/column-option.component";
 
-import { AllModules } from "@ag-grid-enterprise/all-modules";
+import { AllModules, CellClickedEvent } from "@ag-grid-enterprise/all-modules";
 import { CustomHeaderComponent } from "ml-routine/shared/components/custom-header/custom-header.component";
 import { SlideInOutAnimation } from "app/shared/animation/animation";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import * as moment from "moment";
 import { EncryptionService } from "app/shared/services/encryption.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { AuthService } from "ml-auth/shared/services/ml-auth/ml-auth.service";
 import { CalenderRenderer } from "./calander-renderer.component";
 // import * as Selectize from '../../../../../node_modules/selectize/dist/js/standalone/selectize.js';
 
@@ -362,6 +353,12 @@ export class SaleslogComponent implements OnInit {
         this.loadingOverlayComponentParams = {
             loadingMessage: "One moment please...",
         };
+    }
+
+    onCellClicked(event: CellClickedEvent) {
+        console.log("||||||||||||||||||||||||||||||");
+        console.log("event", event);
+        console.log("||||||||||||||||||||||||||||||");
     }
 
     rowResponse = [];
@@ -736,7 +733,6 @@ export class SaleslogComponent implements OnInit {
                 let required = element.required;
                 columnMap["cellStyle"] = function (params) {
                     if (required && params.value === "") {
-                        //mark police cells as red
                         return { backgroundColor: "red" };
                     } else {
                         return null;
@@ -1842,7 +1838,15 @@ export class SaleslogComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex, "blue");
+                    console.log(">>>>>>>>>>>>>>>>>>");
+                    console.log("params blue", params);
+                    console.log(">>>>>>>>>>>>>>>>>>");
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "blue"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("blue-color"),
@@ -1865,7 +1869,12 @@ export class SaleslogComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex, "green");
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "green"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("green-color"),
@@ -1888,7 +1897,12 @@ export class SaleslogComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex, "yellow");
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "yellow"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("yellow-color"),
@@ -1911,7 +1925,12 @@ export class SaleslogComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex, "red");
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "red"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("red-color"),
@@ -1934,7 +1953,12 @@ export class SaleslogComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex, "purple");
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "purple"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("purple-color"),
@@ -1955,7 +1979,11 @@ export class SaleslogComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.removeCellColor();
+                    thisRef.removeCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("close"),
@@ -2013,10 +2041,23 @@ export class SaleslogComponent implements OnInit {
         });
     }
 
-    removeCellColor() {
+    removeCellColor(rowArray, entryId, columnId, value) {
+        const firstFilter = rowArray.filter((x) =>
+            x.cells.some((y) => y.entryId === entryId && y.colId === columnId)
+        );
+        const entryValueId = firstFilter[0].cells.filter(
+            (y) => y.entryId === entryId && y.colId === columnId
+        )[0].entryValueId;
+
         let params = {
-            EntryId: "",
+            EntryId: entryId,
+            EntryValueId: entryValueId,
+            Name: "background",
+            Value: value,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
+            ViewId: 1,
         };
+
         this.saleslog.removeCellColor(params).subscribe(() => {
             this.signalRService.BroadcastLiveSheetDataForViews();
         });
@@ -2039,15 +2080,23 @@ export class SaleslogComponent implements OnInit {
         });
     }
 
-    updateCellColor(newItems?, color?) {
+    updateCellColor(rowArray, entryId, columnId, value) {
+        const firstFilter = rowArray.filter((x) =>
+            x.cells.some((y) => y.entryId === entryId && y.colId === columnId)
+        );
+        const entryValueId = firstFilter[0].cells.filter(
+            (y) => y.entryId === entryId && y.colId === columnId
+        )[0].entryValueId;
+
         let params = {
-            EntryId: newItems,
-            Code: "",
-            valText: "",
-            details: {
-                color: color,
-            },
+            EntryId: entryId,
+            EntryValueId: entryValueId,
+            Name: "background",
+            Value: value,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
+            ViewId: 1,
         };
+
         this.saleslog.updateCellColor(params).subscribe(() => {
             this.signalRService.BroadcastLiveSheetData();
         });
@@ -2217,4 +2266,4 @@ function getDatePicker() {
 // ViewsData/UpdateColorTagOnCell	400 Bad Request
 // {EntryId: 0, Code: "", valText: "", details: {color: "yellow"}}
 
-// https://motorlogs.azurewebsites.net/api/ViewsData/DuplicateRowInView/1
+// search is also not working
