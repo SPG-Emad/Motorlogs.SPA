@@ -52,6 +52,26 @@ export class SaleslogComponent implements OnInit {
     public deliveredAmount: number = -0;
     public deliveredUnits: number = 0;
     public deliveredAvg: number = 0;
+
+
+    resetSummaryValues(){
+    this.carryOverAmount = -0;
+    this.carryOverUnits = 0;
+    this.carryOverAvg = 0;
+
+    this.soldAmount = -0;
+    this.soldUnits = 0;
+    this.soldAvg = 0;
+
+    this.coveredAmount = -0;
+    this.coveredUnits = 0;
+    this.coveredAvg = 0;
+
+    this.deliveredAmount = -0;
+    this.deliveredUnits = 0;
+    this.deliveredAvg = 0;
+    }
+
     public modules: any[] = AllModules;
     public rowSelection;
     public thisComponent = this;
@@ -563,7 +583,7 @@ export class SaleslogComponent implements OnInit {
         this.renderDepartmentNameHeading();
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
-            // // console.log("Triggered");
+            this.resetSummaryValues();
 
             this.rowData = [];
             this.columnDefs = [];
@@ -613,10 +633,6 @@ export class SaleslogComponent implements OnInit {
                     this.cellMap["carryOver"] = carryOver;
                     this.cellMap["cellColor_" + element1.colCode] =
                         element1.cellColor;
-
-                    // console.log('????????????????');
-                    // console.log('cell color: ',element1.cellColor );
-                    // console.log('????????????????');
 
                     if (index == element.cells.length - 1) {
                         this.cellData.push(this.cellMap);
@@ -846,6 +862,8 @@ export class SaleslogComponent implements OnInit {
         };
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
+            this.resetSummaryValues();
+            
             this.rowResponse = [];
             this.salesData = [];
             // this.salesData = res;
