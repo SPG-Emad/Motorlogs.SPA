@@ -319,22 +319,23 @@ table {
 }
 
 ::ng-deep .blue-mark {
-    border-left: 3px solid #c7ddfc !important;
+    border-left: 4px solid blue !important;
 }
 
 ::ng-deep .green-mark {
-    border-left: 3px solid #00b181 !important;
+    border-left: 4px solid green !important;
 }
 
 ::ng-deep .purple-mark {
-    border-left: 3px solid #c16bba !important;
+    border-left: 4px solid purple !important;
 }
+
 ::ng-deep .red-mark {
-    border-left: 3px solid #c21a1a !important;
+    border-left: 4px solid red !important;
 }
 
 ::ng-deep .yellow-mark {
-    border-left: 3px solid #ffcf00 !important;
+    border-left: 4px solid yellow !important;
 }
 
 .mat-button .mat-button-wrapper > *,
@@ -7465,22 +7466,22 @@ div.divFlagEdit .txtFlagDetail:focus + .fa-pencil {
     width: 100%;
 }
 
-// CELL INSIDE BORDER STYLING ---- APR 17 2021 __ START
-
-.blueBorder {
+::ng-deep .blue-mark-cell {
     border-left: 4px solid blue !important;
 }
-.greenBorder {
+
+::ng-deep .green-mark-cell {
     border-left: 4px solid green !important;
 }
-.yellowBorder {
-    border-left: 4px solid yellow !important;
-}
-.redBorder {
-    border-left: 4px solid red !important;
-}
-.purpleBorder {
+
+::ng-deep .purple-mark-cell {
     border-left: 4px solid purple !important;
 }
 
-// CELL INSIDE BORDER STYLING ---- APR 17 2021 __ END
+::ng-deep .red-mark-cell {
+    border-left: 4px solid red !important;
+}
+
+::ng-deep .yellow-mark-cell {
+    border-left: 4px solid yellow !important;
+}

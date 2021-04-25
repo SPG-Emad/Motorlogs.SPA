@@ -8,7 +8,7 @@ import { NewDealComponent } from "ml-routine/saleslog/components/new-deal/new-de
 import { ExcelExportComponent } from "ml-routine/saleslog/components/excel-export/excel-export.component";
 import { ColumnOptionComponent } from "ml-routine/saleslog/components/column-option/column-option.component";
 
-import { AllModules, CellClickedEvent } from "@ag-grid-enterprise/all-modules";
+import { AllModules } from "@ag-grid-enterprise/all-modules";
 import { CustomHeaderComponent } from "ml-routine/shared/components/custom-header/custom-header.component";
 import { SlideInOutAnimation } from "app/shared/animation/animation";
 import { FormBuilder, FormGroup } from "@angular/forms";
@@ -34,33 +34,37 @@ import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.servi
     animations: [SlideInOutAnimation],
 })
 export class SaleslogComponent implements OnInit {
-    selectedCity: number;
-    departmentNameRendered: string = "";
-    @Input()
-    public routineSelected: number = 1;
+    
+    @Input() public routineSelected: number = 1;
     @ViewChild("myGrid", { static: true }) agGrid: ElementRef;
-
+    
     public carryOverAmount: number = -0;
     public carryOverUnits: number = 0;
     public carryOverAvg: number = 0;
-
+    
     public soldAmount: number = -0;
     public soldUnits: number = 0;
     public soldAvg: number = 0;
-
+    
     public coveredAmount: number = -0;
     public coveredUnits: number = 0;
     public coveredAvg: number = 0;
-    dateFilterApplied: number = 0;
-
+    
     public deliveredAmount: number = -0;
     public deliveredUnits: number = 0;
     public deliveredAvg: number = 0;
-
+    public modules: any[] = AllModules;
+    public rowSelection;
+    public thisComponent = this;
+    public emptyFieldsCount: number = 0;
+    public rowColor = [];
+    
+    dateFilterApplied: number = 0;
+    selectedCity: number;
+    departmentNameRendered: string = "";
     gridApi;
     gridColumnApi;
 
-    public modules: any[] = AllModules;
     columnDefs;
     defaultColDef;
     columnTypes;
@@ -76,7 +80,6 @@ export class SaleslogComponent implements OnInit {
     history: number = 3;
     period: number = 3;
     startFrom: number = null;
-    public emptyFieldsCount: number = 0;
     statusOption: string[] = [];
     payOptions: string[] = [];
     salesEngOption: string[] = [];
@@ -84,8 +87,6 @@ export class SaleslogComponent implements OnInit {
     afterMarketManagerOptions: string[] = [];
     financeManagerOption: string[] = [];
     components;
-    public rowSelection;
-    public thisComponent = this;
     getRowClass;
     dialogRef: any;
     frameworkComponents: any;
@@ -108,7 +109,6 @@ export class SaleslogComponent implements OnInit {
     cellMap: any;
     salesData: any;
 
-    public rowColor = [];
     postProcessPopup;
 
     monthSearch: any;
@@ -181,21 +181,24 @@ export class SaleslogComponent implements OnInit {
             flex: 1,
             minWidth: 200,
             editable: true,
-            filter: true,
+            filter: false,
             cellClass: "row-text-style",
             cellClassRules: {
-                "green-color": function (params) {
-                    return params.value === "OFA";
-                },
-                "blue-color": function (params) {
-                    return params.value === "Cash";
-                },
-                "pink-color": function (params) {
-                    return params.value === "IHP";
-                },
+                // "green-color": function (params) {   
+                //     return params.value === "OFA";
+                // },
+                // "blue-color": function (params) {
+                //     return params.value === "Cash";
+                // },
+                // "pink-color": function (params) {
+                //     return params.value === "IHP";
+                // },
 
-                "green-mark": function (params) {
-                    // // console.log(params)
+                'green-mark-cell2': function (params) {
+                    return params.value === '70';
+                  },
+
+                "green-mark-cell": function (params) {
                     let thisRef = params.context.thisComponent;
                     let currentRow;
                     if (params.colDef) {
@@ -209,7 +212,9 @@ export class SaleslogComponent implements OnInit {
                         ? currentRow.color === "green"
                         : false;
                 },
-                "blue-mark": function (params) {
+
+                "blue-mark-cell": function (params) {
+                    // console.log('blue-mark-cell params: ', params)
                     let thisRef = params.context.thisComponent;
                     let currentRow;
                     if (params.colDef) {
@@ -223,7 +228,7 @@ export class SaleslogComponent implements OnInit {
                         ? currentRow.color === "blue"
                         : false;
                 },
-                "purple-mark": function (params) {
+                "purple-mark-cell": function (params) {
                     let thisRef = params.context.thisComponent;
                     let currentRow;
                     if (params.colDef) {
@@ -238,7 +243,7 @@ export class SaleslogComponent implements OnInit {
                         : false;
                 },
 
-                "yellow-mark": function (params) {
+                "yellow-mark-cell": function (params) {
                     let thisRef = params.context.thisComponent;
                     let currentRow;
                     if (params.colDef) {
@@ -252,7 +257,7 @@ export class SaleslogComponent implements OnInit {
                         ? currentRow.color === "yellow"
                         : false;
                 },
-                "red-mark": function (params) {
+                "red-mark-cell": function (params) {
                     let thisRef = params.context.thisComponent;
                     let currentRow;
                     if (params.colDef) {
@@ -285,7 +290,7 @@ export class SaleslogComponent implements OnInit {
                             ).isBefore(date);
                             choice = isBefore;
                         }
-                        // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
+                        // // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
                         return params.value === "" && choice;
                     } else if (params.colDef.colCode === "PT") {
                         let date = moment().format("DD-MMM-YY");
@@ -300,7 +305,7 @@ export class SaleslogComponent implements OnInit {
                         } else {
                             choice = isAfter;
                         }
-                        // // console.log(params.data.orderDate);
+                        // // // console.log(params.data.orderDate);
 
                         return params.value === "" && choice;
                     } else {
@@ -309,7 +314,7 @@ export class SaleslogComponent implements OnInit {
                 },
             },
             // filter: 'customFilter',
-            // menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
+           // menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
             headerComponentParams: { menuIcon: "fa-chevron-down" },
             // cellStyle: this.cellStyling.bind(this),
             // maxWidth: 100,
@@ -355,12 +360,6 @@ export class SaleslogComponent implements OnInit {
         };
     }
 
-    onCellClicked(event: CellClickedEvent) {
-        console.log("||||||||||||||||||||||||||||||");
-        console.log("event", event);
-        console.log("||||||||||||||||||||||||||||||");
-    }
-
     rowResponse = [];
 
     url = "../../../assets/selectize/dist/js/standalone/selectize.js";
@@ -377,15 +376,14 @@ export class SaleslogComponent implements OnInit {
     storeColumnResizeValue(width, colId) {
         let cid = colId.replace('/"/g', "");
         let params = {
-            userId: this.LocalStorageHandlerService.getFromStorage("userObj")
-                .userId,
+            userId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
             deptid: this.decryptedDepartmentId,
             ViewID: 1,
             colId: cid,
             config: "{'width':" + width + "}", // or "{'sequence':1}"
         };
 
-        console.log("store column resize");
+        // console.log("store column resize");
 
         // uncomment it
         // this.saleslog.updateViewColumnOptions(params).subscribe(() => {
@@ -406,10 +404,10 @@ export class SaleslogComponent implements OnInit {
         var api = this.gridApi;
 
         for (var i = 0; i < this.rowData.length; i++) {
-            // console.log("i:", i);
+            // // console.log("i:", i);
             var itemToUpdate = this.rowData[i];
             var newItem = copyObject(itemToUpdate);
-            // console.log(newItem);
+            // // console.log(newItem);
             api.applyTransactionAsync({ update: [itemToUpdate] });
         }
         function copyObject(object) {
@@ -478,7 +476,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     public loadScript() {
-        // console.log("preparing to load...");
+        // // console.log("preparing to load...");
         let node = document.createElement("script");
         node.src = this.url;
         node.type = "text/javascript";
@@ -522,10 +520,8 @@ export class SaleslogComponent implements OnInit {
             this.gridApi.showLoadingOverlay();
         }
         let obj = {
-            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
-                .userId,
-            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj")
-                .roleID,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
+            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj").roleID,
             ViewId: 1,
             DeptId: this.decryptedDepartmentId,
             TillDate: date ? date : moment().format("MMM_YY"),
@@ -536,13 +532,12 @@ export class SaleslogComponent implements OnInit {
         this.renderDepartmentNameHeading();
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
-            // console.log("Triggered");
+            // // console.log("Triggered");
 
             this.rowData = [];
             this.columnDefs = [];
             let rows = [];
             this.salesData = res;
-            // this.salesData = res;
             this.monthObject.oneMonth = true;
 
             this.salesData.rowData.row.forEach((element, rowIndex) => {
@@ -554,12 +549,14 @@ export class SaleslogComponent implements OnInit {
                     this.carryOverUnits++;
                 }
                 this.cellData = [];
+
                 element.cells.forEach((element1, index) => {
                     this.rowColor.push({
                         rowId: rowIndex,
                         colId: element1.colId,
                         color: "",
                     });
+
                     this.cellMap["rowId"] = rowIndexId;
 
                     if (element1.colCode === "OD") {
@@ -571,22 +568,25 @@ export class SaleslogComponent implements OnInit {
                             element1.currentCellValue
                         ).format("DD/MM/YYYY");
                     } else {
-                        this.cellMap["" + element1.colId + ""] =
-                            element1.currentCellValue;
-                        this.cellMap['"' + element1.colCode + '"'] =
-                            element1.currentCellValue;
+                        this.cellMap["" + element1.colId + ""] = element1.currentCellValue;
+                        this.cellMap['"' + element1.colCode + '"'] = element1.currentCellValue;
                     }
+
                     if (element1.cellOptions.length > 0) {
-                        this.cellMap["cellOptions_" + element1.colCode] =
-                            element1.cellOptions;
+                        this.cellMap["cellOptions_" + element1.colCode] = element1.cellOptions;
                     }
+
                     this.cellMap["carryOver"] = carryOver;
-                    this.cellMap["cellColor_" + element1.colCode] =
-                        element1.cellColor;
+                    this.cellMap["cellColor_" + element1.colCode] = element1.cellColor;
+
+                    // console.log('????????????????');
+                    // console.log('cell color: ',element1.cellColor );
+                    // console.log('????????????????');
 
                     if (index == element.cells.length - 1) {
                         this.cellData.push(this.cellMap);
                     }
+
                     index++;
                 });
 
@@ -645,15 +645,9 @@ export class SaleslogComponent implements OnInit {
                         Number(this.cellData[0]['"VEHGRO"']);
                 }
                 this.cellData[0]["type"] = typeArray;
-                // // console.log(this.cellData[0])
+                // // // console.log(this.cellData[0])
                 rows.push(this.cellData[0]);
             });
-
-            // // console.log(this.carryOverAmount, this.carryOverUnits,this.cellData[0] )
-            // // console.log(this.soldAmount, this.soldUnits, )
-            // // console.log(this.coveredAmount, this.coveredUnits, )
-            // // console.log(this.deliveredAmount, this.deliveredUnits, )
-            // // console.log(this.rowColor);
 
             this.carryOverAvg =
                 this.carryOverUnits > 0
@@ -689,7 +683,7 @@ export class SaleslogComponent implements OnInit {
             rowIdcolumn["filter"] = true;
             rowIdcolumn["lockPosition"] = true;
             rowIdcolumn["cellClass"] = function (params) {
-                // console.log(params.data);
+                // // console.log(params.data);
                 return params.data.carryOver === true
                     ? "agClassCarryOver"
                     : "agClassNoCarryOver";
@@ -697,10 +691,10 @@ export class SaleslogComponent implements OnInit {
 
             let carryOverCount = this.carryOverUnits;
             rowIdcolumn["valueGetter"] = function (params) {
-                // // console.log(params.node.rowIndex, carryOverCount);
+                // // // console.log(params.node.rowIndex, carryOverCount);
                 if (params.data.carryOver === true) {
                     count = 0;
-                    // // console.log(count);
+                    // // // console.log(count);
                     return null;
                 } else {
                     //i++;
@@ -721,14 +715,17 @@ export class SaleslogComponent implements OnInit {
                 columnMap["field"] = "" + element.colId + "";
                 columnMap["colId"] = element.colId;
                 columnMap["colCode"] = element.colCode;
-
                 columnMap["sequence"] = element.sequence;
                 columnMap["resizable"] = true;
                 columnMap["sortable"] = true;
                 columnMap["filter"] = true;
+                columnMap["volatile"] = true;
                 columnMap["hide"] = !element.display;
                 columnMap["columnType"] = element.type;
                 columnMap["width"] = element.colWidth;
+                
+                // The cell class is applied on row level and not on cell/column level
+                // rowIdcolumn["cellClass"] = "green-mark-cell";
 
                 let required = element.required;
                 columnMap["cellStyle"] = function (params) {
@@ -760,14 +757,10 @@ export class SaleslogComponent implements OnInit {
                 return a.sequence - b.sequence;
             });
 
-            // if(!months){
             this.columnDefs = column;
-            // console.log("columns::::", column);
             this.rowData = rows;
             this.rowResponse = rows;
-            // }
-            // this.onAsyncUpdate();
-            this.gridApi.sizeColumnsToFit();
+            // this.gridApi.sizeColumnsToFit();
         });
     }
 
@@ -775,18 +768,16 @@ export class SaleslogComponent implements OnInit {
         if (event.newValue === undefined) {
             event.newValue = "";
         }
-        console.log("------------------");
-        console.log("event::", event);
-        console.log("------------------");
+        // console.log("------------------");
+        // console.log("event::", event);
+        // console.log("------------------");
         if (
             event.newValue ||
             event.newValue === "" ||
             event.newValue === null
         ) {
             let params = {
-                userid: this.LocalStorageHandlerService.getFromStorage(
-                    "userObj"
-                ).userId,
+                userid: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
                 EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
                 ViewID: 1,
                 colId: event.colDef.colId,
@@ -804,10 +795,8 @@ export class SaleslogComponent implements OnInit {
         this.gridApi.showLoadingOverlay();
 
         let obj = {
-            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
-                .userId,
-            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj")
-                .roleID,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
+            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj").roleID,
             ViewId: 1,
             DeptId: this.decryptedDepartmentId,
             TillDate: date ? date : moment().format("MMM_YY"),
@@ -838,8 +827,7 @@ export class SaleslogComponent implements OnInit {
                 let index = 0;
 
                 element.cells.forEach((element1) => {
-                    this.cellMap["" + element1.colId + ""] =
-                        element1.currentCellValue;
+                    this.cellMap["" + element1.colId + ""] = element1.currentCellValue;
                     if (element1.colCode === "OD") {
                         this.cellMap["" + element1.colId + ""] = moment(
                             element1.currentCellValue
@@ -847,16 +835,13 @@ export class SaleslogComponent implements OnInit {
                         this.cellMap['"' + element1.colCode + '"'] = moment(
                             element1.currentCellValue
                         ).format("DD/MM/YYYY");
-                        // console.log(this.cellMap['"' + element1.colCode + '"']);
+                        // // console.log(this.cellMap['"' + element1.colCode + '"']);
                     } else {
-                        this.cellMap["" + element1.colId + ""] =
-                            element1.currentCellValue;
-                        this.cellMap['"' + element1.colCode + '"'] =
-                            element1.currentCellValue;
+                        this.cellMap["" + element1.colId + ""] = element1.currentCellValue;
+                        this.cellMap['"' + element1.colCode + '"'] = element1.currentCellValue;
                     }
                     if (element1.cellOptions.length > 0) {
-                        this.cellMap["cellOptions_" + element1.colCode] =
-                            element1.cellOptions;
+                        this.cellMap["cellOptions_" + element1.colCode] = element1.cellOptions;
                     }
                     this.cellMap["carryOver"] = carryOver;
 
@@ -895,8 +880,7 @@ export class SaleslogComponent implements OnInit {
                     typeArray.push("sold");
 
                     this.soldUnits = this.soldUnits + 1;
-                    this.soldAmount =
-                        this.soldAmount + Number(this.cellData[0]['"VEHGRO"']);
+                    this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
 
                 if (
@@ -927,11 +911,6 @@ export class SaleslogComponent implements OnInit {
 
             this.rowResponse = rows;
 
-            // console.log(this.cellData);
-            // // console.log(this.soldAmount, this.soldUnits, )
-            // // console.log(this.coveredAmount, this.coveredUnits, )
-            // // console.log(this.deliveredAmount, this.deliveredUnits, )
-
             this.carryOverAvg =
                 this.carryOverUnits > 0
                     ? Number(this.carryOverAmount) / Number(this.carryOverUnits)
@@ -949,7 +928,7 @@ export class SaleslogComponent implements OnInit {
                     ? Number(this.deliveredAmount) / Number(this.deliveredUnits)
                     : 0;
 
-            // // console.log(rows);
+            // // // console.log(rows);
             let searchResult = rows.filter((resp) => {
                 let payType = resp['"PT"'];
                 let financeManager = resp['"FM"'];
@@ -986,7 +965,7 @@ export class SaleslogComponent implements OnInit {
         this.records = this.rowData;
         this.rowData = [];
         this.rowData = searchResult;
-        // console.log(this.rowResponse);
+        // // console.log(this.rowResponse);
         this.toastHandlerService.generateToast(
             searchResult.length + " Record found",
             "",
@@ -1009,32 +988,13 @@ export class SaleslogComponent implements OnInit {
         return currentRow !== undefined ? currentRow.color === color : "";
     }
 
-    getStatusColor(params) {
-        // // console.log(params);
-        if (params.value) {
-            switch (params.value) {
-                case "status":
-                    return true;
-                    break;
-                case "status":
-                    return true;
-                    break;
-                case "status":
-                    return true;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
     search() {
         let searchVal = this.searchForm.get("searchbar").value;
         let previousMonthFilter = this.searchForm.get("previousMonth").value;
         let currentMonthFilter = this.searchForm.get("currentMonth").value;
 
         let searchResult = [];
-        // console.log(this.rowResponse);
+        // // console.log(this.rowResponse);
 
         if (
             this.searchForm.get("searchbar").value !== "" &&
@@ -1047,8 +1007,8 @@ export class SaleslogComponent implements OnInit {
                     let financeManager = resp['"FM"'];
                     let email = resp['"EM"'];
                     let dept = resp['"Dept"'];
-                    // console.log(resp['"OD"'], resp['"EM"']);
-                    // console.log(email, searchVal);
+                    // // console.log(resp['"OD"'], resp['"EM"']);
+                    // // console.log(email, searchVal);
                     return (
                         moment(orderDate).isSame(moment()) &&
                         ((email &&
@@ -1182,12 +1142,12 @@ export class SaleslogComponent implements OnInit {
             let email = resp['"EM"'];
             let dept = resp['"Dept"'];
 
-            // console.log(
+            // // console.log(
             //     email,
             //     searchVal,
             //     email && email.toLowerCase().includes(searchVal.toLowerCase())
             // );
-            // console.log(
+            // // console.log(
             //     moment(orderDate).isAfter(searchedDate) &&
             //         moment(orderDate).isBefore(endDate)
             // );
@@ -1233,7 +1193,7 @@ export class SaleslogComponent implements OnInit {
             }
             // datefilter = Object.keys(resp).filter(res=> {
             //   // if(res !=="" && isNaN(Number(resp[res]))){
-            //   //   // console.log(resp[res], Number(resp[res]))
+            //   //   // // console.log(resp[res], Number(resp[res]))
             //   //   return resp[res].toLowerCase()=== searchVal;
             //   // }
             // });
@@ -1253,7 +1213,7 @@ export class SaleslogComponent implements OnInit {
             let row = this.rowResponse.filter((res) => {
                 return res.type.find((el) => el === "carryOver");
             });
-            // console.log(this.rowResponse, row);
+            // // console.log(this.rowResponse, row);
             if (row.length > 0) {
                 this.rowData = [];
                 this.rowData = row;
@@ -1265,7 +1225,7 @@ export class SaleslogComponent implements OnInit {
             }
         } else if (option === 1) {
             let row = this.rowResponse.filter((res) => {
-                // // console.log(res.type);
+                // // // console.log(res.type);
                 return res.type.find((el) => el === "sold");
             });
             if (row.length > 0) {
@@ -1279,7 +1239,7 @@ export class SaleslogComponent implements OnInit {
             }
         } else if (option === 2) {
             let row = this.rowResponse.filter((res) => {
-                // // console.log(res.type);
+                // // // console.log(res.type);
                 return res.type.find((el) => el === "covered");
             });
             if (row.length > 0) {
@@ -1293,7 +1253,7 @@ export class SaleslogComponent implements OnInit {
             }
         } else if (option === 3) {
             let row = this.rowResponse.filter((res) => {
-                // // console.log(res.type);
+                // // // console.log(res.type);
                 return res.type.find((el) => el === "delivered");
             });
             if (row.length > 0) {
@@ -1309,7 +1269,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     calenderSearch(searchingFormat, month, startingMonth) {
-        // console.log(searchingFormat, startingMonth);
+        // // console.log(searchingFormat, startingMonth);
         let searchResult = [];
 
         searchResult = this.rowData.filter((resp) => {
@@ -1335,7 +1295,7 @@ export class SaleslogComponent implements OnInit {
                             moment(resp[res]).isBefore(startingMonth)
                         );
                     }
-                    // console.log(
+                    // // console.log(
                     //     date,
                     //     searchingFormat,
                     //     moment(resp[res]).isAfter(searchingFormat)
@@ -1359,7 +1319,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     monthSliderSearch(searchingFormat) {
-        // console.log(searchingFormat);
+        // // console.log(searchingFormat);
         let searchResult = [];
 
         this.monthFilter = searchingFormat + " - " + searchingFormat;
@@ -1456,7 +1416,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     applyCalenderFilter() {
-        // console.log(this.monthSelected);
+        // // console.log(this.monthSelected);
         this.monthModal = false;
         this.generateFilter(this.monthSelected);
     }
@@ -1520,75 +1480,6 @@ export class SaleslogComponent implements OnInit {
         }
     }
 
-    cellEditorSelector(params) {
-        // console.log(params.colDef.type);
-
-        if (params.colDef.type === "number") {
-            return false;
-        } else if (params.colDef.type === "date") {
-            return {
-                component: "datePicker",
-            };
-        } else if (params.colDef.type === "text") {
-            return {
-                component: "agSelectCellEditor",
-            };
-        } else if (params.colDef.type === "drop down") {
-            switch (params.colDef.field) {
-                case "status":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.statusOption,
-                        },
-                    };
-                    break;
-                case "pay":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.payOptions,
-                        },
-                    };
-                    break;
-                case "sales_eng":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.salesEngOption,
-                        },
-                    };
-                    break;
-                case "sales_person":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.salesPersonOption,
-                        },
-                    };
-                    break;
-                case "aftermarket_manager":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.afterMarketManagerOptions,
-                        },
-                    };
-                    break;
-                case "finance_manager":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.financeManagerOption,
-                        },
-                    };
-                default:
-                    break;
-            }
-        }
-        return false;
-    }
-
     toggleShowDiv(divName: string) {
         if (divName === "divA") {
             if (this.animationState === "in") {
@@ -1642,7 +1533,7 @@ export class SaleslogComponent implements OnInit {
                 var sort = [
                     {
                         colId: column.colId,
-                        sort: "aesc",
+                        sort: "asc",
                     },
                 ];
                 thisRef.gridApi.setSortModel(sort);
@@ -1731,10 +1622,10 @@ export class SaleslogComponent implements OnInit {
     getContextMenuItems(params) {
         let thisRef = params.context.thisComponent;
 
-        console.log("********************");
-        console.log("thisRef: ", thisRef);
-        console.log("params: ", params);
-        console.log("********************");
+        // console.log("********************");
+        // console.log("thisRef.rowColor: ", thisRef.rowColor);
+        // console.log("params: ", params);
+        // console.log("********************");
 
         var result = [
             {
@@ -1753,7 +1644,7 @@ export class SaleslogComponent implements OnInit {
                     {
                         name: "Only this cell",
                         action: function () {
-                            // console.log(params);
+                            // // console.log(params);
                             thisRef.openModal(
                                 thisRef,
                                 HistoryComponent,
@@ -1761,7 +1652,7 @@ export class SaleslogComponent implements OnInit {
                                 {
                                     option: 2,
                                     colId: Number(params.column.colId),
-                                    entryId: params.node.rowIndex,
+                                    entryId: params.node.data.rowId,
                                 }
                             );
                         },
@@ -1770,8 +1661,8 @@ export class SaleslogComponent implements OnInit {
                     {
                         name: "Show All",
                         action: function () {
-                            // console.log(params.column.colId);
-                            // console.log(params.node.rowIndex);
+                            // // console.log(params.column.colId);
+                            // // console.log(params.node.rowIndex);
                             thisRef.openModal(
                                 thisRef,
                                 HistoryComponent,
@@ -1779,7 +1670,7 @@ export class SaleslogComponent implements OnInit {
                                 {
                                     option: 1,
                                     colId: Number(params.column.colId),
-                                    entryId: params.node.rowIndex,
+                                    entryId: params.node.data.rowId,
                                 }
                             );
                         },
@@ -1799,7 +1690,7 @@ export class SaleslogComponent implements OnInit {
                 name: "DUPLICATE - Entire Record",
                 action: function () {
                     var newItems = [params.node.data];
-                    // // console.log(params);
+                    // // // console.log(params);
                     thisRef.duplicateRow(newItems, params.node.data.rowId);
                     // thisRef.gridApi.applyTransaction({ add: newItems });
                 },
@@ -1826,7 +1717,7 @@ export class SaleslogComponent implements OnInit {
                 action: function () {
                     let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (el.rowId === params.node.rowIndex && el.colId === params.column.userProvidedColDef.colId) {
                             el.color = "blue";
                             color = el.color;
                             el.colId = params.column.userProvidedColDef.colId;
@@ -1838,9 +1729,7 @@ export class SaleslogComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    console.log(">>>>>>>>>>>>>>>>>>");
-                    console.log("params blue", params);
-                    console.log(">>>>>>>>>>>>>>>>>>");
+
                     thisRef.updateCellColor(
                         params.context.salesData.rowData.row,
                         params.node.data.rowId,
@@ -1850,14 +1739,14 @@ export class SaleslogComponent implements OnInit {
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("blue-color"),
-                cssClasses: ["pointer"],
+                cssClasses: ["pointer"]
             },
             {
                 name: "GREEN",
                 action: function () {
                     let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (el.rowId === params.node.rowIndex && el.colId === params.column.userProvidedColDef.colId) {
                             color = el.color;
                             el.color = "green";
                             el.colId = params.column.userProvidedColDef.colId;
@@ -1878,14 +1767,14 @@ export class SaleslogComponent implements OnInit {
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("green-color"),
-                cssClasses: ["pointer"],
+                cssClasses: ["pointer"]
             },
             {
                 name: "YELLOW",
                 action: function () {
                     let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (el.rowId === params.node.rowIndex && el.colId === params.column.userProvidedColDef.colId) {
                             color = el.color;
                             el.color = "yellow";
                             el.colId = params.column.userProvidedColDef.colId;
@@ -1906,14 +1795,14 @@ export class SaleslogComponent implements OnInit {
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("yellow-color"),
-                cssClasses: ["pointer"],
+                cssClasses: ["pointer"]
             },
             {
                 name: "RED",
                 action: function () {
                     let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (el.rowId === params.node.rowIndex && el.colId === params.column.userProvidedColDef.colId) {
                             color = el.color;
                             el.color = "red";
                             el.colId = params.column.userProvidedColDef.colId;
@@ -1934,14 +1823,14 @@ export class SaleslogComponent implements OnInit {
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("red-color"),
-                cssClasses: ["pointer"],
+                cssClasses: ["pointer"]
             },
             {
                 name: "PURPLE",
                 action: function () {
                     let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (el.rowId === params.node.rowIndex && el.colId === params.column.userProvidedColDef.colId) {
                             color = el.color;
                             el.color = "purple";
                             el.colId = params.column.userProvidedColDef.colId;
@@ -1962,7 +1851,7 @@ export class SaleslogComponent implements OnInit {
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("purple-color"),
-                cssClasses: ["pointer"],
+                cssClasses: ["pointer"]
             },
             {
                 name: "Remove Tag",
@@ -1994,12 +1883,13 @@ export class SaleslogComponent implements OnInit {
     }
 
     openModal(thisRef, component, width, key?: any) {
-        // console.log(key);
+        // // console.log(key);
         thisRef.dialogRef = thisRef.dialog.open(component, {
             panelClass: "custom-dialog-container",
             width: width,
             data: {
                 key: key,
+                viewId: 1
             },
         });
         thisRef.dialogRef.afterClosed().subscribe((res) => {
@@ -2026,9 +1916,9 @@ export class SaleslogComponent implements OnInit {
     }
 
     duplicateRow(newItems, index) {
-        console.log("************");
-        console.log("duplicate row method called", newItems, index);
-        console.log("************");
+        // console.log("************");
+        // console.log("duplicate row method called", newItems, index);
+        // console.log("************");
         this.gridApi.showLoadingOverlay();
 
         let params = {
@@ -2250,20 +2140,3 @@ function getDatePicker() {
     };
     return Datepicker;
 }
-
-// FOR DD-SELF, DD-Suggest IT IS NOT RENDERING THE VALUE AS COMPARE TO COLVALUETEXT
-// FOR DD-FIXED IT IS NOT ACCEPTING VALUES
-
-// ColType: "Combo"
-// EntryId: 1050
-// Value: "16.04.2021 16:16"
-// ViewID: 1
-// colId: 9
-// userid: 3
-
-// column is autoresizing after data insert
-
-// ViewsData/UpdateColorTagOnCell	400 Bad Request
-// {EntryId: 0, Code: "", valText: "", details: {color: "yellow"}}
-
-// search is also not working

@@ -2090,7 +2090,7 @@ export class RoutineSheetComponent implements OnInit {
                 var sort = [
                     {
                         colId: column.colId,
-                        sort: "aesc",
+                        sort: "asc",
                     },
                 ];
                 thisRef.gridApi.setSortModel(sort);

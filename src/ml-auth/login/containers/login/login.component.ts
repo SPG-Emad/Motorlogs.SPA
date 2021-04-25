@@ -61,7 +61,7 @@ export class LoginComponent implements OnInit {
                 /*-----------------*/
 
                 /*Display success message*/
-                this.responseMessage('Authentication Successful', 2000);
+                this.responseMessage('Welcome to Motorlogs', 2000);
                 /*-----------------------*/
 
                 this.router.navigate(["welcome"]);

@@ -34,16 +34,25 @@ export class GlobalErrorHandler implements ErrorHandler {
         // Always log errors
         logger.logError(stackTrace);
         console.error(error);
-        // let x = error.message;
-        // if (x.toLowerCase().includes('session expired!')) {
-        //     alert('Session timeout!');
-        //     this.logoutUser();
-        //     window.location.href = "/auth/login";
-        // }
+
+        // is not in the 'Connected' State
+        let x = error.message;
+        if (x.toLowerCase().includes('session expired!')) {
+            alert('Session timeout! Please login again.');
+            localStorage.clear();
+            this.logoutUser();
+            window.location.href = "/auth/login";
+        }
+        else if (x.toLowerCase().includes('Cannot send data if the connection is not in the')) {
+            alert('Session timeout! Please login again.');
+            this.logoutUser();
+            window.location.href = "/auth/login";
+        }
     }
 
     logoutUser() {
         navigation.splice(0, navigation.length);
+        localStorage.clear();
         localStorage.clear();
         this.store.set('notifications', null);
     }
