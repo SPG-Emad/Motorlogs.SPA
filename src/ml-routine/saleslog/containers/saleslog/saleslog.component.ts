@@ -53,23 +53,22 @@ export class SaleslogComponent implements OnInit {
     public deliveredUnits: number = 0;
     public deliveredAvg: number = 0;
 
+    resetSummaryValues() {
+        this.carryOverAmount = -0;
+        this.carryOverUnits = 0;
+        this.carryOverAvg = 0;
 
-    resetSummaryValues(){
-    this.carryOverAmount = -0;
-    this.carryOverUnits = 0;
-    this.carryOverAvg = 0;
+        this.soldAmount = -0;
+        this.soldUnits = 0;
+        this.soldAvg = 0;
 
-    this.soldAmount = -0;
-    this.soldUnits = 0;
-    this.soldAvg = 0;
+        this.coveredAmount = -0;
+        this.coveredUnits = 0;
+        this.coveredAvg = 0;
 
-    this.coveredAmount = -0;
-    this.coveredUnits = 0;
-    this.coveredAvg = 0;
-
-    this.deliveredAmount = -0;
-    this.deliveredUnits = 0;
-    this.deliveredAvg = 0;
+        this.deliveredAmount = -0;
+        this.deliveredUnits = 0;
+        this.deliveredAvg = 0;
     }
 
     public modules: any[] = AllModules;
@@ -197,13 +196,12 @@ export class SaleslogComponent implements OnInit {
         this.columnDefs = [];
 
         this.defaultColDef = {
-            flex: 1,
-            minWidth: 200,
+            // flex: 1,
+            resizable: true,
             editable: true,
             filter: false,
             cellClass: "row-text-style",
             cellClassRules: {
-               
                 "green-mark-cell": function (params) {
                     let thisRef = params.context.thisComponent;
                     const firstFilter = thisRef.salesData.rowData.row.filter(
@@ -228,7 +226,6 @@ export class SaleslogComponent implements OnInit {
                         return false;
                     }
                 },
-
                 "blue-mark-cell": function (params) {
                     let thisRef = params.context.thisComponent;
                     const firstFilter = thisRef.salesData.rowData.row.filter(
@@ -241,15 +238,25 @@ export class SaleslogComponent implements OnInit {
                     );
 
                     if (firstFilter.length > 0) {
+                        console.log("length > 0");
                         const cellColor = firstFilter[0].cells.filter(
                             (y) =>
                                 y.entryId === params.node.data.rowId &&
                                 y.colId === params.colDef.colId
                         )[0].cellColor;
+
+                        console.log("cell color", cellColor);
+                        console.log(
+                            "params.node.data.rowId",
+                            params.node.data.rowId
+                        );
+                        console.log("params.colDef.colId", params.colDef.colId);
+
                         return cellColor !== undefined
                             ? cellColor === "blue"
                             : false;
                     } else {
+                        console.log("length == 0");
                         return false;
                     }
                 },
@@ -277,7 +284,6 @@ export class SaleslogComponent implements OnInit {
                         return false;
                     }
                 },
-
                 "yellow-mark-cell": function (params) {
                     let thisRef = params.context.thisComponent;
                     const firstFilter = thisRef.salesData.rowData.row.filter(
@@ -345,7 +351,7 @@ export class SaleslogComponent implements OnInit {
                             ).isBefore(date);
                             choice = isBefore;
                         }
-                        // // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
+                        // // // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
                         return params.value === "" && choice;
                     } else if (params.colDef.colCode === "PT") {
                         let date = moment().format("DD-MMM-YY");
@@ -360,7 +366,7 @@ export class SaleslogComponent implements OnInit {
                         } else {
                             choice = isAfter;
                         }
-                        // // // console.log(params.data.orderDate);
+                        // // // // console.log(params.data.orderDate);
 
                         return params.value === "" && choice;
                     } else {
@@ -372,7 +378,7 @@ export class SaleslogComponent implements OnInit {
             // menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
             headerComponentParams: { menuIcon: "fa-chevron-down" },
             // cellStyle: this.cellStyling.bind(this),
-            // maxWidth: 100,
+            minWidth: 200,
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
             // },
@@ -380,14 +386,12 @@ export class SaleslogComponent implements OnInit {
             // context: {
             //   thisComponent : this
             // },
-            // valueFormatter: this.formatNumber.bind(this),
-            // minWidth: 105,
+            valueFormatter: this.formatNumber.bind(this),
             // maxWidth: 105,
-            // resizable: true,
         };
 
         this.autoGroupColumnDef = {
-            minWidth: 400,
+            initialWidth: 200,
         };
         this.rowHeight = 29;
 
@@ -415,8 +419,6 @@ export class SaleslogComponent implements OnInit {
         };
     }
 
-   
-
     rowResponse = [];
 
     url = "../../../assets/selectize/dist/js/standalone/selectize.js";
@@ -433,12 +435,22 @@ export class SaleslogComponent implements OnInit {
     storeColumnResizeValue(width, colId) {
         let cid = colId.replace('/"/g', "");
 
+        let params = {
+            userId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .userId,
+            deptid: this.decryptedDepartmentId
+                ? this.decryptedDepartmentId
+                : this.departmentID,
+            ViewID: 1,
+            colId: cid,
+            config: "{'width':" + width + "}", // or "{'sequence':1}"
+        };
+
         // console.log("store column resize");
 
-        // uncomment it
-        // this.saleslog.updateViewColumnOptions(params).subscribe(() => {
-        //    this.signalRService.BroadcastLiveSheetData();
-        // });
+        this.saleslog.updateViewColumnOptions(params).subscribe(() => {
+            this.signalRService.BroadcastLiveSheetData();
+        });
     }
 
     ngOnInit() {
@@ -454,9 +466,9 @@ export class SaleslogComponent implements OnInit {
         var api = this.gridApi;
 
         for (var i = 0; i < this.rowData.length; i++) {
-            // // console.log("i:", i);
+            // // // console.log("i:", i);
             var itemToUpdate = this.rowData[i];
-            // // console.log(newItem);
+            // // // console.log(newItem);
             api.applyTransactionAsync({ update: [itemToUpdate] });
         }
         function copyObject(object) {
@@ -525,7 +537,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     public loadScript() {
-        // // console.log("preparing to load...");
+        // // // console.log("preparing to load...");
         let node = document.createElement("script");
         node.src = this.url;
         node.type = "text/javascript";
@@ -602,10 +614,11 @@ export class SaleslogComponent implements OnInit {
                 this.cellData = [];
 
                 element.cells.forEach((element1, index) => {
+                    // console.log('element1',element1);
                     this.rowColor.push({
                         rowId: rowIndex,
                         colId: element1.colId,
-                        color: "",
+                        color: element1.cellColor,
                     });
 
                     this.cellMap["rowId"] = rowIndexId;
@@ -696,7 +709,7 @@ export class SaleslogComponent implements OnInit {
                         Number(this.cellData[0]['"VEHGRO"']);
                 }
                 this.cellData[0]["type"] = typeArray;
-                // // // console.log(this.cellData[0])
+                // // // // console.log(this.cellData[0])
                 rows.push(this.cellData[0]);
             });
 
@@ -734,7 +747,7 @@ export class SaleslogComponent implements OnInit {
             rowIdcolumn["filter"] = true;
             rowIdcolumn["lockPosition"] = true;
             rowIdcolumn["cellClass"] = function (params) {
-                // // console.log(params.data);
+                // // // console.log(params.data);
                 return params.data.carryOver === true
                     ? "agClassCarryOver"
                     : "agClassNoCarryOver";
@@ -742,10 +755,10 @@ export class SaleslogComponent implements OnInit {
 
             let carryOverCount = this.carryOverUnits;
             rowIdcolumn["valueGetter"] = function (params) {
-                // // // console.log(params.node.rowIndex, carryOverCount);
+                // // // // console.log(params.node.rowIndex, carryOverCount);
                 if (params.data.carryOver === true) {
                     count = 0;
-                    // // // console.log(count);
+                    // // // // console.log(count);
                     return null;
                 } else {
                     //i++;
@@ -774,9 +787,6 @@ export class SaleslogComponent implements OnInit {
                 columnMap["hide"] = !element.display;
                 columnMap["columnType"] = element.type;
                 columnMap["width"] = element.colWidth;
-
-                // The cell class is applied on row level and not on cell/column level
-                // rowIdcolumn["cellClass"] = "green-mark-cell";
 
                 let required = element.required;
                 columnMap["cellStyle"] = function (params) {
@@ -819,9 +829,9 @@ export class SaleslogComponent implements OnInit {
         if (event.newValue === undefined) {
             event.newValue = "";
         }
-        // console.log("------------------");
-        // console.log("event::", event);
-        // console.log("------------------");
+        // // console.log("------------------");
+        // // console.log("event::", event);
+        // // console.log("------------------");
         if (
             event.newValue ||
             event.newValue === "" ||
@@ -846,6 +856,10 @@ export class SaleslogComponent implements OnInit {
 
     gridFilter(months?, date?, searchValue?) {
         this.gridApi.showLoadingOverlay();
+        // // console.log(
+        //     'this.searchForm.get("deletedRecords").value',
+        //     this.searchForm.get("deletedRecords").value
+        // );
 
         let obj = {
             UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
@@ -863,57 +877,65 @@ export class SaleslogComponent implements OnInit {
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
             this.resetSummaryValues();
-            
+
             this.rowResponse = [];
             this.salesData = [];
-            // this.salesData = res;
             this.salesData = res;
 
             let rows = [];
             this.monthObject.oneMonth = true;
 
-            this.salesData.rowData.row.forEach((element) => {
+            this.salesData.rowData.row.forEach((element, rowIndex) => {
                 this.cellMap = new Object();
                 let carryOver = element.isCarryOver;
+                let rowIndexId = element.rowId;
 
                 if (carryOver) {
                     this.carryOverUnits++;
                 }
-
                 this.cellData = [];
-                let index = 0;
 
-                element.cells.forEach((element1) => {
-                    this.cellMap["" + element1.colId + ""] =
-                        element1.currentCellValue;
+                element.cells.forEach((element1, index) => {
+                    this.rowColor.push({
+                        rowId: rowIndex,
+                        colId: element1.colId,
+                        color: element1.cellColor,
+                    });
+
+                    this.cellMap["rowId"] = rowIndexId;
+
                     if (element1.colCode === "OD") {
-                        this.cellMap["" + element1.colId + ""] = moment(
+                        this.cellMap[element1.colId] = moment(
                             element1.currentCellValue
                         ).format("DD/MM/YYYY");
+
                         this.cellMap['"' + element1.colCode + '"'] = moment(
                             element1.currentCellValue
                         ).format("DD/MM/YYYY");
-                        // // console.log(this.cellMap['"' + element1.colCode + '"']);
                     } else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] =
                             element1.currentCellValue;
                     }
+
                     if (element1.cellOptions.length > 0) {
                         this.cellMap["cellOptions_" + element1.colCode] =
                             element1.cellOptions;
                     }
+
                     this.cellMap["carryOver"] = carryOver;
+                    this.cellMap["cellColor_" + element1.colCode] =
+                        element1.cellColor;
 
                     if (index == element.cells.length - 1) {
                         this.cellData.push(this.cellMap);
                     }
+
                     index++;
                 });
 
                 let typeArray = [];
-
                 if (
                     moment(this.cellData[0]['"OD"']).isBefore(
                         moment().format("DD-MMM-YY"),
@@ -968,10 +990,9 @@ export class SaleslogComponent implements OnInit {
                         Number(this.cellData[0]['"VEHGRO"']);
                 }
                 this.cellData[0]["type"] = typeArray;
+                // // // // console.log(this.cellData[0])
                 rows.push(this.cellData[0]);
             });
-
-            this.rowResponse = rows;
 
             this.carryOverAvg =
                 this.carryOverUnits > 0
@@ -990,12 +1011,12 @@ export class SaleslogComponent implements OnInit {
                     ? Number(this.deliveredAmount) / Number(this.deliveredUnits)
                     : 0;
 
-            // // // console.log(rows);
             let searchResult = rows.filter((resp) => {
                 let payType = resp['"PT"'];
                 let financeManager = resp['"FM"'];
                 let email = resp['"EM"'];
                 let dept = resp['"Dept"'];
+                let cL = resp['"CL"'];
 
                 return (
                     (email &&
@@ -1013,7 +1034,8 @@ export class SaleslogComponent implements OnInit {
                     (financeManager &&
                         financeManager
                             .toLowerCase()
-                            .includes(searchValue.toLowerCase()))
+                            .includes(searchValue.toLowerCase())) ||
+                    (cL && cL.toLowerCase().includes(searchValue.toLowerCase()))
                 );
             });
 
@@ -1027,7 +1049,7 @@ export class SaleslogComponent implements OnInit {
         this.records = this.rowData;
         this.rowData = [];
         this.rowData = searchResult;
-        // // console.log(this.rowResponse);
+        // // // console.log(this.rowResponse);
         this.toastHandlerService.generateToast(
             searchResult.length + " Record found",
             "",
@@ -1054,29 +1076,30 @@ export class SaleslogComponent implements OnInit {
         let searchVal = this.searchForm.get("searchbar").value;
         let previousMonthFilter = this.searchForm.get("previousMonth").value;
         let currentMonthFilter = this.searchForm.get("currentMonth").value;
-
         let searchResult = [];
-        // // console.log(this.rowResponse);
 
-        if (
-            this.searchForm.get("searchbar").value !== "" &&
-            currentMonthFilter !== false
-        ) {
+        if (currentMonthFilter !== false) {
             if (this.monthObject.oneMonth) {
-                searchResult = this.rowResponse.filter((resp) => {
-                    let orderDate = resp['"OD"'];
-                    let payType = resp['"PT"'];
-                    let financeManager = resp['"FM"'];
-                    let email = resp['"EM"'];
-                    let dept = resp['"Dept"'];
-                    // // console.log(resp['"OD"'], resp['"EM"']);
-                    // // console.log(email, searchVal);
-                    return (
-                        moment(orderDate).isSame(moment()) &&
-                        ((email &&
-                            email
-                                .toLowerCase()
-                                .includes(searchVal.toLowerCase())) ||
+                if (this.searchForm.get("deletedRecords").value) {
+                    let month = moment().format("MMM_YY");
+                    this.gridFilter(previousMonthFilter, month, searchVal);
+                    this.monthObject.reset();
+                    this.monthObject.oneMonth = true;
+                } else {
+                    searchResult = this.rowResponse.filter((resp) => {
+                        let orderDate = resp['"OD"'];
+                        let payType = resp['"PT"'];
+                        let financeManager = resp['"FM"'];
+                        let email = resp['"EM"'];
+                        let dept = resp['"Dept"'];
+                        let cL = resp['"CL"'];
+
+                        return (
+                            (moment(orderDate).isSame(moment()) &&
+                                email &&
+                                email
+                                    .toLowerCase()
+                                    .includes(searchVal.toLowerCase())) ||
                             (dept &&
                                 dept
                                     .toLowerCase()
@@ -1088,23 +1111,24 @@ export class SaleslogComponent implements OnInit {
                             (financeManager &&
                                 financeManager
                                     .toLowerCase()
-                                    .includes(searchVal.toLowerCase())))
-                    );
-                });
-
-                /*Dispaly search results in grid row array and number of display records found*/
-                this.displaySearchResult(searchResult);
-                /*-------------------------*/
+                                    .includes(searchVal.toLowerCase())) ||
+                            (cL &&
+                                cL
+                                    .toLowerCase()
+                                    .includes(searchVal.toLowerCase()))
+                        );
+                    });
+                    /*Dispaly search results in grid row array and number of display records found*/
+                    this.displaySearchResult(searchResult);
+                    /*-------------------------*/
+                }
             } else {
                 let month = moment().format("MMM_YY");
                 this.gridFilter(previousMonthFilter, month, searchVal);
                 this.monthObject.reset();
                 this.monthObject.oneMonth = true;
             }
-        } else if (
-            this.searchForm.get("searchbar").value !== "" &&
-            previousMonthFilter !== ""
-        ) {
+        } else if (previousMonthFilter !== "") {
             if (previousMonthFilter === "3") {
                 if (this.monthObject.threeMonth) {
                     searchResult = this.searchSalesLog(
@@ -1175,10 +1199,11 @@ export class SaleslogComponent implements OnInit {
                 }
             }
         } else {
-            if (this.searchForm.get("searchbar").value !== "") {
+            if (1 == 1) {
                 searchResult = this.rowResponse.filter((resp) => {
                     let filter = Object.keys(resp).filter(
-                        (res) => resp[res].toLowerCase() === searchVal
+                        (res) =>
+                            resp[res].toLowerCase() === searchVal.toLowerCase()
                     );
                     if (filter.length > 0) {
                         return resp;
@@ -1204,12 +1229,12 @@ export class SaleslogComponent implements OnInit {
             let email = resp['"EM"'];
             let dept = resp['"Dept"'];
 
-            // // console.log(
+            // // // console.log(
             //     email,
             //     searchVal,
             //     email && email.toLowerCase().includes(searchVal.toLowerCase())
             // );
-            // // console.log(
+            // // // console.log(
             //     moment(orderDate).isAfter(searchedDate) &&
             //         moment(orderDate).isBefore(endDate)
             // );
@@ -1255,7 +1280,7 @@ export class SaleslogComponent implements OnInit {
             }
             // datefilter = Object.keys(resp).filter(res=> {
             //   // if(res !=="" && isNaN(Number(resp[res]))){
-            //   //   // // console.log(resp[res], Number(resp[res]))
+            //   //   // // // console.log(resp[res], Number(resp[res]))
             //   //   return resp[res].toLowerCase()=== searchVal;
             //   // }
             // });
@@ -1275,7 +1300,7 @@ export class SaleslogComponent implements OnInit {
             let row = this.rowResponse.filter((res) => {
                 return res.type.find((el) => el === "carryOver");
             });
-            // // console.log(this.rowResponse, row);
+            // // // console.log(this.rowResponse, row);
             if (row.length > 0) {
                 this.rowData = [];
                 this.rowData = row;
@@ -1287,7 +1312,7 @@ export class SaleslogComponent implements OnInit {
             }
         } else if (option === 1) {
             let row = this.rowResponse.filter((res) => {
-                // // // console.log(res.type);
+                // // // // console.log(res.type);
                 return res.type.find((el) => el === "sold");
             });
             if (row.length > 0) {
@@ -1301,7 +1326,7 @@ export class SaleslogComponent implements OnInit {
             }
         } else if (option === 2) {
             let row = this.rowResponse.filter((res) => {
-                // // // console.log(res.type);
+                // // // // console.log(res.type);
                 return res.type.find((el) => el === "covered");
             });
             if (row.length > 0) {
@@ -1315,7 +1340,7 @@ export class SaleslogComponent implements OnInit {
             }
         } else if (option === 3) {
             let row = this.rowResponse.filter((res) => {
-                // // // console.log(res.type);
+                // // // // console.log(res.type);
                 return res.type.find((el) => el === "delivered");
             });
             if (row.length > 0) {
@@ -1331,7 +1356,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     calenderSearch(searchingFormat, month, startingMonth) {
-        // // console.log(searchingFormat, startingMonth);
+        // // // console.log(searchingFormat, startingMonth);
         let searchResult = [];
 
         searchResult = this.rowData.filter((resp) => {
@@ -1357,7 +1382,7 @@ export class SaleslogComponent implements OnInit {
                             moment(resp[res]).isBefore(startingMonth)
                         );
                     }
-                    // // console.log(
+                    // // // console.log(
                     //     date,
                     //     searchingFormat,
                     //     moment(resp[res]).isAfter(searchingFormat)
@@ -1381,7 +1406,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     monthSliderSearch(searchingFormat) {
-        // // console.log(searchingFormat);
+        // // // console.log(searchingFormat);
         let searchResult = [];
 
         this.monthFilter = searchingFormat + " - " + searchingFormat;
@@ -1478,7 +1503,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     applyCalenderFilter() {
-        // // console.log(this.monthSelected);
+        // // // console.log(this.monthSelected);
         this.monthModal = false;
         this.generateFilter(this.monthSelected);
     }
@@ -1684,10 +1709,10 @@ export class SaleslogComponent implements OnInit {
     getContextMenuItems(params) {
         let thisRef = params.context.thisComponent;
 
-        // console.log("********************");
-        // console.log("thisRef.rowColor: ", thisRef.rowColor);
-        // console.log("params: ", params);
-        // console.log("********************");
+        // // console.log("********************");
+        // // console.log("thisRef.rowColor: ", thisRef.rowColor);
+        // // console.log("params: ", params);
+        // // console.log("********************");
 
         var result = [
             {
@@ -1706,7 +1731,7 @@ export class SaleslogComponent implements OnInit {
                     {
                         name: "Only this cell",
                         action: function () {
-                            // // console.log(params);
+                            // // // console.log(params);
                             thisRef.openModal(
                                 thisRef,
                                 HistoryComponent,
@@ -1723,8 +1748,8 @@ export class SaleslogComponent implements OnInit {
                     // {
                     //     name: "Show All",
                     //     action: function () {
-                    //         // // console.log(params.column.colId);
-                    //         // // console.log(params.node.rowIndex);
+                    //         // // // console.log(params.column.colId);
+                    //         // // // console.log(params.node.rowIndex);
                     //         thisRef.openModal(
                     //             thisRef,
                     //             HistoryComponent,
@@ -1752,7 +1777,7 @@ export class SaleslogComponent implements OnInit {
                 name: "DUPLICATE - Entire Record",
                 action: function () {
                     var newItems = [params.node.data];
-                    // // // console.log(params);
+                    // // // // console.log(params);
                     thisRef.duplicateRow(newItems, params.node.data.rowId);
                     // thisRef.gridApi.applyTransaction({ add: newItems });
                 },
@@ -1934,8 +1959,11 @@ export class SaleslogComponent implements OnInit {
                 name: "Remove Tag",
                 action: function () {
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
-                            el.color = "";
+                        if (
+                            el.rowId === params.node.rowIndex &&
+                            el.colId === params.column.userProvidedColDef.colId
+                        ) {
+                            el.color = null;
                             el.colId = params.column.userProvidedColDef.colId;
                         }
                     });
@@ -1945,11 +1973,13 @@ export class SaleslogComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
+
                     thisRef.removeCellColor(
                         params.context.salesData.rowData.row,
                         params.node.data.rowId,
                         params.column.userProvidedColDef.colId
                     );
+                    
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("close"),
@@ -1960,7 +1990,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     openModal(thisRef, component, width, key?: any) {
-        // // console.log(key);
+        // // // console.log(key);
         thisRef.dialogRef = thisRef.dialog.open(component, {
             panelClass: "custom-dialog-container",
             width: width,
@@ -1993,9 +2023,9 @@ export class SaleslogComponent implements OnInit {
     }
 
     duplicateRow(newItems, index) {
-        // console.log("************");
-        // console.log("duplicate row method called", newItems, index);
-        // console.log("************");
+        // // console.log("************");
+        // // console.log("duplicate row method called", newItems, index);
+        // // console.log("************");
         this.gridApi.showLoadingOverlay();
 
         let params = {
@@ -2027,7 +2057,7 @@ export class SaleslogComponent implements OnInit {
         };
 
         this.saleslog.removeCellColor(params).subscribe(() => {
-            this.signalRService.BroadcastLiveSheetDataForViews();
+            this.signalRService.BroadcastLiveSheetData();
         });
     }
 
