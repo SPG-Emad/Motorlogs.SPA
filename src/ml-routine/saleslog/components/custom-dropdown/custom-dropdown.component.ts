@@ -5,14 +5,15 @@ import {
     OnInit,
     ViewChild,
     Input,
-    HostListener,
+    ChangeDetectionStrategy,
+    ChangeDetectorRef,
 } from "@angular/core";
-import { FormControl, FormGroup } from "@angular/forms";
+import { FormControl } from "@angular/forms";
 import { MatSelect } from "@angular/material";
 import { ReplaySubject, Subject } from "rxjs";
 import { take, takeUntil } from "rxjs/operators";
 
-import { Bank, BANKS, ItemObj } from "../demo-data";
+import { ItemObj } from "../demo-data";
 import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.service";
 import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { ToastHandlerService } from "app/shared/services/toast-handler.service";
@@ -20,7 +21,9 @@ import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.servi
 
 declare var $: any;
 
+// This component works other than date components in saleslog component as well
 @Component({
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: "app-single-selection-example",
     templateUrl: "./custom-dropdown.component.html",
     styleUrls: ["./custom-dropdown.component.scss"],
@@ -55,17 +58,16 @@ export class SingleSelectionExampleComponent
 
     selectedItem: string;
 
-    private selected_date: string;
-    private cellItem: string;
-    private flag: boolean = false;
-    private openFlag: boolean;
-
     constructor(
         private salesLogService: SaleslogService,
         private LocalStorageHandlerService: LocalStorageHandlerService,
         private signalRService: SignalRService,
-        private toastNotification: ToastHandlerService
+        private cdref: ChangeDetectorRef
     ) {}
+
+    ngAfterContentChecked() {
+        this.cdref.detectChanges();
+    }
 
     open() {
         console.log("cal open");
@@ -112,6 +114,7 @@ export class SingleSelectionExampleComponent
 
         // console.log(this.selectedItem+!this.flag);
         // console.log(this.items.some(x => x.code === "TBA"));
+        alert("date");
 
         if (
             this.items.length == this.itemArray.length &&
@@ -152,7 +155,7 @@ export class SingleSelectionExampleComponent
         this.ngOnInit();
     }
 
-    dateTimePushToItems(items, item): boolean {
+    dateTimePushToItems(item): boolean {
         if (this.items.some((x) => x.code === item)) {
             return true;
         } else {
@@ -202,7 +205,9 @@ export class SingleSelectionExampleComponent
     }
 
     ngAfterViewInit() {
-        this.setInitialValue();
+        setTimeout(() => {
+            this.setInitialValue();
+        }, 0);
     }
 
     ngAfterContentInit() {}
@@ -321,18 +326,19 @@ export class SingleSelectionExampleComponent
                     ColType: this.colDef.colDef.columnType, // You need to send the column type
                     Value: event.value,
                 };
-                
-                console.log('params', params);
 
-                this.salesLogService
-                    .insertCellValue(params)
-                    .subscribe((res) => {
-                        this.signalRService.BroadcastLiveSheetData();
-                    });
+                console.log("params", params);
+
+                this.salesLogService.insertCellValue(params).subscribe(() => {
+                    this.signalRService.BroadcastLiveSheetData();
+                });
             } else {
                 if (colId !== undefined) {
                     let params = {};
-                    if (this.colDef.colDef.columnType === "DD-Self" || this.colDef.colDef.columnType === "DD-Suggest") {
+                    if (
+                        this.colDef.colDef.columnType === "DD-Self" ||
+                        this.colDef.colDef.columnType === "DD-Suggest"
+                    ) {
                         let params = {};
                         params = {
                             userid: this.LocalStorageHandlerService.getFromStorage(
@@ -344,15 +350,16 @@ export class SingleSelectionExampleComponent
                             ColType: this.colDef.colDef.columnType, // You need to send the column type
                             Value: event.value,
                         };
-                        
-                        console.log('params', params);
-        
+
+                        console.log("params", params);
+
                         this.salesLogService
                             .insertCellValue(params)
-                            .subscribe((res) => {
+                            .subscribe(() => {
                                 this.signalRService.BroadcastLiveSheetData();
                             });
                     } else {
+                        alert("1");
                         params = {
                             userid: this.LocalStorageHandlerService.getFromStorage(
                                 "userObj"
@@ -367,7 +374,7 @@ export class SingleSelectionExampleComponent
 
                     this.salesLogService
                         .insertCellValue(params)
-                        .subscribe((res) => {
+                        .subscribe(() => {
                             this.signalRService.BroadcastLiveSheetData();
                         });
                 }

@@ -1,0 +1,14 @@
+<div class="owl-dt-shadow" *ngIf="selected==false">
+    <owl-date-time-inline #dt  [(ngModel)]="dateValue" (ngModelChange)="onClick($event)" [pickerType]="'calendar'"></owl-date-time-inline>
+    <div class="owl-dt-container-buttons owl-dt-container-row">
+        <button class="owl-dt-control owl-dt-control-button owl-dt-container-control-button" type="button" (click)="reset()">
+            <span class="owl-dt-control-content owl-dt-control-button-content">Reset</span>
+        </button>
+        <button class="owl-dt-control owl-dt-control-button owl-dt-container-control-button" type="button" (click)="cancel()">
+            <span class="owl-dt-control-content owl-dt-control-button-content">Cancel</span>
+        </button>
+        <button class="owl-dt-control owl-dt-control-button owl-dt-container-control-button" type="button" (click)="set()">
+            <span class="owl-dt-control-content owl-dt-control-button-content">Set</span>
+        </button>
+    </div>
+</div>

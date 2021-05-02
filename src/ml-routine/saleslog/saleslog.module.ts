@@ -33,6 +33,8 @@ import { CalenderRenderer } from "./containers/saleslog/calander-renderer.compon
 import { SingleSelectionExampleComponent } from "./components/custom-dropdown/custom-dropdown.component";
 import { DropDownRenderer } from "./containers/saleslog/dropdown-renderer.component";
 import { AppComponentDateTime } from "./components/app-component-date-time/app-component-date-time.component";
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
+import { OwlDatePickerComponent } from "ml-routine/shared/components/owl-date-picker-component/owl-date-picker-component.component";
 
 export const ROUTES: Routes = [
     {
@@ -81,7 +83,7 @@ export const ROUTES: Routes = [
             DropDownRenderer,
             AppComponentDateTime,
             CustomLoadingOverlayComponent,
-        ]),
+        ])
     ],
     declarations: [
         SaleslogComponent,

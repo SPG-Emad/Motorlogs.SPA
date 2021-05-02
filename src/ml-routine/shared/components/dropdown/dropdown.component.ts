@@ -1,5 +1,5 @@
-import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Input, HostListener } from '@angular/core';
-import { FormControl, FormGroup } from '@angular/forms';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild, Input, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { FormControl } from '@angular/forms';
 import { MatSelect } from '@angular/material';
 import { LocalStorageHandlerService } from 'app/shared/services/local-storage-handler.service';
 import { ToastHandlerService } from 'app/shared/services/toast-handler.service';
@@ -8,13 +8,14 @@ import { SignalRService } from 'ml-setup/shared/services/signal-r/signal-r.servi
 import { ReplaySubject, Subject } from 'rxjs';
 import { take, takeUntil } from 'rxjs/operators';
 
-import { Bank, BANKS, ItemObj } from './demo-data';
+import { ItemObj } from './demo-data';
 
 
 declare var $: any;
 
 
 @Component({
+    changeDetection: ChangeDetectionStrategy.OnPush,
     selector: 'app-dropdown',
     templateUrl: './dropdown.component.html',
     styleUrls: ['./dropdown.component.scss']
@@ -53,10 +54,14 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
         private LocalStorageHandlerService: LocalStorageHandlerService,
         private signalRService: SignalRService,
         private toastNotification: ToastHandlerService,
+        private cdref: ChangeDetectorRef
     ) {
     }
 
-
+    ngAfterContentChecked() {
+        this.cdref.detectChanges();
+    }
+    
     ngOnInit() {
 
         let itemObjArray: ItemObj[] = [];
@@ -96,7 +101,9 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
     }
 
     ngAfterViewInit() {
-        this.setInitialValue();
+        setTimeout(() => {
+            this.setInitialValue();
+          }, 0);
     }
 
     ngOnDestroy() {

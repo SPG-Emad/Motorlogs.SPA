@@ -70,6 +70,7 @@
         "material-icons-font": "2.0.0",
         "moment": "2.24.0",
         "ng-custom-select": "2.0.4",
+        "ng-pick-datetime": "7.0.0",
         "ng2-carouselamos": "4.1.0",
         "ng2-charts": "2.3.0",
         "ngrx-store-freeze": "0.2.4",

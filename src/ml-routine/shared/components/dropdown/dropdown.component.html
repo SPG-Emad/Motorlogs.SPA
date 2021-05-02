@@ -1,73 +1,131 @@
-
+<!-- THIS DOESNOT WORK IN SALESLOG SHEET -->
 <mat-form-field class="mat-form-fieldClass custom-dropdown-row">
-
-    <mat-select *ngIf="!customDropdownFlag" [(ngModel)]="selected"  (openedChange)="openedChange($event)" (selectionChange)="go($event)" [formControl]="bankCtrl"  #singleSelect>
-                    
-        <div class="xdsoft_datetimepicker_custom xdsoft_noselect picker_rtl xdsoft_" style="display: block; left: 230px;width: 380px;height:325px; top: -2px; position: absolute;">
-            <div class="xdsoft_datepicker_custom active">           
+    <mat-select
+        *ngIf="!customDropdownFlag"
+        [(ngModel)]="selected"
+        (openedChange)="openedChange($event)"
+        (selectionChange)="go($event)"
+        [formControl]="bankCtrl"
+        #singleSelect
+    >
+        <div
+            class="xdsoft_datetimepicker_custom xdsoft_noselect picker_rtl xdsoft_"
+            style="
+                display: block;
+                left: 230px;
+                width: 380px;
+                height: 325px;
+                top: -2px;
+                position: absolute;
+            "
+        >
+            <div class="xdsoft_datepicker_custom active">
                 <div class="xdsoft_mounthpicker">
-                    <button type="button" class="calender-ok-btn" value="Select" (click)="selectDateTime()" style="visibility: visible;margin-left:300px;color:black">Select</button>
-                    <div class="xdsoft_label ">
+                    <button
+                        type="button"
+                        class="calender-ok-btn"
+                        value="Select"
+                        (click)="selectDateTime()"
+                        style="
+                            visibility: visible;
+                            margin-left: 300px;
+                            color: black;
+                        "
+                    >
+                        Select
+                    </button>
+                    <div class="xdsoft_label">
                         <div class="sd-container">
-                            <input id="_datetimepicker4"  type="text">
+                            <input id="_datetimepicker4" type="text" />
                         </div>
                     </div>
                 </div>
             </div>
         </div>
         <script>
-        
-        if($('div').hasClass('xdsoft_current')){
-            console.log("hi"+this.val());
-        }
+            if ($("div").hasClass("xdsoft_current")) {
+                console.log("hi" + this.val());
+            }
 
-        $('#xdsoft_time xdsoft_current').on("click", function(e) {
-            alert('hey');
-        });
+            $("#xdsoft_time xdsoft_current").on("click", function (e) {
+                alert("hey");
+            });
+        </script>
 
-
-        </script>    
-            
         <mat-option>
-            <ngx-mat-select-search 
+            <ngx-mat-select-search
                 [(ngModel)]="selectedItem"
                 [formControl]="bankFilterCtrl"
             >
             </ngx-mat-select-search>
         </mat-option>
-        <mat-option selected>{{selected}}</mat-option> 
+        <mat-option selected>{{ selected }}</mat-option>
 
-        <mat-option  *ngFor="let item of filteredOptions | async" [value]="item.name">
-            <span  [ngClass]="{
-            'text-success':item.name === 'TBA',
-            'text-primary':item.name === 'Pending',
-            'text-danger':item.name === 'cancelled',
-            'text-delete':item.name === 'Delete'
-            }">  {{item.name}}
+        <mat-option
+            *ngFor="let item of filteredOptions | async"
+            [value]="item.name"
+        >
+            <span
+                [ngClass]="{
+                    'text-success': item.name === 'TBA',
+                    'text-primary': item.name === 'Pending',
+                    'text-danger': item.name === 'cancelled',
+                    'text-delete': item.name === 'Delete'
+                }"
+            >
+                {{ item.name }}
             </span>
-        
         </mat-option>
-        
     </mat-select>
 
-    <mat-select   [(ngModel)]="selected"   *ngIf="customDropdownFlag" (selectionChange)="go($event)" [formControl]="bankCtrl"  #singleSelect>
+    <mat-select
+        [(ngModel)]="selected"
+        *ngIf="customDropdownFlag"
+        (selectionChange)="go($event)"
+        [formControl]="bankCtrl"
+        #singleSelect
+    >
         <mat-option>
-        <ngx-mat-select-search placeholderLabel="Search.." noEntriesFoundLabel="'No result found'" [formControl]="bankFilterCtrl"></ngx-mat-select-search>
+            <ngx-mat-select-search
+                placeholderLabel="Search.."
+                noEntriesFoundLabel="'No result found'"
+                [formControl]="bankFilterCtrl"
+            ></ngx-mat-select-search>
         </mat-option>
-        <mat-option  class="paytype-option" selected>{{selected}}</mat-option>
+        <mat-option class="paytype-option" selected>{{ selected }}</mat-option>
 
-        <mat-option  class="paytype-option" *ngFor="let item of filteredOptions | async" [value]="item.code">
-                    
-        <span    *ngIf="header != 'Pay Type'" [style.color]="item.details!=null?item.details.color:null"
-        [style.background-color]="item.details!=null?item.details.background:null" 
-        [hidden]="selected === item.code?true:false"> {{item.code}}
-        </span>
+        <mat-option
+            class="paytype-option"
+            *ngFor="let item of filteredOptions | async"
+            [value]="item.code"
+        >
+            <span
+                *ngIf="header != 'Pay Type'"
+                [style.color]="item.details != null ? item.details.color : null"
+                [style.background-color]="
+                    item.details != null ? item.details.background : null
+                "
+                [hidden]="selected === item.code ? true : false"
+            >
+                {{ item.code }}
+            </span>
 
-        <span  class="paytype-code" *ngIf="header === 'Pay Type'"  [style.color]="item.details!=null?item.details.color:null"
-        [style.background-color]="item.details!=null?item.details.background:null">  {{item.code}}
-        </span>
-        <span class="paytype-desc"  *ngIf="header === 'Pay Type'"  class="right">{{item.name}}</span>
-        </mat-option> 
+            <span
+                class="paytype-code"
+                *ngIf="header === 'Pay Type'"
+                [style.color]="item.details != null ? item.details.color : null"
+                [style.background-color]="
+                    item.details != null ? item.details.background : null
+                "
+            >
+                {{ item.code }}
+            </span>
+            <span
+                class="paytype-desc"
+                *ngIf="header === 'Pay Type'"
+                class="right"
+                >{{ item.name }}</span
+            >
+        </mat-option>
     </mat-select>
-
 </mat-form-field>

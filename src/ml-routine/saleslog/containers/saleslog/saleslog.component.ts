@@ -26,6 +26,7 @@ import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.se
 import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { SharedService } from "ml-setup/shared/services/shared/shared.service";
 import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.service";
+import { OwlDatePickerComponent } from "ml-routine/shared/components/owl-date-picker-component/owl-date-picker-component.component";
 
 @Component({
     selector: "ml-saleslog",
@@ -238,25 +239,16 @@ export class SaleslogComponent implements OnInit {
                     );
 
                     if (firstFilter.length > 0) {
-                        console.log("length > 0");
                         const cellColor = firstFilter[0].cells.filter(
                             (y) =>
                                 y.entryId === params.node.data.rowId &&
                                 y.colId === params.colDef.colId
                         )[0].cellColor;
 
-                        console.log("cell color", cellColor);
-                        console.log(
-                            "params.node.data.rowId",
-                            params.node.data.rowId
-                        );
-                        console.log("params.colDef.colId", params.colDef.colId);
-
                         return cellColor !== undefined
                             ? cellColor === "blue"
                             : false;
                     } else {
-                        console.log("length == 0");
                         return false;
                     }
                 },
@@ -386,7 +378,7 @@ export class SaleslogComponent implements OnInit {
             // context: {
             //   thisComponent : this
             // },
-            valueFormatter: this.formatNumber.bind(this),
+            // valueFormatter: this.formatNumber.bind(this),
             // maxWidth: 105,
         };
 
@@ -404,12 +396,14 @@ export class SaleslogComponent implements OnInit {
             customLoadingOverlay: CustomLoadingOverlayComponent,
             calenderRender: CalenderRenderer,
             agColumnHeader: CustomHeaderComponent,
+            // dateEditor: OwlDatePickerComponent
         };
 
         this.rowSelection = "single";
 
         this.components = {
-            datePicker: getDatePicker(),
+        //     // datePicker: getDatePicker(),
+            'dateEditor': getDatePicker(),
         };
 
         this.loadingOverlayComponent = "customLoadingOverlay";
@@ -797,8 +791,16 @@ export class SaleslogComponent implements OnInit {
                     }
                 };
 
+                // console.log(
+                //     "element.colName:",
+                //     element.colName,
+                //     " type:",
+                //     element.type
+                // );
+
                 if (element.type === "Date") {
-                    columnMap["cellEditor"] = "datePicker";
+                    columnMap["cellEditor"] = "dateEditor";
+                    columnMap["valueFormatter"] = this.isoDateValueFormatter.bind(this)
                 } else if (element.type === "DD-Fixed") {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
                 } else if (element.type === "DD-Self") {
@@ -808,7 +810,7 @@ export class SaleslogComponent implements OnInit {
                 } else if (element.type === "Combo") {
                     columnMap["cellRenderer"] = "dropDownRenderer";
                 } else {
-                    // columnMap["onCellValueChanged"] = this.onCellChanged();
+                    // columnMap["onCellValueChanged"] = this.onCellChanged(this);
                 }
 
                 column.push(columnMap);
@@ -825,33 +827,39 @@ export class SaleslogComponent implements OnInit {
         });
     }
 
+    isoDateValueFormatter(params) {
+        console.log(params.value);
+    }
+
     onCellChanged(event) {
-        if (event.newValue === undefined) {
-            event.newValue = "";
-        }
-        // // console.log("------------------");
-        // // console.log("event::", event);
-        // // console.log("------------------");
-        if (
-            event.newValue ||
-            event.newValue === "" ||
-            event.newValue === null
-        ) {
-            let params = {
-                userid: this.LocalStorageHandlerService.getFromStorage(
-                    "userObj"
-                ).userId,
-                EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
-                ViewID: 1,
-                colId: event.colDef.colId,
-                ColType: event.colDef.columnType, // You need to send the column type
-                Value: event.newValue,
-            };
-            this.saleslog.insertCellValue(params).subscribe(() => {
-                // this.toastNotification.generateToast('Update successful', 'OK', 2000);
-                this.signalRService.BroadcastLiveSheetData();
-            });
-        }
+        console.log("on cell changed");
+        console.log("event: ",event);
+        // if (event.newValue === undefined) {
+        //     event.newValue = "";
+        // }
+        // // // console.log("------------------");
+        // // // console.log("event::", event);
+        // // // console.log("------------------");
+        // if (
+        //     event.newValue ||
+        //     event.newValue === "" ||
+        //     event.newValue === null
+        // ) {
+        //     let params = {
+        //         userid: this.LocalStorageHandlerService.getFromStorage(
+        //             "userObj"
+        //         ).userId,
+        //         EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
+        //         ViewID: 1,
+        //         colId: event.colDef.colId,
+        //         ColType: event.colDef.columnType, // You need to send the column type
+        //         Value: event.newValue,
+        //     };
+        //     this.saleslog.insertCellValue(params).subscribe(() => {
+        //         // this.toastNotification.generateToast('Update successful', 'OK', 2000);
+        //         this.signalRService.BroadcastLiveSheetData();
+        //     });
+        // }
     }
 
     gridFilter(months?, date?, searchValue?) {
@@ -1080,12 +1088,15 @@ export class SaleslogComponent implements OnInit {
 
         if (currentMonthFilter !== false) {
             if (this.monthObject.oneMonth) {
+                let month = moment().format("MMM_YY");
+                this.gridFilter(previousMonthFilter, month, searchVal);
+
                 if (this.searchForm.get("deletedRecords").value) {
-                    let month = moment().format("MMM_YY");
-                    this.gridFilter(previousMonthFilter, month, searchVal);
+                    // console.log('Delete Value 1',this.searchForm.get("deletedRecords").value);
                     this.monthObject.reset();
                     this.monthObject.oneMonth = true;
                 } else {
+                    // console.log('Delete Value 2',this.searchForm.get("deletedRecords").value);
                     searchResult = this.rowResponse.filter((resp) => {
                         let orderDate = resp['"OD"'];
                         let payType = resp['"PT"'];
@@ -1979,7 +1990,7 @@ export class SaleslogComponent implements OnInit {
                         params.node.data.rowId,
                         params.column.userProvidedColDef.colId
                     );
-                    
+
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("close"),
@@ -2216,8 +2227,10 @@ function createFlagImg(flag) {
     );
 }
 
+// This is used to generate order date and other calendar components
 function getDatePicker() {
     function Datepicker() {}
+
     Datepicker.prototype.init = function (params) {
         this.eInput = document.createElement("input");
         this.eInput.value = params.value;
@@ -2233,19 +2246,25 @@ function getDatePicker() {
             inline: false,
         });
     };
+
     Datepicker.prototype.getGui = function () {
         return this.eInput;
     };
+
     Datepicker.prototype.afterGuiAttached = function () {
         this.eInput.focus();
         this.eInput.select();
     };
+
     Datepicker.prototype.getValue = function () {
         return this.eInput.value;
     };
+
     Datepicker.prototype.destroy = function () {};
+
     Datepicker.prototype.isPopup = function () {
         return false;
     };
+
     return Datepicker;
 }

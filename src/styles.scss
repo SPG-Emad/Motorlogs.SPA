@@ -2,7 +2,7 @@
 /*Fuse Imports*/ 
 @import "@fuse/scss/core";
 @import "app/containers/app/app.theme";
-@import "src/@fuse/scss/fuse";
+@import 'src/@fuse/scss/fuse';
 @import "~ngx-smart-modal/ngx-smart-modal";
 /*---------------------*/ 
 
@@ -19,6 +19,7 @@ $MaterialIcons_FontPath: "~material-icons-font/fonts"; // for CLI project we cha
 @import '~material-icons-font/sass/main'; // mandatory main material font definition
 @import '~material-icons-font/sass/Regular'; // mandatory @font-face definition
 
+@import "~ng-pick-datetime/assets/style/picker.min.css";
 // @import '~material-icons-font/sass/sizing'; // optional rules for icons sizing recommended by font designers
 // @import '~material-icons-font/sass/coloring'; // optional rules for icons color rules with light and dark background and inactive state
 /*---------------------*/ 

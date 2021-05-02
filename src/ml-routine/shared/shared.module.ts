@@ -48,6 +48,8 @@ import { AgGridModule } from '@ag-grid-community/angular';
 import { CustomLoadingOverlayComponent } from 'ml-shared/components/custom-loading-overlay/custom-loading-overlay.component';
 import { AppComponentDateTime } from './components/app-component-date-time/app-component-date-time.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { OwlDatePickerComponent } from './components/owl-date-picker-component/owl-date-picker-component.component';
+import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
 
 @NgModule({
     imports: [
@@ -80,6 +82,9 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
             ShareableDropDownComponent,
         ]),
         NgSelectModule,       
+        OwlDateTimeModule,
+        OwlNativeDateTimeModule,
+        
     ],
     declarations: [
         ActionModalComponent,
@@ -105,6 +110,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         RoutineSheetComponent,
         HistoryComponent,
         NewDealComponent,
+        OwlDatePickerComponent,
     ],
     exports: [
         ActionModalComponent,
@@ -121,7 +127,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         SearchComponent,
         XlsExportComponent,
         RoutineSheetComponent,
-        NewDealComponent
+        NewDealComponent,
+        OwlDatePickerComponent
     ],
     entryComponents: [
         HistoryComponent,
@@ -129,6 +136,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
         XlsExportComponent,
         ColumnOptionsComponent,
         NewDealComponent,        
+        OwlDatePickerComponent
     ],
     schemas: [
         CUSTOM_ELEMENTS_SCHEMA
