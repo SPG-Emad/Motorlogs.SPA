@@ -18,6 +18,7 @@ import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.se
 import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { ToastHandlerService } from "app/shared/services/toast-handler.service";
 import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.service";
+import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 
 declare var $: any;
 
@@ -28,8 +29,11 @@ declare var $: any;
     templateUrl: "./custom-dropdown.component.html",
     styleUrls: ["./custom-dropdown.component.scss"],
 })
+
+// file name is custom-dropdown.component.ts
 export class SingleSelectionExampleComponent
-    implements OnInit, AfterViewInit, OnDestroy {
+    implements OnInit, AfterViewInit, OnDestroy
+{
     @ViewChild("singleSelect", { static: false }) singleSelect: MatSelect;
     @Input("flag") customDropdownFlag: boolean;
     @Input("rowDate") rowDate: string;
@@ -164,11 +168,12 @@ export class SingleSelectionExampleComponent
     }
 
     ngOnInit() {
+        console.log("SELECTED ITEM: ", this.selected);
         let itemObjArray: ItemObj[] = [];
         let selected = this.selected;
-        console.log(this.itemArray);
         if (this.itemArray) {
             this.itemArray.forEach(function (k: any) {
+                // console.log("Custom Dropdown -- this.itemArray:: k.valText " + k.valText + " id: " + k.id + " detail: " + k.details);
                 let item = new ItemObj();
 
                 item.name = k.valText;
@@ -187,6 +192,7 @@ export class SingleSelectionExampleComponent
         }
         if (this.dateitems.length >= 1) {
             this.items = this.dateitems.concat(itemObjArray); // add date time to existing combo value from json
+            console.log("date items exists 1: ", this.dateitems);
         } else {
             this.items = itemObjArray; // add date time to existing combo value from json
         }
@@ -282,9 +288,9 @@ export class SingleSelectionExampleComponent
     }
 
     go(event) {
-        console.log("****************");
-        console.log(event);
-        console.log("****************");
+        // console.log("****************");
+        // console.log(event);
+        // console.log("****************");
 
         if (event.value) {
             this.selectedItem = event.value;
@@ -303,16 +309,16 @@ export class SingleSelectionExampleComponent
                 }
             }
 
-            console.log("****************");
-            console.log("colDef: ", this.colDef);
-            console.log("SELECTED: ", this.selected);
-            console.log("ITEM ARRAY: ", this.itemArray);
-            console.log("COLID: ", colId);
-            console.log("EntryID: ", this.colDef.data.rowId);
-            console.log("Column ID: ", this.colDef.colDef.colId);
-            console.log("ColType: ", this.colDef.colDef.columnType);
-            // console.log("Value: ", colId.id);
-            console.log("****************");
+            // console.log("****************");
+            // console.log("colDef: ", this.colDef);
+            // console.log("SELECTED: ", this.selected);
+            // console.log("ITEM ARRAY: ", this.itemArray);
+            // console.log("COLID: ", colId);
+            // console.log("EntryID: ", this.colDef.data.rowId);
+            // console.log("Column ID: ", this.colDef.colDef.colId);
+            // console.log("ColType: ", this.colDef.colDef.columnType);
+            // // console.log("Value: ", colId.id);
+            // console.log("****************");
 
             if (this.colDef.colDef.columnType === "Combo") {
                 let params = {};
@@ -327,11 +333,15 @@ export class SingleSelectionExampleComponent
                     Value: event.value,
                 };
 
-                console.log("params", params);
+                // console.log("params", params);
 
-                this.salesLogService.insertCellValue(params).subscribe(() => {
-                    this.signalRService.BroadcastLiveSheetData();
-                });
+                if (Object.keys(params).length !== 0) {
+                    this.salesLogService.insertCellValue(params).subscribe(() => {
+                        this.signalRService.BroadcastLiveSheetData();
+                    });
+                }
+
+               
             } else {
                 if (colId !== undefined) {
                     let params = {};
@@ -351,13 +361,17 @@ export class SingleSelectionExampleComponent
                             Value: event.value,
                         };
 
-                        console.log("params", params);
+                        console.log("params line: 360", params);
 
-                        this.salesLogService
+                        if (Object.keys(params).length !== 0) {
+                            this.salesLogService
                             .insertCellValue(params)
                             .subscribe(() => {
                                 this.signalRService.BroadcastLiveSheetData();
                             });
+                        }
+
+                        
                     } else {
                         alert("1");
                         params = {
@@ -372,11 +386,15 @@ export class SingleSelectionExampleComponent
                         };
                     }
 
-                    this.salesLogService
+                    if (Object.keys(params).length !== 0) {
+                        this.salesLogService
                         .insertCellValue(params)
                         .subscribe(() => {
                             this.signalRService.BroadcastLiveSheetData();
                         });
+                    }
+
+                   
                 }
             }
         }

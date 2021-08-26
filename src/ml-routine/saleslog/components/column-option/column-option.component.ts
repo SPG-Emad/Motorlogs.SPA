@@ -80,7 +80,7 @@ export class ColumnOptionComponent implements OnInit {
                 this.loader = false;
 
                 this.signalRService.BroadcastLiveSheetData();
-                alert("column updated");
+               // alert("column updated");
 
                 this.dialogRef.close({
                     column: this.column,

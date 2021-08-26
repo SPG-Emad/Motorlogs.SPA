@@ -54,7 +54,7 @@
             }
 
             $("#xdsoft_time xdsoft_current").on("click", function (e) {
-                alert("hey");
+                console.log("hey");
             });
         </script>
 
@@ -67,7 +67,7 @@
 
         <mat-option selected>{{ selected }}</mat-option>
 
-        <mat-option
+        <mat-option 
             *ngFor="let item of filteredBanks | async"
             [value]="item.name"
         >

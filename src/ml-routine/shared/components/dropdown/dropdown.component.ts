@@ -245,11 +245,16 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
                 "ColType": this.colDef.colDef.columnType, // You need to send the column type 
                 "Value": colId.id
             }
-            this.salesLogService.insertCellValue(params)
+
+            if (Object.keys(params).length !== 0) {
+                this.salesLogService.insertCellValue(params)
                 .subscribe(res => {
                     this.toastNotification.generateToast('Update successful', 'OK', 2000);
                     this.signalRService.BroadcastLiveSheetDataForViews();
                 })
+            }
+
+            
         }
     }
 

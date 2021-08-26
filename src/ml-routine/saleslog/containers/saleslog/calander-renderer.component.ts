@@ -45,6 +45,7 @@ export class CalenderRenderer {
         this.params = params;
     }
 
+    // Emad - check this please.
     insertData(dateText) {
         console.log("Selected date: " + dateText);
         let params = {
@@ -56,6 +57,11 @@ export class CalenderRenderer {
             ColType: this.paramsObject.colDef.columnType, // You need to send the column type
             Value: dateText,
         };
-        this.salesLogService.insertCellValue(params).subscribe((res) => {});
+        
+        if (Object.keys(params).length !== 0) {
+            this.salesLogService.insertCellValue(params).subscribe((res) => {});
+        }
+
+       
     }
 }

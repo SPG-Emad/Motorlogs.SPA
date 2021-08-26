@@ -37,7 +37,7 @@ export class GlobalErrorHandler implements ErrorHandler {
 
         // is not in the 'Connected' State
         let x = error.message;
-        if (x.toLowerCase().includes('session expired!')) {
+        if (x && x.toLowerCase().includes('session expired!')) {
             alert('Session timeout! Please login again.');
             localStorage.clear();
             this.logoutUser();

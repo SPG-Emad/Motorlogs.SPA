@@ -1,9 +1,9 @@
 export const environment = {
     production: true,
     hmr       : false,
-    apiURL    : "https://motorlogs.azurewebsites.net/api/",
-    liveUrl    : "https://motorlogs.azurewebsites.net/LiveSheetDataForViews",
-    apiURL2    : "https://motorlogs.azurewebsites.net/api/",
+    apiURL    : "http://localhost:5000/api/",
+    liveUrl    : "http://localhost:5000/LiveSheetDataForViews",
+    apiURL2    : "http://localhost:5000/api/",
     sessionTimeout : 6000,
     ARRIVING_SITE_VALUE: 'LENNOCK MOTORS',
     

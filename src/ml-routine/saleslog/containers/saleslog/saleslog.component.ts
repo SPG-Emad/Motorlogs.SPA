@@ -197,10 +197,11 @@ export class SaleslogComponent implements OnInit {
         this.columnDefs = [];
 
         this.defaultColDef = {
-            // flex: 1,
+            enterMovesDown: true,
+            enterMovesDownAfterEdit: true,
             resizable: true,
             editable: true,
-            filter: false,
+            filter: true,
             cellClass: "row-text-style",
             cellClassRules: {
                 "green-mark-cell": function (params) {
@@ -366,19 +367,16 @@ export class SaleslogComponent implements OnInit {
                     }
                 },
             },
-            // filter: 'customFilter',
-            // menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
-            headerComponentParams: { menuIcon: "fa-chevron-down" },
-            // cellStyle: this.cellStyling.bind(this),
+         //   headerComponentParams: { menuIcon: "fa-chevron-down" },
+            onCellValueChanged: this.onCellChanged.bind(this),
             minWidth: 200,
+            // flex: 1,
+            // filter: 'customFilter',
+            menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
             // },
-            onCellValueChanged: this.onCellChanged.bind(this),
-            // context: {
-            //   thisComponent : this
-            // },
-            // valueFormatter: this.formatNumber.bind(this),
+            //valueFormatter: this.formatNumber.bind(this),
             // maxWidth: 105,
         };
 
@@ -630,6 +628,7 @@ export class SaleslogComponent implements OnInit {
                             element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] =
                             element1.currentCellValue;
+                            //console.log('element1.colCode ', element1.colCode,' element1.currentCellValue: ', element1.currentCellValue);
                     }
 
                     if (element1.cellOptions.length > 0) {
@@ -791,13 +790,6 @@ export class SaleslogComponent implements OnInit {
                     }
                 };
 
-                // console.log(
-                //     "element.colName:",
-                //     element.colName,
-                //     " type:",
-                //     element.type
-                // );
-
                 if (element.type === "Date") {
                     columnMap["cellEditor"] = "dateEditor";
                     columnMap["valueFormatter"] = this.isoDateValueFormatter.bind(this)
@@ -809,9 +801,7 @@ export class SaleslogComponent implements OnInit {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
                 } else if (element.type === "Combo") {
                     columnMap["cellRenderer"] = "dropDownRenderer";
-                } else {
-                    // columnMap["onCellValueChanged"] = this.onCellChanged(this);
-                }
+                }  
 
                 column.push(columnMap);
             });
@@ -828,38 +818,43 @@ export class SaleslogComponent implements OnInit {
     }
 
     isoDateValueFormatter(params) {
-        console.log(params.value);
+        // console.log(params.value);
     }
 
     onCellChanged(event) {
         console.log("on cell changed");
         console.log("event: ",event);
-        // if (event.newValue === undefined) {
-        //     event.newValue = "";
-        // }
-        // // // console.log("------------------");
-        // // // console.log("event::", event);
-        // // // console.log("------------------");
-        // if (
-        //     event.newValue ||
-        //     event.newValue === "" ||
-        //     event.newValue === null
-        // ) {
-        //     let params = {
-        //         userid: this.LocalStorageHandlerService.getFromStorage(
-        //             "userObj"
-        //         ).userId,
-        //         EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
-        //         ViewID: 1,
-        //         colId: event.colDef.colId,
-        //         ColType: event.colDef.columnType, // You need to send the column type
-        //         Value: event.newValue,
-        //     };
-        //     this.saleslog.insertCellValue(params).subscribe(() => {
-        //         // this.toastNotification.generateToast('Update successful', 'OK', 2000);
-        //         this.signalRService.BroadcastLiveSheetData();
-        //     });
-        // }
+        if (event.newValue === undefined) {
+            event.newValue = "";
+        }
+        // // console.log("------------------");
+        // // console.log("event::", event);
+        // // console.log("------------------");
+        if (
+            event.newValue ||
+            event.newValue === "" ||
+            event.newValue === null
+        ) {
+            let params = {
+                userid: this.LocalStorageHandlerService.getFromStorage(
+                    "userObj"
+                ).userId,
+                EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
+                ViewID: 1,
+                colId: event.colDef.colId,
+                ColType: event.colDef.columnType, // You need to send the column type
+                Value: event.newValue,
+            };
+
+            if (Object.keys(params).length !== 0) {
+                this.saleslog.insertCellValue(params).subscribe(() => {
+                    // this.toastNotification.generateToast('Update successful', 'OK', 2000);
+                    this.signalRService.BroadcastLiveSheetData();
+                });
+            }
+
+         
+        }
     }
 
     gridFilter(months?, date?, searchValue?) {
@@ -1066,7 +1061,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     methodFromParent(cell) {
-        alert("Parent Component Method from " + cell + "!");
+        console.log("Parent Component Method from " + cell + "!");
     }
 
     getClassRules(params, color) {
@@ -2241,9 +2236,20 @@ function getDatePicker() {
         $.datetimepicker.setLocale("en");
         $(this.eInput).datetimepicker({
             // mask:true,
-            format: "m/d/Y",
+            format: "d/m/Y",
             timepicker: false,
             inline: false,
+            // onChangeDateTime:function(dp,$input){
+
+            //     $('.ag-input').trigger({
+            //         type: 'keypress',
+            //         which: 13
+            //     });
+
+            //     console.log(dp);
+            //     console.log($input);
+            //     console.log($input.datetimepicker('getValue'));
+            // }
         });
     };
 
