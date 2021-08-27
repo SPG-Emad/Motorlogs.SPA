@@ -16,9 +16,7 @@ import { take, takeUntil } from "rxjs/operators";
 import { ItemObj } from "../demo-data";
 import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.service";
 import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
-import { ToastHandlerService } from "app/shared/services/toast-handler.service";
 import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.service";
-import { connectableObservableDescriptor } from "rxjs/internal/observable/ConnectableObservable";
 
 declare var $: any;
 

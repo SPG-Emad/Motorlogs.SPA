@@ -35,7 +35,7 @@ export class DropDownRenderer {
         console.log('**********');
 
         if(params.value != null && this.itemsArray.find(x=> x.code.toLowerCase() === params.value.toLowerCase()) === undefined){
-            // console.log('not found ', params.value);
+            console.log('not found ', params.value);
             // const newItem = {
             //     id: 1,
             //     code: params.value,
