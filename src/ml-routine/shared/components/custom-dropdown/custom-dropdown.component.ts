@@ -4,7 +4,7 @@
 // @Component({
 //   selector: 'custom-dropdown-renderer',
 //   template:
-//     `<app-single-selection-example [header]="header" [selected]="selected" [itemArray]="itemsArray" [rowDate]="rowDate" [flag]="customFlag" ></app-single-selection-example>
+//     `<custom-dropdown [header]="header" [selected]="selected" [itemArray]="itemsArray" [rowDate]="rowDate" [flag]="customFlag" ></custom-dropdown>
 //   ` ,
 // })
 // export class CustomDropDownRenderer  {

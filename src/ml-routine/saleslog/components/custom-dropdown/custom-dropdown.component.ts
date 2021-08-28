@@ -23,13 +23,13 @@ declare var $: any;
 // This component works other than date components in saleslog component as well
 @Component({
     changeDetection: ChangeDetectionStrategy.OnPush,
-    selector: "app-single-selection-example",
+    selector: "custom-dropdown",
     templateUrl: "./custom-dropdown.component.html",
     styleUrls: ["./custom-dropdown.component.scss"],
 })
 
 // file name is custom-dropdown.component.ts
-export class SingleSelectionExampleComponent
+export class CustomDropdownComponent
     implements OnInit, AfterViewInit, OnDestroy
 {
     @ViewChild("singleSelect", { static: false }) singleSelect: MatSelect;
@@ -76,7 +76,7 @@ export class SingleSelectionExampleComponent
 
         $.datetimepicker.setLocale("en");
         $("#_datetimepicker4").datetimepicker({
-            format: "d.m.Y H:i",
+            format: "d/m/Y H:i",
             allowTimes: [
                 "0:00",
                 "9:00",
@@ -112,48 +112,43 @@ export class SingleSelectionExampleComponent
 
     doSomething() {
         this.selectedItem = $("#_datetimepicker4").val();
-        // console.log($("#_datetimepicker4").val());
-
-        // console.log(this.selectedItem+!this.flag);
-        // console.log(this.items.some(x => x.code === "TBA"));
-        alert("date");
-
+        
         if (
             this.items.length == this.itemArray.length &&
             this.selectedItem != null
-        ) {
-            // console.log(this.items);
-            let item = new ItemObj();
+            ) {
+                // console.log(this.items);
+                let item = new ItemObj();
+                
+                item.name = this.selectedItem;
+                item.id = "-1";
+                item.code = null;
+                item.details = null;
+                this.dateitems.push(item);
 
+                //this.ngOnInit();
+            }
+            if (
+                this.items.length == this.itemArray.length + 1 &&
+                this.selectedItem != null
+                ) {
+                    // console.log(this.selectedItem+ " "+this.items.length);
+                    this.items.splice(0, 1); // delete the last item
+                    //  this.items.push({code:  this.selectedItem, id:  this.selectedItem ,name:null ,details:null});
+                    // console.log(this.items);
+            let item = new ItemObj();
+            
             item.name = this.selectedItem;
-            item.id = this.selectedItem;
+            item.id = "-1";
             item.code = null;
             item.details = null;
             this.dateitems.push(item);
-
-            // console.log(this.dateitems);
-            //this.ngOnInit();
-        }
-        if (
-            this.items.length == this.itemArray.length + 1 &&
-            this.selectedItem != null
-        ) {
-            // console.log(this.selectedItem+ " "+this.items.length);
-            this.items.splice(0, 1); // delete the last item
-            //  this.items.push({code:  this.selectedItem, id:  this.selectedItem ,name:null ,details:null});
-            // console.log(this.items);
-            let item = new ItemObj();
-
-            item.name = this.selectedItem;
-            item.id = this.selectedItem;
-            item.code = null;
-            item.details = null;
-            this.dateitems.push(item);
-
-            // console.log(this.dateitems);
+            
             // this.ngOnInit();
         }
-
+        
+        console.log("doSomething this.items: ", this.items);
+        console.log("doSomething this.dateitems: ", this.dateitems);
         this.ngOnInit();
     }
 
@@ -171,9 +166,7 @@ export class SingleSelectionExampleComponent
         let selected = this.selected;
         if (this.itemArray) {
             this.itemArray.forEach(function (k: any) {
-                // console.log("Custom Dropdown -- this.itemArray:: k.valText " + k.valText + " id: " + k.id + " detail: " + k.details);
                 let item = new ItemObj();
-
                 item.name = k.valText;
                 item.id = k.id;
                 if (k.code) {
@@ -181,10 +174,9 @@ export class SingleSelectionExampleComponent
                 } else {
                     item.code = k.valText;
                 }
-
                 item.details = k.details;
                 if (item.name != selected) {
-                    itemObjArray.push(item);
+                    itemObjArray.push(item); // dates will be inserted here mostly
                 }
             });
         }
@@ -233,8 +225,8 @@ export class SingleSelectionExampleComponent
                 // the form control (i.e. _initializeSelection())
                 // this needs to be done after the filteredBanks are loaded initially
                 // and after the mat-option elements are available
-                this.singleSelect.compareWith = (a: ItemObj, b: ItemObj) =>
-                    a && b && a.id === b.id;
+                // this.singleSelect.compareWith = (a: ItemObj, b: ItemObj) =>
+                //     a && b && a.id === b.id;
             });
     }
 
@@ -247,6 +239,9 @@ export class SingleSelectionExampleComponent
             this.bankFilterCtrl.value != null
                 ? this.bankFilterCtrl.value
                 : this.selectedItem;
+        
+        console.log('search value: ', search);
+        console.log('this.items in filterBanks: ', this.items);
 
         if (!search) {
             this.filteredBanks.next(this.items.slice());
@@ -287,7 +282,8 @@ export class SingleSelectionExampleComponent
 
     go(event) {
         // console.log("****************");
-        // console.log(event);
+         console.log("go event: " + event.value);
+         console.log("ColType Initial: ", this.colDef.colDef.columnType);
         // console.log("****************");
 
         if (event.value) {
@@ -295,6 +291,7 @@ export class SingleSelectionExampleComponent
             let colId;
 
             if (this.colDef.colDef.columnType === "Combo") {
+
             } else {
                 colId = this.itemArray.find(
                     (res) => res.code === this.selected
@@ -314,7 +311,7 @@ export class SingleSelectionExampleComponent
             // console.log("COLID: ", colId);
             // console.log("EntryID: ", this.colDef.data.rowId);
             // console.log("Column ID: ", this.colDef.colDef.colId);
-            // console.log("ColType: ", this.colDef.colDef.columnType);
+            console.log("ColType: ", this.colDef.colDef.columnType);
             // // console.log("Value: ", colId.id);
             // console.log("****************");
 
@@ -331,16 +328,17 @@ export class SingleSelectionExampleComponent
                     Value: event.value,
                 };
 
-                // console.log("params", params);
+                 console.log("Combo params", params);
 
                 if (Object.keys(params).length !== 0) {
-                    this.salesLogService.insertCellValue(params).subscribe(() => {
-                        this.signalRService.BroadcastLiveSheetData();
-                    });
+                    this.salesLogService
+                        .insertCellValue(params)
+                        .subscribe(() => {
+                            this.signalRService.BroadcastLiveSheetData();
+                        });
                 }
-
-               
-            } else {
+            } 
+            else {
                 if (colId !== undefined) {
                     let params = {};
                     if (
@@ -359,19 +357,15 @@ export class SingleSelectionExampleComponent
                             Value: event.value,
                         };
 
-                        console.log("params line: 360", params);
-
                         if (Object.keys(params).length !== 0) {
                             this.salesLogService
-                            .insertCellValue(params)
-                            .subscribe(() => {
-                                this.signalRService.BroadcastLiveSheetData();
-                            });
+                                .insertCellValue(params)
+                                .subscribe(() => {
+                                    this.signalRService.BroadcastLiveSheetData();
+                                });
                         }
-
-                        
                     } else {
-                        alert("1");
+                        // alert("1");
                         params = {
                             userid: this.LocalStorageHandlerService.getFromStorage(
                                 "userObj"
@@ -386,13 +380,11 @@ export class SingleSelectionExampleComponent
 
                     if (Object.keys(params).length !== 0) {
                         this.salesLogService
-                        .insertCellValue(params)
-                        .subscribe(() => {
-                            this.signalRService.BroadcastLiveSheetData();
-                        });
+                            .insertCellValue(params)
+                            .subscribe(() => {
+                                this.signalRService.BroadcastLiveSheetData();
+                            });
                     }
-
-                   
                 }
             }
         }

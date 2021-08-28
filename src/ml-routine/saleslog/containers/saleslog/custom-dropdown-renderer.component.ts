@@ -1,19 +1,18 @@
-import { Component } from "@angular/core";
-
+import { Component, OnInit } from "@angular/core";
 @Component({
     selector: "custom-dropdown-renderer",
-    template: `<app-single-selection-example
+    template: `<custom-dropdown
         [colDef]="colDef"
         [header]="header"
         [selected]="selected"
         [itemArray]="itemsArray"
         [rowDate]="rowDate"
         [flag]="customFlag"
-    ></app-single-selection-example> `,
+    ></custom-dropdown> `,
 })
 
-export class CustomDropDownRenderer {
-    private params1: any;
+// used for dd-fixed, dd-suggest, dd-self
+export class CustomDropDownRenderer  implements OnInit{
     options: [];
     dateFlag: boolean = false;
     customFlag: boolean = true;
@@ -22,6 +21,14 @@ export class CustomDropDownRenderer {
     selected: string;
     header: string;
     colDef: any;
+
+    constructor(){
+        console.log("CustomDropDownRenderer Constructor: " + this.header);
+    }
+
+    ngOnInit() {
+        console.log("CustomDropDownRenderer ngOnInIt: " + this.header);
+    }
 
     agInit(params): void {
         this.header = params.colDef.headerName;

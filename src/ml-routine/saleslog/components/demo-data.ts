@@ -21,10 +21,7 @@ export interface BankGroup {
 
 /** list of banks */
 export const BANKS: Bank[] = [
-    { name: "TBA", id: "TBA" },
-    { name: "Pending", id: "Pending" },
-    { name: "Delete", id: "Delete" },
-    { name: "Cancelled", id: "Cancelled" },
+   
 ];
 
 /** list of bank groups */

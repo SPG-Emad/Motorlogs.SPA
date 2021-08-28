@@ -30,11 +30,9 @@ import { MatAutocompleteModule } from "@angular/material";
 import { NgxMatSelectSearchModule } from "ngx-mat-select-search";
 import { CustomDropDownRenderer } from "./containers/saleslog/custom-dropdown-renderer.component";
 import { CalenderRenderer } from "./containers/saleslog/calander-renderer.component";
-import { SingleSelectionExampleComponent } from "./components/custom-dropdown/custom-dropdown.component";
+import { CustomDropdownComponent } from "./components/custom-dropdown/custom-dropdown.component";
 import { DropDownRenderer } from "./containers/saleslog/dropdown-renderer.component";
 import { AppComponentDateTime } from "./components/app-component-date-time/app-component-date-time.component";
-import { OwlDateTimeModule, OwlNativeDateTimeModule } from 'ng-pick-datetime';
-import { OwlDatePickerComponent } from "ml-routine/shared/components/owl-date-picker-component/owl-date-picker-component.component";
 
 export const ROUTES: Routes = [
     {
@@ -79,7 +77,7 @@ export const ROUTES: Routes = [
             CustomHeaderComponent,
             CustomDropDownRenderer,
             CalenderRenderer,
-            SingleSelectionExampleComponent,
+            CustomDropdownComponent,
             DropDownRenderer,
             AppComponentDateTime,
             CustomLoadingOverlayComponent,
@@ -93,7 +91,7 @@ export const ROUTES: Routes = [
         ColumnOptionComponent,
         CustomDropDownRenderer,
         CalenderRenderer,
-        SingleSelectionExampleComponent,
+        CustomDropdownComponent,
         DropDownRenderer,
         AppComponentDateTime,
         CustomLoadingOverlayComponent,
