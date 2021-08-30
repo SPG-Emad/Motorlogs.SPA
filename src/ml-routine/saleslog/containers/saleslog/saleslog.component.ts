@@ -19,15 +19,14 @@ import { MatSnackBar } from "@angular/material/snack-bar";
 import { CalenderRenderer } from "./calander-renderer.component";
 // import * as Selectize from '../../../../../node_modules/selectize/dist/js/standalone/selectize.js';
 
-declare var $: any;
 import { CustomDropDownRenderer } from "./custom-dropdown-renderer.component";
 import { DropDownRenderer } from "./dropdown-renderer.component";
 import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.service";
 import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { SharedService } from "ml-setup/shared/services/shared/shared.service";
 import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.service";
-import { OwlDatePickerComponent } from "ml-routine/shared/components/owl-date-picker-component/owl-date-picker-component.component";
 
+declare var $: any;
 @Component({
     selector: "ml-saleslog",
     templateUrl: "./saleslog.component.html",
@@ -424,6 +423,7 @@ export class SaleslogComponent implements OnInit {
         }
     }
 
+    // column
     storeColumnResizeValue(width, colId) {
         let cid = colId.replace('/"/g', "");
 
@@ -852,8 +852,6 @@ export class SaleslogComponent implements OnInit {
                     this.signalRService.BroadcastLiveSheetData();
                 });
             }
-
-         
         }
     }
 

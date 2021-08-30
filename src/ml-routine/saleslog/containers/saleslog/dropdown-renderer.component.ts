@@ -15,7 +15,7 @@ export class DropDownRenderer implements OnInit{
     dateFlag: boolean = false;
     customFlag: boolean = false;
     rowDate: string;
-    itemsArray: [];
+    itemsArray: any[];
     selected: string;
     header: string;
     colDef: any;

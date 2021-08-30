@@ -1,14 +1,13 @@
 import {
     Component,
     OnInit,
-    ChangeDetectionStrategy,
-    Inject,
-    OnChanges,
     Input,
+    ElementRef,
+    ViewChild,
 } from "@angular/core";
 import { HttpClient } from "@angular/common/http";
 import { ToastHandlerService } from "app/shared/services/toast-handler.service";
-import { MatDialog, MAT_DIALOG_DATA } from "@angular/material/dialog";
+import { MatDialog } from "@angular/material/dialog";
 import { HistoryComponent } from "../history/history.component";
 import { NewDealComponent } from "../new-deal/new-deal.component";
 import { XlsExportComponent } from "../xls-export/xls-export.component";
@@ -16,12 +15,11 @@ import { ColumnOptionsComponent } from "../column-options/column-options.compone
 
 import { AllModules } from "@ag-grid-enterprise/all-modules";
 import { SlideInOutAnimation } from "app/shared/animation/animation";
-import { FormBuilder, Validators, FormGroup } from "@angular/forms";
+import { FormBuilder, FormGroup } from "@angular/forms";
 import * as moment from "moment";
 import { EncryptionService } from "app/shared/services/encryption.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import * as data from "app/RoutineSheetJSON.json";
 import { AuthService } from "ml-auth/shared/services/ml-auth/ml-auth.service";
 
 import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.service";
@@ -45,12 +43,14 @@ declare var $: any;
     animations: [SlideInOutAnimation],
 })
 export class RoutineSheetComponent implements OnInit {
-    selectedCity: number;
-
+    @ViewChild("myGrid", { static: true }) agGrid: ElementRef;
+    printData: any;
+    
     @Input()
     public routineSelected: number = 1;
     public totalRows: number = 0;
     public departmentID: number = 0;
+   
     public vehicleProfit: number = 0;
     public processGross: number = 0;
 
@@ -69,7 +69,6 @@ export class RoutineSheetComponent implements OnInit {
     public missingAmount: number = -0;
     public missingUnits: number = 0;
     public missingAvg: number = 0;
-    printData: any;
 
     public carryOverAmount: number = -0;
     public carryOverUnits: number = 0;
@@ -91,15 +90,68 @@ export class RoutineSheetComponent implements OnInit {
     public deliveredUnits: number = 0;
     public deliveredAvg: number = 0;
 
+    resetSummaryValues() {
+        this.vehicleProfit = 0;
+        this.processGross = 0;
+    
+        this.processedAmount = -0;
+        this.processedUnits = 0;
+        this.processedAvg = 0;
+    
+        this.varianceAmount = -0;
+        this.varianceUnits = 0;
+        this.varianceAvg = 0;
+    
+        this.totalAmount = -0;
+        this.totalUnits = 0;
+        this.totalAvg = 0;
+    
+        this.missingAmount = -0;
+        this.missingUnits = 0;
+        this.missingAvg = 0;
+    
+        this.carryOverAmount = -0;
+        this.carryOverUnits = 0;
+        this.carryOverAvg = 0;
+    
+        this.tradeinAmount = -0;
+        this.tradeinUnits = 0;
+        this.tradeinAvg = 0;
+    
+        this.soldAmount = -0;
+        this.soldUnits = 0;
+        this.soldAvg = 0;
+    
+        this.coveredAmount = -0;
+        this.coveredUnits = 0;
+        this.coveredAvg = 0;
+    
+        this.deliveredAmount = -0;
+        this.deliveredUnits = 0;
+        this.deliveredAvg = 0;
+    }
+
+    
+    public modules: any[] = AllModules;
+    public rowSelection;
+    public thisComponent = this;
+    public emptyFieldsCount: number = 0;
+    public rowColor = [];
+    
+    dateFilterApplied: number = 0;
+    selectedCity: number;
+    departmentNameRendered: string = "";
     gridApi;
     gridColumnApi;
 
-    public modules: any[] = AllModules;
-    rowData = [];
+    departmentIDs: any[] = [];
+    departmentName: string = "";
+
     columnDefs;
     defaultColDef;
     columnTypes;
     autoGroupColumnDef;
+    rowData = [];
     rows = [];
 
     getRowNodeId;
@@ -109,18 +161,14 @@ export class RoutineSheetComponent implements OnInit {
 
     history: number = 3;
     period: number = 3;
-    departmentName: string = "";
     startFrom: number = null;
-    public emptyFieldsCount: number = 0;
     statusOption: string[] = [];
     payOptions: string[] = [];
-    salesEngOption: string[] = [""];
+    salesEngOption: string[] = [];
     salesPersonOption: string[] = [];
     afterMarketManagerOptions: string[] = [];
     financeManagerOption: string[] = [];
     components;
-    public rowSelection;
-    public thisComponent = this;
     getRowClass;
     dialogRef: any;
     frameworkComponents: any;
@@ -140,11 +188,11 @@ export class RoutineSheetComponent implements OnInit {
     };
 
     cellData: any = [];
-    public rowColor = [];
     cellMap: any;
     salesData: any;
+
     postProcessPopup;
-    departmentIDs: any[] = [];
+
     monthSearch: any;
     animationState = "out";
     searchDate: any = [];
@@ -173,7 +221,6 @@ export class RoutineSheetComponent implements OnInit {
     sliderItem: string;
     sliderIndex: number;
     records: any = [];
-
     toggleColumns: boolean = true;
     decryptedDepartmentId: string;
     loadingOverlayComponent;
@@ -216,98 +263,139 @@ export class RoutineSheetComponent implements OnInit {
         this.columnDefs = [];
 
         this.defaultColDef = {
-            flex: 1,
+            enterMovesDown: true,
+            enterMovesDownAfterEdit: true,
+            resizable: true,
             editable: true,
             filter: true,
             cellClass: "row-text-style",
             cellClassRules: {
-                "green-color": function (params) {
-                    return params.value === "OFA";
-                },
-                "blue-color": function (params) {
-                    return params.value === "Cash";
-                },
-                "pink-color": function (params) {
-                    return params.value === "IHP";
-                },
+                "green-mark-cell": function (params) {
+                    let thisRef = params.context.thisComponent;
+                    const firstFilter = thisRef.salesData.rowData.row.filter(
+                        (x) =>
+                            x.cells.some(
+                                (y) =>
+                                    y.entryId === params.node.data.rowId &&
+                                    y.colId === params.colDef.colId
+                            )
+                    );
 
-                "green-mark": function (params) {
-                    // console.log(params)
-                    let thisRef = params.context.thisComponent;
-                    let currentRow;
-                    if (params.colDef) {
-                        currentRow = thisRef.rowColor.find(
-                            (el) =>
-                                el.rowId === params.rowIndex &&
-                                el.colId === params.colDef.colId
-                        );
+                    if (firstFilter.length > 0) {
+                        const cellColor = firstFilter[0].cells.filter(
+                            (y) =>
+                                y.entryId === params.node.data.rowId &&
+                                y.colId === params.colDef.colId
+                        )[0].cellColor;
+                        return cellColor !== undefined
+                            ? cellColor === "green"
+                            : false;
+                    } else {
+                        return false;
                     }
-                    return currentRow !== undefined
-                        ? currentRow.color === "green"
-                        : false;
                 },
-                "blue-mark": function (params) {
+                "blue-mark-cell": function (params) {
                     let thisRef = params.context.thisComponent;
-                    let currentRow;
-                    if (params.colDef) {
-                        currentRow = thisRef.rowColor.find(
-                            (el) =>
-                                el.rowId === params.rowIndex &&
-                                el.colId === params.colDef.colId
-                        );
-                    }
-                    return currentRow !== undefined
-                        ? currentRow.color === "blue"
-                        : false;
-                },
-                "purple-mark": function (params) {
-                    let thisRef = params.context.thisComponent;
-                    let currentRow;
-                    if (params.colDef) {
-                        currentRow = thisRef.rowColor.find(
-                            (el) =>
-                                el.rowId === params.rowIndex &&
-                                el.colId === params.colDef.colId
-                        );
-                    }
-                    return currentRow !== undefined
-                        ? currentRow.color === "purple"
-                        : false;
-                },
+                    const firstFilter = thisRef.salesData.rowData.row.filter(
+                        (x) =>
+                            x.cells.some(
+                                (y) =>
+                                    y.entryId === params.node.data.rowId &&
+                                    y.colId === params.colDef.colId
+                            )
+                    );
 
-                "yellow-mark": function (params) {
-                    let thisRef = params.context.thisComponent;
-                    let currentRow;
-                    if (params.colDef) {
-                        currentRow = thisRef.rowColor.find(
-                            (el) =>
-                                el.rowId === params.rowIndex &&
-                                el.colId === params.colDef.colId
-                        );
+                    if (firstFilter.length > 0) {
+                        const cellColor = firstFilter[0].cells.filter(
+                            (y) =>
+                                y.entryId === params.node.data.rowId &&
+                                y.colId === params.colDef.colId
+                        )[0].cellColor;
+
+                        return cellColor !== undefined
+                            ? cellColor === "blue"
+                            : false;
+                    } else {
+                        return false;
                     }
-                    return currentRow !== undefined
-                        ? currentRow.color === "yellow"
-                        : false;
                 },
-                "red-mark": function (params) {
+                "purple-mark-cell": function (params) {
                     let thisRef = params.context.thisComponent;
-                    let currentRow;
-                    if (params.colDef) {
-                        currentRow = thisRef.rowColor.find(
-                            (el) =>
-                                el.rowId === params.rowIndex &&
-                                el.colId === params.colDef.colId
-                        );
+                    const firstFilter = thisRef.salesData.rowData.row.filter(
+                        (x) =>
+                            x.cells.some(
+                                (y) =>
+                                    y.entryId === params.node.data.rowId &&
+                                    y.colId === params.colDef.colId
+                            )
+                    );
+
+                    if (firstFilter.length > 0) {
+                        const cellColor = firstFilter[0].cells.filter(
+                            (y) =>
+                                y.entryId === params.node.data.rowId &&
+                                y.colId === params.colDef.colId
+                        )[0].cellColor;
+                        return cellColor !== undefined
+                            ? cellColor === "purple"
+                            : false;
+                    } else {
+                        return false;
                     }
-                    return currentRow !== undefined
-                        ? currentRow.color === "red"
-                        : false;
+                },
+                "yellow-mark-cell": function (params) {
+                    let thisRef = params.context.thisComponent;
+                    const firstFilter = thisRef.salesData.rowData.row.filter(
+                        (x) =>
+                            x.cells.some(
+                                (y) =>
+                                    y.entryId === params.node.data.rowId &&
+                                    y.colId === params.colDef.colId
+                            )
+                    );
+
+                    if (firstFilter.length > 0) {
+                        const cellColor = firstFilter[0].cells.filter(
+                            (y) =>
+                                y.entryId === params.node.data.rowId &&
+                                y.colId === params.colDef.colId
+                        )[0].cellColor;
+                        return cellColor !== undefined
+                            ? cellColor === "yellow"
+                            : false;
+                    } else {
+                        return false;
+                    }
+                },
+                "red-mark-cell": function (params) {
+                    let thisRef = params.context.thisComponent;
+                    const firstFilter = thisRef.salesData.rowData.row.filter(
+                        (x) =>
+                            x.cells.some(
+                                (y) =>
+                                    y.entryId === params.node.data.rowId &&
+                                    y.colId === params.colDef.colId
+                            )
+                    );
+
+                    if (firstFilter.length > 0) {
+                        const cellColor = firstFilter[0].cells.filter(
+                            (y) =>
+                                y.entryId === params.node.data.rowId &&
+                                y.colId === params.colDef.colId
+                        )[0].cellColor;
+                        return cellColor !== undefined
+                            ? cellColor === "red"
+                            : false;
+                    } else {
+                        return false;
+                    }
                 },
                 "red-field-color": function (params) {
                     if (
-                        params.colDef.field === "SE" &&
-                        params.colDef.field === "AFM" &&
-                        params.colDef.field === "FM"
+                        params.colDef.colCode === "SE" ||
+                        params.colDef.colCode === "AFM" ||
+                        params.colDef.colCode === "FM"
                     ) {
                         let choice = false;
                         let date = moment().format("DD-MMM-YY");
@@ -322,14 +410,13 @@ export class RoutineSheetComponent implements OnInit {
                             ).isBefore(date);
                             choice = isBefore;
                         }
-                        // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
+                        // // // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
                         return params.value === "" && choice;
-                    } else if (params.colDef.field === "PT") {
+                    } else if (params.colDef.colCode === "PT") {
                         let date = moment().format("DD-MMM-YY");
                         let isAfter = moment(
                             params.data.orderDate
                         ).isSameOrAfter(date);
-                        let isBefore;
                         let choice;
                         if (!isAfter) {
                             choice = moment(params.data.orderDate).isBefore(
@@ -338,7 +425,7 @@ export class RoutineSheetComponent implements OnInit {
                         } else {
                             choice = isAfter;
                         }
-                        // console.log(params.data.orderDate);
+                        // // // // console.log(params.data.orderDate);
 
                         return params.value === "" && choice;
                     } else {
@@ -346,27 +433,21 @@ export class RoutineSheetComponent implements OnInit {
                     }
                 },
             },
-            // filter: 'customFilter',
-            // menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
-            headerComponentParams: { menuIcon: "fa-chevron-down" },
-            // cellStyle: this.cellStyling.bind(this),
+         //   headerComponentParams: { menuIcon: "fa-chevron-down" },
+            onCellValueChanged: this.onCellChanged.bind(this),
             minWidth: 200,
-            // maxWidth: 100,
+            // flex: 1,
+            // filter: 'customFilter',
+            menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
             // },
-            // onCellValueChanged: this.setRowTotalValue.bind(this),
-            // context: {
-            //   thisComponent : this
-            // },
-            // valueFormatter: this.formatNumber.bind(this),
-            // minWidth: 105,
+            //valueFormatter: this.formatNumber.bind(this),
             // maxWidth: 105,
-            // resizable: true,
         };
 
         this.autoGroupColumnDef = {
-            minWidth: 400,
+            initialWidth: 200,
         };
         this.rowHeight = 29;
 
@@ -374,17 +455,19 @@ export class RoutineSheetComponent implements OnInit {
             return data.id;
         };
         this.frameworkComponents = {
-            agColumnHeader: CustomHeaderComponent,
-            calenderRender: CalenderRenderer,
             dropDownRenderer: DropDownRenderer,
             customDropDownRenderer: CustomDropDownRenderer,
             customLoadingOverlay: CustomLoadingOverlayComponent,
+            calenderRender: CalenderRenderer,
+            agColumnHeader: CustomHeaderComponent,
+            // dateEditor: OwlDatePickerComponent
         };
 
         this.rowSelection = "single";
 
         this.components = {
-            datePicker: getDatePicker(),
+        //     // datePicker: getDatePicker(),
+            'dateEditor': getDatePicker(),
         };
 
         this.loadingOverlayComponent = "customLoadingOverlay";
@@ -566,13 +649,40 @@ export class RoutineSheetComponent implements OnInit {
         /*----------------------------*/
     }
 
+
+    onAsyncUpdate() {
+        var api = this.gridApi;
+
+        for (var i = 0; i < this.rowData.length; i++) {
+            // // // console.log("i:", i);
+            var itemToUpdate = this.rowData[i];
+            // // // console.log(newItem);
+            api.applyTransactionAsync({ update: [itemToUpdate] });
+        }
+        function copyObject(object) {
+            var newObject = {};
+            Object.keys(object).forEach(function (key) {
+                newObject[key] = object[key];
+            });
+            return newObject;
+        }
+    }
+
     public addBroadcastLiveSheetDataForViewsListener = () => {
-        this.signalRService.hubConnection.on(
-            "TransferLiveSheetData",
-            (data) => {
+        this.signalRService.hubConnection.on("TransferLiveSheetData", () => {
+            if (this.dateFilterApplied === 0) {
                 this.generateGrid();
+            } else if (this.dateFilterApplied === 1) {
+                this.generateGrid(1, this.sliderItem.replace(" ", "_"));
+            } else {
+                this.generateGrid(
+                    this.monthSelected,
+                    moment(this.monthActive + "-" + this.yearActive).format(
+                        "MMM_YY"
+                    )
+                );
             }
-        );
+        });
     };
 
     dateTimeCalculation() {
@@ -606,127 +716,6 @@ export class RoutineSheetComponent implements OnInit {
         });
     }
 
-    /** Used To Generate row number Column with default settings */
-
-    generateRowColumn(): void {
-        let rowIdcolumn = new Object();
-
-        (rowIdcolumn["headerName"] = "."),
-            (rowIdcolumn["colId"] = 0),
-            (rowIdcolumn["minWidth"] = 40),
-            (rowIdcolumn["maxWidth"] = 40),
-            (rowIdcolumn["cellClass"] = "row-no"),
-            (rowIdcolumn["editable"] = false),
-            (rowIdcolumn["sequence"] = 0);
-        (rowIdcolumn["pinned"] = "left"),
-            (rowIdcolumn["lockPinned"] = true),
-            (rowIdcolumn["filter"] = true),
-            (rowIdcolumn["lockPosition"] = true),
-            (rowIdcolumn["cellClass"] = function (params) {
-                // console.log(params);
-                let i = 1;
-                return params.data.carryOver === true
-                    ? "agClassCarryOver"
-                    : "agClassNoCarryOver";
-            });
-        let carryOverCount = this.carryOverUnits;
-        rowIdcolumn["valueGetter"] = function (params) {
-            if (params.data.carryOver === true) {
-                return null;
-            } else {
-                //i++;
-                return params.node.rowIndex + 1 - carryOverCount;
-            }
-        };
-
-        this.columnDefs.push(rowIdcolumn);
-    }
-
-    /** This is used to generate grid column header */
-
-    generateColumnHeader(): void {
-        let column = [];
-
-        let rowIdcolumn = new Object();
-
-        (rowIdcolumn["headerName"] = "."),
-            (rowIdcolumn["colId"] = 0),
-            (rowIdcolumn["minWidth"] = 40),
-            (rowIdcolumn["maxWidth"] = 40),
-            (rowIdcolumn["cellClass"] = "row-no"),
-            (rowIdcolumn["editable"] = true),
-            (rowIdcolumn["sequence"] = 0);
-        (rowIdcolumn["pinned"] = "left"),
-            (rowIdcolumn["lockPinned"] = true),
-            (rowIdcolumn["filter"] = true),
-            (rowIdcolumn["lockPosition"] = true),
-            (rowIdcolumn["cellClass"] = function (params) {
-                // console.log(params);
-                let i = 1;
-                return params.data.carryOver === true
-                    ? "agClassCarryOver"
-                    : "agClassNoCarryOver";
-            });
-        let carryOverCount = this.carryOverUnits;
-        rowIdcolumn["valueGetter"] = function (params) {
-            // console.log(carryOverCount);
-            if (params.data.carryOver === true) {
-                return null;
-            } else {
-                //i++;
-                return params.node.rowIndex + 1 - carryOverCount;
-            }
-        };
-
-        column.push(rowIdcolumn);
-
-        this.salesData.column.forEach((element) => {
-            let columnMap = new Object();
-            columnMap["headerName"] = element.colName;
-            columnMap["field"] = element.colCode;
-            columnMap["colCode"] = element.colCode;
-            columnMap["sequence"] = element.sequence;
-            columnMap["resizable"] = true;
-            columnMap["sortable"] = true;
-            (columnMap["filter"] = true),
-                (columnMap["hide"] = !element.display);
-            let required = element.required;
-            columnMap["cellStyle"] = function (params) {
-                console.log("params:", params);
-                if (required && params.value === "") {
-                    //mark police cells as red
-                    return { backgroundColor: "red" };
-                } else {
-                    return null;
-                }
-            };
-
-            if (element.type === "Date") {
-                columnMap["cellEditor"] = "datePicker";
-            }
-            if (element.type === "DD-Fixed") {
-                columnMap["cellRenderer"] = "customDropDownRenderer";
-            }
-            if (element.type === "DD-Self") {
-                columnMap["cellRenderer"] = "customDropDownRenderer";
-            }
-            if (element.type === "DD-Suggest") {
-                columnMap["cellRenderer"] = "customDropDownRenderer";
-            }
-            if (element.type === "Combo") {
-                columnMap["cellRenderer"] = "dropDownRenderer";
-            }
-
-            column.push(columnMap);
-        });
-        column.sort(function (a, b) {
-            return a.sequence - b.sequence;
-        });
-        this.columnDefs = column;
-        console.log(this.columnDefs);
-        console.log(this.rowData);
-    }
-
     dateFormatter(params) {
         return moment(params.value, "DD/MM/YYYY").format("yyyy-MM-DD"); // for datetime-local use yyyy-MM-DDThh:mm to format date from input , and use yyy-MM-DD format for date
     }
@@ -735,16 +724,44 @@ export class RoutineSheetComponent implements OnInit {
         return moment(params.value, "DD/MM/YYYY").format("yyyy-MM-DDThh:mm"); // for datetime-local use yyyy-MM-DDThh:mm to format date from input , and use yyy-MM-DD format for date
     }
 
+    public loadScript() {
+        // // // console.log("preparing to load...");
+        let node = document.createElement("script");
+        node.src = this.url;
+        node.type = "text/javascript";
+        node.async = true;
+        node.charset = "utf-8";
+        document.getElementsByTagName("head")[0].appendChild(node);
+    }
+
     onGridReady(params) {
         this.gridApi = params.api;
         this.gridColumnApi = params.columnApi;
         this.pageCounter = this.pageCounter + 1;
+        this.gridApi.showLoadingOverlay();
 
         this.generateGrid();
     }
 
+    renderDepartmentNameHeading() {
+        let department = this.LocalStorageHandlerService.getFromStorage(
+            "userObj"
+        ).departmentAccess;
+        this.departmentIDs = department;
+        let count = 0;
+        department = department.find((el) => {
+            if (count === 0) {
+                count++;
+                this.departmentID = el.departmentId;
+            }
+            return (
+                Number(el.departmentId) ===  Number(this.decryptedDepartmentId)
+            );
+        });
+        this.departmentNameRendered = department.departmentName;
+    }
+
     generateGrid(months?, date?) {
-        this.gridApi.showLoadingOverlay();
         if (this.routineSelected !== 3) {
             let department = this.LocalStorageHandlerService.getFromStorage("userObj")
                 .departmentAccess;
@@ -763,8 +780,7 @@ export class RoutineSheetComponent implements OnInit {
             });
             this.departmentName = department.departmentName;
         } else {
-            let department = this.LocalStorageHandlerService.getFromStorage("userObj")
-                .departmentAccess;
+            let department = this.LocalStorageHandlerService.getFromStorage("userObj").departmentAccess;
 
             department.map((res) => {
                 this.departmentIDs.push({
@@ -786,6 +802,10 @@ export class RoutineSheetComponent implements OnInit {
             });
         }
 
+        if (this.rowData.length === 0) {
+            this.gridApi.showLoadingOverlay();
+        }
+
         let obj = {
             UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
             RoleId: this.LocalStorageHandlerService.getFromStorage("userObj").roleID,
@@ -797,8 +817,8 @@ export class RoutineSheetComponent implements OnInit {
             PastMonths: months ? months : 1,
             ShowDeleted: null,
         };
-        // this.signalRService.startConnection();
-        // this.signalRService.addTransferChartDataListener();
+
+        this.renderDepartmentNameHeading();
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
             this.rowData = [];
@@ -817,7 +837,7 @@ export class RoutineSheetComponent implements OnInit {
                     this.carryOverUnits++;
                 }
                 this.cellData = [];
-                let index = 0;
+               
                 element.cells.forEach((element1, index) => {
                     this.rowColor.push({
                         rowId: rowIndex,
@@ -829,11 +849,11 @@ export class RoutineSheetComponent implements OnInit {
                     if (element1.colCode === "OD") {
                         this.cellMap[element1.colId] = moment(
                             element1.currentCellValue
-                        ).format("MM/DD/YYYY");
+                        ).format("DD/MM/YYYY");
 
                         this.cellMap['"' + element1.colCode + '"'] = moment(
                             element1.currentCellValue
-                        ).format("MM/DD/YYYY");
+                        ).format("DD/MM/YYYY");
                         // console.log(this.cellMap['"'+element1.colCode+'"'])
                     } else {
                         this.cellMap["" + element1.colId + ""] =
@@ -913,7 +933,7 @@ export class RoutineSheetComponent implements OnInit {
                         this.deliveredAmount +
                         Number(this.cellData[0]['"VEHGRO"']);
                 }
-                // console.log( this.missingUnits, this.cellData[0]['"PROGRO"'] === null);
+                
                 if (this.cellData[0]['"PROGRO"'] !== null) {
                     this.processedUnits = this.processedUnits + 1;
                     this.processedAmount =
@@ -931,28 +951,8 @@ export class RoutineSheetComponent implements OnInit {
 
                 rows.push(this.cellData[0]);
             });
-            this.rowResponse = rows;
 
-            if (this.routineSelected === 1) {
-                this.carryOverAvg =
-                    this.carryOverUnits > 0
-                        ? Number(this.carryOverAmount) /
-                          Number(this.carryOverUnits)
-                        : 0;
-                this.soldAvg =
-                    this.soldUnits > 0
-                        ? Number(this.soldAmount) / Number(this.soldUnits)
-                        : 0;
-                this.coveredAvg =
-                    this.coveredUnits > 0
-                        ? Number(this.coveredAmount) / Number(this.coveredUnits)
-                        : 0;
-                this.deliveredAvg =
-                    this.deliveredUnits > 0
-                        ? Number(this.deliveredAmount) /
-                          Number(this.deliveredUnits)
-                        : 0;
-            } else if (this.routineSelected === 2) {
+             if (this.routineSelected === 2) {
                 this.deliveredAvg =
                     this.totalRows > 0
                         ? Number(this.vehicleProfit) / Number(this.totalRows)
@@ -991,91 +991,63 @@ export class RoutineSheetComponent implements OnInit {
             let count = 0;
             let rowIdcolumn = new Object();
 
-            if (this.routineSelected !== 1) {
-                (rowIdcolumn["headerName"] = "."),
-                    (rowIdcolumn["colId"] = 0),
-                    (rowIdcolumn["minWidth"] = 40),
-                    (rowIdcolumn["maxWidth"] = 40),
-                    (rowIdcolumn["cellClass"] = "row-no"),
-                    (rowIdcolumn["editable"] = true),
-                    (rowIdcolumn["sequence"] = 0);
-                (rowIdcolumn["pinned"] = "left"),
-                    (rowIdcolumn["lockPinned"] = true),
-                    (rowIdcolumn["filter"] = true),
-                    (rowIdcolumn["lockPosition"] = true),
-                    (rowIdcolumn["valueGetter"] = function (params) {
+            rowIdcolumn["headerName"] = ".";
+            rowIdcolumn["colId"] = 0;
+            rowIdcolumn["minWidth"] = 40;
+            rowIdcolumn["maxWidth"] = 40;
+            rowIdcolumn["cellClass"] = "row-no";
+            rowIdcolumn["editable"] = true;
+            rowIdcolumn["sequence"] = 0;
+            rowIdcolumn["hide"] = false;
+            rowIdcolumn["pinned"] = "left";
+            rowIdcolumn["lockPinned"] = true;
+            rowIdcolumn["filter"] = true;
+            rowIdcolumn["lockPosition"] = true;
+            rowIdcolumn["cellClass"] = function (params) {
+                // // // console.log(params.data);
+                return params.data.carryOver === true
+                    ? "agClassCarryOver"
+                    : "agClassNoCarryOver";
+            };
+
+            let carryOverCount = this.carryOverUnits;
+            rowIdcolumn["valueGetter"] = function (params) {
+                // // // // console.log(params.node.rowIndex, carryOverCount);
+                if (params.data.carryOver === true) {
+                    count = 0;
+                    // // // // console.log(count);
+                    return null;
+                } else {
+                    //i++;
+                    if (params.node.rowIndex >= carryOverCount) {
+                        return params.node.rowIndex + 1 - carryOverCount;
+                    } else {
                         count++;
                         return count;
-                    });
-            } else {
-                (rowIdcolumn["headerName"] = "."),
-                    (rowIdcolumn["colId"] = 0),
-                    (rowIdcolumn["minWidth"] = 40),
-                    (rowIdcolumn["maxWidth"] = 40),
-                    (rowIdcolumn["cellClass"] = "row-no"),
-                    (rowIdcolumn["editable"] = true),
-                    (rowIdcolumn["sequence"] = 0);
-                (rowIdcolumn["pinned"] = "left"),
-                    (rowIdcolumn["lockPinned"] = true),
-                    (rowIdcolumn["filter"] = true),
-                    (rowIdcolumn["lockPosition"] = true),
-                    (rowIdcolumn["cellClass"] = function (params) {
-                        // console.log(params.data);
-                        let i = 1;
-                        return params.data.carryOver === true
-                            ? "agClassCarryOver"
-                            : "agClassNoCarryOver";
-                    });
-                let carryOverCount = this.carryOverUnits;
-                rowIdcolumn["valueGetter"] = function (params) {
-                    // console.log(params.node.rowIndex, carryOverCount);
-                    if (params.data.carryOver === true) {
-                        count = 0;
-                        console.log(count);
-                        return null;
-                    } else {
-                        //i++;
-                        let l = params.node.rowIndex + 1 - carryOverCount;
-                        console.log(
-                            params.node.rowIndex,
-                            carryOverCount,
-                            l,
-                            params.data.carryOver
-                        );
-                        if (params.node.rowIndex >= carryOverCount) {
-                            return params.node.rowIndex + 1 - carryOverCount;
-                        } else {
-                            count++;
-                            console.log(count);
-                            return count;
-                        }
                     }
-                };
-            }
+                }
+            };
 
             column.push(rowIdcolumn);
 
             this.salesData.column.forEach((element) => {
                 let columnMap = new Object();
                 columnMap["headerName"] = element.colName;
-                // columnMap["field"] = element.colCode;
                 columnMap["field"] = "" + element.colId + "";
                 columnMap["colId"] = element.colId;
-
                 columnMap["colCode"] = element.colCode;
                 columnMap["sequence"] = element.sequence;
                 columnMap["resizable"] = true;
                 columnMap["sortable"] = true;
-                (columnMap["filter"] = true),
-                    (columnMap["hide"] = !element.display);
+                columnMap["filter"] = true;
+                columnMap["volatile"] = true;
+                columnMap["hide"] = !element.display;
                 columnMap["columnType"] = element.type;
+                columnMap["width"] = element.colWidth;
 
                 let required = element.required;
                 columnMap["cellStyle"] = function (params) {
-                    // console.log(params.data, params.value);
-
                     if (required && params.value === "") {
-                        //mark police cells as red
                         return { backgroundColor: "red" };
                     } else {
                         return null;
@@ -1083,20 +1055,17 @@ export class RoutineSheetComponent implements OnInit {
                 };
 
                 if (element.type === "Date") {
-                    columnMap["cellRenderer"] = "datePicker";
-                }
-                if (element.type === "DD-Fixed") {
+                    columnMap["cellEditor"] = "dateEditor";
+                    columnMap["valueFormatter"] = this.isoDateValueFormatter.bind(this)
+                } else if (element.type === "DD-Fixed") {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
-                }
-                if (element.type === "DD-Self") {
+                } else if (element.type === "DD-Self") {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
-                }
-                if (element.type === "DD-Suggest") {
+                } else if (element.type === "DD-Suggest") {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
-                }
-                if (element.type === "Combo") {
+                } else if (element.type === "Combo") {
                     columnMap["cellRenderer"] = "dropDownRenderer";
-                }
+                }  
 
                 column.push(columnMap);
             });
@@ -1108,10 +1077,49 @@ export class RoutineSheetComponent implements OnInit {
             this.columnDefs = column;
             this.rowData = rows;
             this.rowResponse = rows;
-            // console.log(this.columnDefs );
-            // console.log(this.rowData );
-            // console.log(this.rowColor);
+            // this.gridApi.sizeColumnsToFit();
         });
+    }
+
+    isoDateValueFormatter(params) {
+        // console.log(params.value);
+    }
+
+    onCellChanged(event) {
+        console.log("on cell changed");
+        console.log("event: ",event);
+        if (event.newValue === undefined) {
+            event.newValue = "";
+        }
+        // // console.log("------------------");
+        // // console.log("event::", event);
+        // // console.log("------------------");
+        if (
+            event.newValue ||
+            event.newValue === "" ||
+            event.newValue === null
+        ) {
+            let params = {
+                userid: this.LocalStorageHandlerService.getFromStorage(
+                    "userObj"
+                ).userId,
+                EntryId: event.data.rowId, // Parent ID of the row for which cell he is editing
+                ViewId: this.routineSelected,
+                DeptId: this.decryptedDepartmentId
+                    ? this.decryptedDepartmentId
+                    : this.departmentID,
+                colId: event.colDef.colId,
+                ColType: event.colDef.columnType, // You need to send the column type
+                Value: event.newValue,
+            };
+
+            if (Object.keys(params).length !== 0) {
+                this.saleslog.insertCellValue(params).subscribe(() => {
+                    // this.toastNotification.generateToast('Update successful', 'OK', 2000);
+                    this.signalRService.BroadcastLiveSheetData();
+                });
+            }
+        }
     }
 
     gridFilter(months?, date?, searchValue?) {
@@ -1132,6 +1140,8 @@ export class RoutineSheetComponent implements OnInit {
         };
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
+            this.resetSummaryValues();
+
             this.rowResponse = [];
             this.salesData = [];
             this.salesData = res;
@@ -1139,50 +1149,57 @@ export class RoutineSheetComponent implements OnInit {
             let rows = [];
             this.monthObject.oneMonth = true;
 
-            this.salesData.rowData.row.forEach((element) => {
+            this.salesData.rowData.row.forEach((element, rowIndex) => {
                 this.cellMap = new Object();
                 let carryOver = element.isCarryOver;
+                let rowIndexId = element.rowId;
 
                 if (carryOver) {
                     this.carryOverUnits++;
                 }
                 this.cellData = [];
-                let index = 0;
-                element.cells.forEach((element1) => {
-                    this.cellMap["" + element1.colId + ""] =
-                        element1.currentCellValue;
+
+                element.cells.forEach((element1, index) => {
+                    this.rowColor.push({
+                        rowId: rowIndex,
+                        colId: element1.colId,
+                        color: element1.cellColor,
+                    });
+
+                    this.cellMap["rowId"] = rowIndexId;
+
                     if (element1.colCode === "OD") {
-                        this.cellMap["" + element1.colId + ""] = moment(
+                        this.cellMap[element1.colId] = moment(
                             element1.currentCellValue
-                        ).format("MM/DD/YYYY");
+                        ).format("DD/MM/YYYY");
 
                         this.cellMap['"' + element1.colCode + '"'] = moment(
                             element1.currentCellValue
-                        ).format("MM/DD/YYYY");
-                        console.log(this.cellMap['"' + element1.colCode + '"']);
+                        ).format("DD/MM/YYYY");
                     } else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] =
                             element1.currentCellValue;
                     }
+
                     if (element1.cellOptions.length > 0) {
                         this.cellMap["cellOptions_" + element1.colCode] =
                             element1.cellOptions;
                     }
+
                     this.cellMap["carryOver"] = carryOver;
+                    this.cellMap["cellColor_" + element1.colCode] =
+                        element1.cellColor;
 
                     if (index == element.cells.length - 1) {
                         this.cellData.push(this.cellMap);
                     }
+
                     index++;
                 });
 
-                /** Calculate Aggregared Header */
-                let columnData = this.cellData[0];
                 let typeArray = [];
-                // console.log(this.cellData[0]);
-                // console.log(this.cellData[0]['"OD"'], this.cellData[0]['"ED"'], this.cellData[0]['"VEHGRO"'], this.cellData[0]['"AD"'], this.cellData[0]["type"]);
                 if (
                     moment(this.cellData[0]['"OD"']).isBefore(
                         moment().format("DD-MMM-YY"),
@@ -1253,35 +1270,8 @@ export class RoutineSheetComponent implements OnInit {
 
                 rows.push(this.cellData[0]);
             });
-            this.rowResponse = rows;
 
-            // console.log(this.carryOverAmount, this.carryOverUnits,this.cellData[0] )
-            // console.log(this.soldAmount, this.soldUnits, )
-            // console.log(this.coveredAmount, this.coveredUnits, )
-            // console.log(this.deliveredAmount, this.deliveredUnits, )
-
-            console.log(this.routineSelected);
-
-            if (this.routineSelected === 1) {
-                this.carryOverAvg =
-                    this.carryOverUnits > 0
-                        ? Number(this.carryOverAmount) /
-                          Number(this.carryOverUnits)
-                        : 0;
-                this.soldAvg =
-                    this.soldUnits > 0
-                        ? Number(this.soldAmount) / Number(this.soldUnits)
-                        : 0;
-                this.coveredAvg =
-                    this.coveredUnits > 0
-                        ? Number(this.coveredAmount) / Number(this.coveredUnits)
-                        : 0;
-                this.deliveredAvg =
-                    this.deliveredUnits > 0
-                        ? Number(this.deliveredAmount) /
-                          Number(this.deliveredUnits)
-                        : 0;
-            } else if (this.routineSelected === 2) {
+            if (this.routineSelected === 2) {
                 this.deliveredAvg =
                     this.totalRows > 0
                         ? Number(this.vehicleProfit) / Number(this.totalRows)
@@ -1321,13 +1311,12 @@ export class RoutineSheetComponent implements OnInit {
 
             // console.log(rows);
             let searchResult = rows.filter((resp) => {
-                let orderDate = resp['"OD"'];
                 let payType = resp['"PT"'];
                 let financeManager = resp['"FM"'];
                 let email = resp['"EM"'];
                 let dept = resp['"Dept"'];
-                // console.log(resp['"OD"'], resp['"EM"'],email);
-                // console.log(email, searchValue);
+                let cL = resp['"CL"'];
+
                 return (
                     (email &&
                         email
@@ -1344,15 +1333,13 @@ export class RoutineSheetComponent implements OnInit {
                     (financeManager &&
                         financeManager
                             .toLowerCase()
-                            .includes(searchValue.toLowerCase()))
+                            .includes(searchValue.toLowerCase())) ||
+                    (cL && cL.toLowerCase().includes(searchValue.toLowerCase()))
                 );
             });
 
-            console.log(searchResult);
-            // console.log(this.rowData );
-
-            /*Dispaly search results in grid row array and number of display records found*/
-            this.displaySearchResult(searchResult);
+             /*Dispaly search results in grid row array and number of display records found*/
+             this.displaySearchResult(searchResult);
             /*-------------------------*/
         });
     }
@@ -1384,92 +1371,37 @@ export class RoutineSheetComponent implements OnInit {
         return currentRow !== undefined ? currentRow.color === color : "";
     }
 
-    getCssRules(params) {
-        if (params.colDef) {
-            switch (params.colDef.field) {
-                case "status":
-                    // this.emptyFieldsCount = this.emptyFieldsCount + 1;
-                    return params.value === undefined;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    getStatusColor(params) {
-        // console.log(params);
-        if (params.value) {
-            switch (params.value) {
-                case "status":
-                    return true;
-                    break;
-                case "status":
-                    return true;
-                    break;
-                case "status":
-                    return true;
-                    break;
-                default:
-                    break;
-            }
-        }
-    }
-
-    cellStyling(params) {
-        // console.group('Group');
-        // console.log(params['column']['userProvidedColDef']);
-        // console.groupEnd();
-        // if(params.node.level === 0) {
-        //   return {
-        //     'backgroundColor': '#1976D2',
-        //     'color':'#fff',fontWeight:'bold',
-        //     'cursor':'pointer',
-        //     'height':'30px'
-        //   }
-        // }
-        return {
-            "border-right": "1px solid #ececec",
-            backgroundColor: "#fff",
-            "justify-content": "flex-start",
-            overflow: "hidden",
-            "white-space": "nowrap",
-            "min-width": "0",
-            " text-overflow": "ellipsis",
-        };
-    }
-
     search() {
         let searchVal = this.searchForm.get("searchbar").value;
         let previousMonthFilter = this.searchForm.get("previousMonth").value;
         let currentMonthFilter = this.searchForm.get("currentMonth").value;
-        let currentMonth = moment();
-        let startMonth = moment()
-            .subtract(Number(previousMonthFilter) + 1, "months")
-            .format("MMM_YYYY");
-
         let searchResult = [];
-        console.log(this.rowResponse);
 
-        if (
-            this.searchForm.get("searchbar").value !== "" &&
-            currentMonthFilter !== false
-        ) {
+        if (currentMonthFilter !== false) {
             if (this.monthObject.oneMonth) {
-                searchResult = this.rowResponse.filter((resp) => {
-                    let orderDate = resp['"OD"'];
-                    let payType = resp['"PT"'];
-                    let financeManager = resp['"FM"'];
-                    let email = resp['"EM"'];
-                    let dept = resp['"Dept"'];
-                    console.log(resp['"OD"'], resp['"EM"']);
-                    console.log(email, searchVal);
-                    return (
-                        moment(orderDate).isSame(moment()) &&
-                        ((email &&
-                            email
-                                .toLowerCase()
-                                .includes(searchVal.toLowerCase())) ||
+                let month = moment().format("MMM_YY");
+                this.gridFilter(previousMonthFilter, month, searchVal);
+
+                if (this.searchForm.get("deletedRecords").value) {
+                    // console.log('Delete Value 1',this.searchForm.get("deletedRecords").value);
+                    this.monthObject.reset();
+                    this.monthObject.oneMonth = true;
+                } else {
+                    // console.log('Delete Value 2',this.searchForm.get("deletedRecords").value);
+                    searchResult = this.rowResponse.filter((resp) => {
+                        let orderDate = resp['"OD"'];
+                        let payType = resp['"PT"'];
+                        let financeManager = resp['"FM"'];
+                        let email = resp['"EM"'];
+                        let dept = resp['"Dept"'];
+                        let cL = resp['"CL"'];
+
+                        return (
+                            (moment(orderDate).isSame(moment()) &&
+                                email &&
+                                email
+                                    .toLowerCase()
+                                    .includes(searchVal.toLowerCase())) ||
                             (dept &&
                                 dept
                                     .toLowerCase()
@@ -1481,23 +1413,24 @@ export class RoutineSheetComponent implements OnInit {
                             (financeManager &&
                                 financeManager
                                     .toLowerCase()
-                                    .includes(searchVal.toLowerCase())))
-                    );
-                });
-
-                /*Dispaly search results in grid row array and number of display records found*/
-                this.displaySearchResult(searchResult);
-                /*-------------------------*/
+                                    .includes(searchVal.toLowerCase())) ||
+                            (cL &&
+                                cL
+                                    .toLowerCase()
+                                    .includes(searchVal.toLowerCase()))
+                        );
+                    });
+                    /*Dispaly search results in grid row array and number of display records found*/
+                    this.displaySearchResult(searchResult);
+                    /*-------------------------*/
+                }
             } else {
                 let month = moment().format("MMM_YY");
                 this.gridFilter(previousMonthFilter, month, searchVal);
                 this.monthObject.reset();
                 this.monthObject.oneMonth = true;
             }
-        } else if (
-            this.searchForm.get("searchbar").value !== "" &&
-            previousMonthFilter !== ""
-        ) {
+        } else if (previousMonthFilter !== "") {
             if (previousMonthFilter === "3") {
                 if (this.monthObject.threeMonth) {
                     searchResult = this.searchSalesLog(
@@ -1568,10 +1501,11 @@ export class RoutineSheetComponent implements OnInit {
                 }
             }
         } else {
-            if (this.searchForm.get("searchbar").value !== "") {
+            if (1 == 1) {
                 searchResult = this.rowResponse.filter((resp) => {
                     let filter = Object.keys(resp).filter(
-                        (res) => resp[res].toLowerCase() === searchVal
+                        (res) =>
+                            resp[res].toLowerCase() === searchVal.toLowerCase()
                     );
                     if (filter.length > 0) {
                         return resp;
@@ -1590,7 +1524,6 @@ export class RoutineSheetComponent implements OnInit {
             .subtract(Number(previousMonthFilter) + 1, "months")
             .format("MMM-YYYY");
         return (searchResult = this.rowResponse.filter((resp) => {
-            let datafilter;
             let endDate = moment().format("MMM-YYYY");
             let orderDate = resp['"OD"'];
             let payType = resp['"PT"'];
@@ -1598,15 +1531,15 @@ export class RoutineSheetComponent implements OnInit {
             let email = resp['"EM"'];
             let dept = resp['"Dept"'];
 
-            console.log(
-                email,
-                searchVal,
-                email && email.toLowerCase().includes(searchVal.toLowerCase())
-            );
-            console.log(
-                moment(orderDate).isAfter(searchedDate) &&
-                    moment(orderDate).isBefore(endDate)
-            );
+            // // // console.log(
+            //     email,
+            //     searchVal,
+            //     email && email.toLowerCase().includes(searchVal.toLowerCase())
+            // );
+            // // // console.log(
+            //     moment(orderDate).isAfter(searchedDate) &&
+            //         moment(orderDate).isBefore(endDate)
+            // );
 
             if (previousMonthFilter !== "all") {
                 return (
@@ -1647,20 +1580,29 @@ export class RoutineSheetComponent implements OnInit {
                             .includes(searchVal.toLowerCase()))
                 );
             }
+            // datefilter = Object.keys(resp).filter(res=> {
+            //   // if(res !=="" && isNaN(Number(resp[res]))){
+            //   //   // // // console.log(resp[res], Number(resp[res]))
+            //   //   return resp[res].toLowerCase()=== searchVal;
+            //   // }
+            // });
+            // if(datefilter.length> 0){
+            //   return resp;
+            // }
         }));
     }
 
     ngOnDestroy(): void {
         this.snackBar.dismiss();
     }
+
     filterGrid(option) {
         // If filter matches change active state of columns*/
         if (option === 0) {
             let row = this.rowResponse.filter((res) => {
-                // console.log(res.type);
                 return res.type.find((el) => el === "carryOver");
             });
-            console.log(this.rowResponse, row);
+            // // // console.log(this.rowResponse, row);
             if (row.length > 0) {
                 this.rowData = [];
                 this.rowData = row;
@@ -1672,7 +1614,7 @@ export class RoutineSheetComponent implements OnInit {
             }
         } else if (option === 1) {
             let row = this.rowResponse.filter((res) => {
-                // console.log(res.type);
+                // // // // console.log(res.type);
                 return res.type.find((el) => el === "sold");
             });
             if (row.length > 0) {
@@ -1686,7 +1628,7 @@ export class RoutineSheetComponent implements OnInit {
             }
         } else if (option === 2) {
             let row = this.rowResponse.filter((res) => {
-                // console.log(res.type);
+                // // // // console.log(res.type);
                 return res.type.find((el) => el === "covered");
             });
             if (row.length > 0) {
@@ -1700,7 +1642,7 @@ export class RoutineSheetComponent implements OnInit {
             }
         } else if (option === 3) {
             let row = this.rowResponse.filter((res) => {
-                // console.log(res.type);
+                // // // // console.log(res.type);
                 return res.type.find((el) => el === "delivered");
             });
             if (row.length > 0) {
@@ -1716,7 +1658,7 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     calenderSearch(searchingFormat, month, startingMonth) {
-        console.log(searchingFormat, startingMonth);
+        // // // console.log(searchingFormat, startingMonth);
         let searchResult = [];
 
         searchResult = this.rowData.filter((resp) => {
@@ -1725,12 +1667,6 @@ export class RoutineSheetComponent implements OnInit {
                     let date = resp[res];
                     if (month === 1) {
                         if (date) {
-                            console.log(
-                                moment(resp[res]).isSame(
-                                    searchingFormat,
-                                    "months"
-                                )
-                            );
                             return (
                                 moment(resp[res]).isSame(
                                     searchingFormat,
@@ -1743,27 +1679,16 @@ export class RoutineSheetComponent implements OnInit {
                             );
                         }
                     } else {
-                        console.log(
-                            "after:",
-                            moment(resp[res]).isAfter(searchingFormat),
-                            resp[res]
-                        );
-                        console.log(
-                            "before:",
-                            moment(resp[res]).isBefore(startingMonth),
-                            resp[res]
-                        );
-
                         return (
                             moment(resp[res]).isAfter(searchingFormat) &&
                             moment(resp[res]).isBefore(startingMonth)
                         );
                     }
-                    console.log(
-                        date,
-                        searchingFormat,
-                        moment(resp[res]).isAfter(searchingFormat)
-                    );
+                    // // // console.log(
+                    //     date,
+                    //     searchingFormat,
+                    //     moment(resp[res]).isAfter(searchingFormat)
+                    // );
                 }
             });
             if (filter.length > 0) {
@@ -1783,7 +1708,7 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     monthSliderSearch(searchingFormat) {
-        console.log(searchingFormat);
+        // // // console.log(searchingFormat);
         let searchResult = [];
 
         this.monthFilter = searchingFormat + " - " + searchingFormat;
@@ -1793,16 +1718,8 @@ export class RoutineSheetComponent implements OnInit {
                 if (res === "orderDate") {
                     let date = moment(resp[res]).format("MMM YY");
                     if (date) {
-                        console.log(date, searchingFormat);
-                        console.log(date === searchingFormat);
                         return date === searchingFormat;
                     }
-
-                    console.log(
-                        date,
-                        searchingFormat,
-                        moment(resp[res]).isAfter(searchingFormat)
-                    );
                 }
             });
             if (filter.length > 0) {
@@ -1827,7 +1744,7 @@ export class RoutineSheetComponent implements OnInit {
             let month = moment().format("MMM");
             let year = moment().format("YYYY");
             this.monthActive = "";
-            this.years.map((res, index) => {
+            this.years.map((res) => {
                 res.active = false;
             });
 
@@ -1845,14 +1762,12 @@ export class RoutineSheetComponent implements OnInit {
 
     next() {
         if (this.yearCounter < this.years.length - 1) {
-            console.log(this.yearCounter < this.years.length);
-            console.log(this.yearCounter, this.years.length);
             this.yearCounter = this.yearCounter + 1;
             let month = moment().format("MMM");
             let year = moment().format("YYYY");
             this.monthActive = "";
 
-            this.years.map((res, index) => {
+            this.years.map((res) => {
                 res.active = false;
             });
 
@@ -1878,7 +1793,7 @@ export class RoutineSheetComponent implements OnInit {
         }
     }
 
-    previousMonth(event) {
+    previousMonth() {
         if (this.searchForm.get("currentMonth").value === true) {
             this.searchForm.get("currentMonth").setValue(false);
         }
@@ -1890,11 +1805,12 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     applyCalenderFilter() {
-        console.log(this.monthSelected);
+        // // // console.log(this.monthSelected);
         this.monthModal = false;
         this.generateFilter(this.monthSelected);
     }
 
+    
     generateFilter(length) {
         /*Generate Key and value for startFrom Object from momentJs*/
         let currentDisplayFormat;
@@ -1934,9 +1850,7 @@ export class RoutineSheetComponent implements OnInit {
                 .format("MMM YY");
         }
         /*---------------------------------------------------------*/
-        console.log("searched value:", searchedDisplayFormat);
         this.monthFilter = searchedDisplayFormat + " - " + currentDisplayFormat;
-        console.log(this.monthFilter);
 
         this.calenderSearch(searchingFormat, month, currentSearchFormat);
     }
@@ -1954,87 +1868,6 @@ export class RoutineSheetComponent implements OnInit {
                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
             );
         }
-    }
-
-    cellEditorSelector(params) {
-        console.log(params.colDef.type);
-
-        if (params.colDef.type === "number") {
-            // return {
-            //   component: 'numericCellEditor'
-            // };
-            return false;
-        } else if (params.colDef.type === "date") {
-            return {
-                component: "datePicker",
-            };
-        } else if (params.colDef.type === "text") {
-            return {
-                component: "agSelectCellEditor",
-            };
-        } else if (params.colDef.type === "drop down") {
-            switch (params.colDef.field) {
-                case "status":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.statusOption,
-                        },
-                    };
-                    break;
-                case "pay":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.payOptions,
-                        },
-                    };
-                    break;
-                case "sales_eng":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.salesEngOption,
-                        },
-                    };
-                    break;
-                case "sales_person":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.salesPersonOption,
-                        },
-                    };
-                    break;
-                case "aftermarket_manager":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.afterMarketManagerOptions,
-                        },
-                    };
-                    break;
-                case "finance_manager":
-                    return {
-                        component: "agSelectCellEditor",
-                        params: {
-                            values: this.financeManagerOption,
-                        },
-                    };
-                    break;
-                // case "client":
-                //   return {
-                //     component: 'agSelectCellEditor',
-                //     params: {
-                //         values: this.rolesOptions
-                //     }
-                //   };
-                //   break;
-                default:
-                    break;
-            }
-        }
-        return false;
     }
 
     toggleShowDiv(divName: string) {
@@ -2170,7 +2003,6 @@ export class RoutineSheetComponent implements OnInit {
                 active: false,
             });
         }
-        // console.log(this.years);
     }
 
     onChangeDate() {
@@ -2179,6 +2011,12 @@ export class RoutineSheetComponent implements OnInit {
 
     getContextMenuItems(params) {
         let thisRef = params.context.thisComponent;
+
+        // // console.log("********************");
+        // // console.log("thisRef.rowColor: ", thisRef.rowColor);
+        // // console.log("params: ", params);
+        // // console.log("********************");
+
         var result = [
             {
                 name: "CELL OPTIONS",
@@ -2196,7 +2034,7 @@ export class RoutineSheetComponent implements OnInit {
                     {
                         name: "Only this cell",
                         action: function () {
-                            console.log(params);
+                            // // // console.log(params);
                             thisRef.openModal(
                                 thisRef,
                                 HistoryComponent,
@@ -2204,30 +2042,30 @@ export class RoutineSheetComponent implements OnInit {
                                 {
                                     option: 2,
                                     colId: Number(params.column.colId),
-                                    entryId: params.node.rowIndex,
+                                    entryId: params.node.data.rowId,
                                 }
                             );
                         },
                         icon: createFlagImg("bookmark"),
                     },
-                    {
-                        name: "Show All",
-                        action: function () {
-                            console.log(params.column.colId);
-                            console.log(params.node.rowIndex);
-                            thisRef.openModal(
-                                thisRef,
-                                HistoryComponent,
-                                "1000px",
-                                {
-                                    option: 1,
-                                    colId: Number(params.column.colId),
-                                    entryId: params.node.rowIndex,
-                                }
-                            );
-                        },
-                        icon: createFlagImg("bookmark"),
-                    },
+                    // {
+                    //     name: "Show All",
+                    //     action: function () {
+                    //         // // // console.log(params.column.colId);
+                    //         // // // console.log(params.node.rowIndex);
+                    //         thisRef.openModal(
+                    //             thisRef,
+                    //             HistoryComponent,
+                    //             "1000px",
+                    //             {
+                    //                 option: 1,
+                    //                 colId: Number(params.column.colId),
+                    //                 entryId: params.node.data.rowId,
+                    //             }
+                    //         );
+                    //     },
+                    //     icon: createFlagImg("bookmark"),
+                    // },
                 ],
                 icon: createFlagImg("bookmark"),
             },
@@ -2242,8 +2080,8 @@ export class RoutineSheetComponent implements OnInit {
                 name: "DUPLICATE - Entire Record",
                 action: function () {
                     var newItems = [params.node.data];
-                    // console.log(params);
-                    thisRef.duplicateRow(newItems, params.node.rowIndex);
+                    // // // // console.log(params);
+                    thisRef.duplicateRow(newItems, params.node.data.rowId);
                     // thisRef.gridApi.applyTransaction({ add: newItems });
                 },
                 icon: createFlagImg("plus"),
@@ -2251,7 +2089,10 @@ export class RoutineSheetComponent implements OnInit {
             "separator",
             {
                 name: "DELETE - Entire Record",
-                action: thisRef.onRemoveSelected.bind(thisRef),
+                action: function () {
+                    var newItems = [params.node.data];
+                    thisRef.deleteRow(newItems, params.node.data.rowId);
+                },
                 icon: createFlagImg("close"),
             },
             {
@@ -2264,9 +2105,14 @@ export class RoutineSheetComponent implements OnInit {
             {
                 name: "BLUE",
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (
+                            el.rowId === params.node.rowIndex &&
+                            el.colId === params.column.userProvidedColDef.colId
+                        ) {
                             el.color = "blue";
+                            color = el.color;
                             el.colId = params.column.userProvidedColDef.colId;
                         }
                     });
@@ -2276,7 +2122,13 @@ export class RoutineSheetComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex);
+
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "blue"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("blue-color"),
@@ -2285,8 +2137,13 @@ export class RoutineSheetComponent implements OnInit {
             {
                 name: "GREEN",
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (
+                            el.rowId === params.node.rowIndex &&
+                            el.colId === params.column.userProvidedColDef.colId
+                        ) {
+                            color = el.color;
                             el.color = "green";
                             el.colId = params.column.userProvidedColDef.colId;
                         }
@@ -2297,7 +2154,12 @@ export class RoutineSheetComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex);
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "green"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("green-color"),
@@ -2306,8 +2168,13 @@ export class RoutineSheetComponent implements OnInit {
             {
                 name: "YELLOW",
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (
+                            el.rowId === params.node.rowIndex &&
+                            el.colId === params.column.userProvidedColDef.colId
+                        ) {
+                            color = el.color;
                             el.color = "yellow";
                             el.colId = params.column.userProvidedColDef.colId;
                         }
@@ -2318,7 +2185,12 @@ export class RoutineSheetComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex);
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "yellow"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("yellow-color"),
@@ -2327,8 +2199,13 @@ export class RoutineSheetComponent implements OnInit {
             {
                 name: "RED",
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (
+                            el.rowId === params.node.rowIndex &&
+                            el.colId === params.column.userProvidedColDef.colId
+                        ) {
+                            color = el.color;
                             el.color = "red";
                             el.colId = params.column.userProvidedColDef.colId;
                         }
@@ -2339,7 +2216,12 @@ export class RoutineSheetComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex);
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "red"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("red-color"),
@@ -2348,8 +2230,13 @@ export class RoutineSheetComponent implements OnInit {
             {
                 name: "PURPLE",
                 action: function () {
+                    let color = "";
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
+                        if (
+                            el.rowId === params.node.rowIndex &&
+                            el.colId === params.column.userProvidedColDef.colId
+                        ) {
+                            color = el.color;
                             el.color = "purple";
                             el.colId = params.column.userProvidedColDef.colId;
                         }
@@ -2360,7 +2247,12 @@ export class RoutineSheetComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.updateCellColor(params.node.rowIndex);
+                    thisRef.updateCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId,
+                        "purple"
+                    );
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("purple-color"),
@@ -2370,8 +2262,11 @@ export class RoutineSheetComponent implements OnInit {
                 name: "Remove Tag",
                 action: function () {
                     thisRef.rowColor.map((el) => {
-                        if (el.rowId === params.node.rowIndex) {
-                            el.color = "";
+                        if (
+                            el.rowId === params.node.rowIndex &&
+                            el.colId === params.column.userProvidedColDef.colId
+                        ) {
+                            el.color = null;
                             el.colId = params.column.userProvidedColDef.colId;
                         }
                     });
@@ -2381,7 +2276,13 @@ export class RoutineSheetComponent implements OnInit {
                             params.node.rowIndex
                         )
                     );
-                    thisRef.removeCellColor();
+
+                    thisRef.removeCellColor(
+                        params.context.salesData.rowData.row,
+                        params.node.data.rowId,
+                        params.column.userProvidedColDef.colId
+                    );
+
                     thisRef.gridApi.redrawRows();
                 },
                 icon: createFlagImg("close"),
@@ -2398,6 +2299,10 @@ export class RoutineSheetComponent implements OnInit {
             width: width,
             data: {
                 key: key,
+                ViewId: this.routineSelected,
+                DeptId: this.decryptedDepartmentId
+                    ? this.decryptedDepartmentId
+                    : this.departmentID,
             },
         });
         thisRef.dialogRef.afterClosed().subscribe((res) => {
@@ -2427,48 +2332,86 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     duplicateRow(newItems, index) {
+        // // console.log("************");
+        // // console.log("duplicate row method called", newItems, index);
+        // // console.log("************");
         this.gridApi.showLoadingOverlay();
 
         let params = {
-            EntryId: index + 1,
+            EntryId: index,
         };
-        this.saleslog.duplicateRows(params).subscribe((res) => {
+        this.saleslog.duplicateRows(params).subscribe(() => {
             this.gridApi.hideOverlay();
+            this.signalRService.BroadcastLiveSheetData();
             this.gridApi.applyTransaction({ add: newItems });
-            this.signalRService.BroadcastLiveSheetData();
         });
     }
 
-    removeCellColor(newItems?) {
+    removeCellColor(rowArray, entryId, columnId, value) {
+        const firstFilter = rowArray.filter((x) =>
+            x.cells.some((y) => y.entryId === entryId && y.colId === columnId)
+        );
+        const entryValueId = firstFilter[0].cells.filter(
+            (y) => y.entryId === entryId && y.colId === columnId
+        )[0].entryValueId;
+
         let params = {
-            EntryId: "",
+            EntryId: entryId,
+            EntryValueId: entryValueId,
+            Name: "background",
+            Value: value,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .userId,
+            ViewId: this.routineSelected,
+            DeptId: this.decryptedDepartmentId
+                ? this.decryptedDepartmentId
+                : this.departmentID,
         };
-        this.saleslog.removeCellColor(params).subscribe((res) => {
+
+        this.saleslog.removeCellColor(params).subscribe(() => {
             this.signalRService.BroadcastLiveSheetData();
         });
     }
 
-    deleteRow(index) {
+    deleteRow(newItems, index) {
         this.gridApi.showLoadingOverlay();
         let params = {
-            EntryId: index + 1,
+            EntryId: index,
         };
-        this.saleslog.deleteRows(params).subscribe((res) => {
+        this.saleslog.deleteRows(params).subscribe(() => {
+            this.signalRService.BroadcastLiveSheetDataForViews();
+            this.gridApi.applyTransaction({ remove: newItems });
             this.gridApi.hideOverlay();
             this.toastHandlerService.generateToast(
                 "Row Deleted Successfully",
                 "",
                 2000
             );
-            this.signalRService.BroadcastLiveSheetData();
         });
     }
 
-    updateCellColor(newItems?) {
+    updateCellColor(rowArray, entryId, columnId, value) {
+        const firstFilter = rowArray.filter((x) =>
+            x.cells.some((y) => y.entryId === entryId && y.colId === columnId)
+        );
+        const entryValueId = firstFilter[0].cells.filter(
+            (y) => y.entryId === entryId && y.colId === columnId
+        )[0].entryValueId;
+
         let params = {
-            EntryId: newItems,
+            EntryId: entryId,
+            EntryValueId: entryValueId,
+            Name: "background",
+            Value: value,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .userId,
+                ViewId: this.routineSelected,
+                DeptId: this.decryptedDepartmentId
+                    ? this.decryptedDepartmentId
+                    : this.departmentID,
         };
-        this.saleslog.updateCellColor(params).subscribe((res) => {
+
+        this.saleslog.updateCellColor(params).subscribe(() => {
             this.signalRService.BroadcastLiveSheetData();
         });
     }
@@ -2482,18 +2425,7 @@ export class RoutineSheetComponent implements OnInit {
         });
         this.monthSliderSearch(this.sliderItem);
     }
-
-    onRemoveSelected() {
-        var selectedData = this.gridApi.getSelectedRows();
-        var res = this.gridApi.applyTransaction({ remove: selectedData });
-        console.log(res, selectedData);
-        if (res.remove.length > 0) {
-            let index = res.remove[0].rowIndex;
-            console.log(index);
-            this.deleteRow(index);
-        }
-    }
-
+     
     getRowData() {
         var rowData = [];
         this.gridApi.forEachNode(function (node) {
@@ -2506,7 +2438,11 @@ export class RoutineSheetComponent implements OnInit {
             panelClass: "custom-dialog-container",
             width: "400px",
             data: {
-                key: { id: this.departmentID, viewId: this.routineSelected },
+                key: { id: this.departmentID, 
+                viewId: this.routineSelected, 
+                DeptId: this.decryptedDepartmentId
+                    ? this.decryptedDepartmentId
+                    : this.departmentID, },
             },
         });
         this.dialogRef.afterClosed().subscribe((res) => {
@@ -2515,26 +2451,41 @@ export class RoutineSheetComponent implements OnInit {
                     add: [
                         {
                             orderDate: moment(res.date).format("DD-MMM-YY"),
-                            estimated_delivery: "",
-                            actual_delivery: "",
-                            reported_date: "",
-                            status: "",
-                            pay: "",
-                            sales_eng: "",
-                            sales_person: "",
-                            aftermarket_manager: "",
-                            finance_manager: "",
-                            client: "",
-                            company_name: "",
-                            drivers_name: "",
-                            phone_number: "",
-                            cust_no: "",
                         },
                     ],
                 });
             }
         });
     }
+
+    onBtPrint() {
+        var api = this.gridApi;
+        this.setPrinterFriendly(api);
+        let thisRef = this;
+        setTimeout(function () {
+            window.print();
+            thisRef.setNormal(api);
+        }, 2000);
+    }
+
+    setPrinterFriendly(api) {
+        let eGridDiv: HTMLElement = document.getElementById(
+            "myGrid"
+        ) as HTMLElement;
+        eGridDiv.style.height = "";
+
+        api.setDomLayout("print");
+    }
+    setNormal(api) {
+        let eGridDiv: HTMLElement = document.getElementById(
+            "myGrid"
+        ) as HTMLElement;
+        eGridDiv.style.width = "100%";
+        eGridDiv.style.height = "600px";
+
+        api.setDomLayout(null);
+    }
+
 
     excelExport() {
         this.openModal(this, XlsExportComponent, "400px");
@@ -2544,7 +2495,9 @@ export class RoutineSheetComponent implements OnInit {
         this.openModal(this, ColumnOptionsComponent, "900px", {
             id: this.decryptedDepartmentId,
             viewId: this.routineSelected,
-            depId: this.departmentID,
+            DeptId: this.decryptedDepartmentId
+                ? this.decryptedDepartmentId
+                : this.departmentID,
         });
     }
 

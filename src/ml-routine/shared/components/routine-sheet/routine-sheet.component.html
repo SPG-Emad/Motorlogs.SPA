@@ -69,7 +69,7 @@
                 </h2>
                 <div class="secondary-options">
                     <app-search (click)="toggleShowDiv('divA')"></app-search>
-                    <app-print [printData]="printData" (click)="print()"></app-print>
+                    <app-print [printData]="printdata" (generatePrint)="onBtPrint()"></app-print>
                 </div>
             </div>
 
@@ -297,34 +297,31 @@
                 <!-- Sales Log Table Starts-->
                 <!-- Delivered and other sheet, not used in saleslog -->
                 <ag-grid-angular
-                    #agGrid
-                    style="width: 100%; height:600px;"
-                    id="myGrid"
-                    class="ag-theme-alpine"
-                    [modules]="modules"
-                    [columnDefs]="columnDefs"
-                    [defaultColDef]="defaultColDef"
-                    [autoGroupColumnDef]="autoGroupColumnDef"
-                    [suppressMenuHide]="true"
-                    [postProcessPopup]="postProcessPopup"
-                    
-                    [components]="components"
-                    [rowHeight]="rowHeight"
-                    
-                    [allowContextMenuWithControlKey]="true"
-                    [rowSelection]="rowSelection"
-                    [context]="thisComponent"
-                    [getRowClass]="getRowClass"
-                    [getMainMenuItems]="getMainMenuItems"
-                    [frameworkComponents]="frameworkComponents"
-                    [loadingOverlayComponent]="loadingOverlayComponent"
-                    [components]="components"
-
-                    
-                    [getContextMenuItems]="getContextMenuItems"
-                    [rowData]="rowData"
-                    (gridReady)="onGridReady($event)"
-                    (columnResized)="onColumnResized($event)"
+                #agGrid
+                style="width: 100%; height:300px;"
+                id="myGrid"
+                class="ag-theme-alpine"
+                [modules]="modules"
+                [columnDefs]="columnDefs"
+                [defaultColDef]="defaultColDef"
+                [autoGroupColumnDef]="autoGroupColumnDef"
+                [suppressMenuHide]="true"
+                [postProcessPopup]="postProcessPopup"
+                [components]="components"
+                [rowHeight]="rowHeight"
+                [allowContextMenuWithControlKey]="true"
+                [rowSelection]="rowSelection"
+                [context]="thisComponent"
+                [getRowClass]="getRowClass"
+                [frameworkComponents]="frameworkComponents"
+                [loadingOverlayComponent]="loadingOverlayComponent"
+                [components]="components"
+                [getContextMenuItems]="getContextMenuItems"
+                [rowData]="rowData"
+                (gridReady)="onGridReady($event)"
+                (columnResized)="onColumnResized($event)"
+                [blockLoadDebounceMillis]="true"
+                [rowBuffer]="20"
                 >
                 </ag-grid-angular>
                 <!-- / Sales Log Table Ends-->
