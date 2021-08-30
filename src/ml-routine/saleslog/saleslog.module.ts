@@ -9,10 +9,8 @@ import { MatIconModule } from "@angular/material/icon";
 import { AgGridModule } from "@ag-grid-community/angular";
 import { MatDialogModule } from "@angular/material/dialog";
 import { Ng2CarouselamosModule } from "ng2-carouselamos";
-import { HistoryComponent } from "./components/history/history.component";
 import { NewDealComponent } from "./components/new-deal/new-deal.component";
 import { ExcelExportComponent } from "./components/excel-export/excel-export.component";
-import { ColumnOptionComponent } from "./components/column-option/column-option.component";
 import { CustomHeaderComponent } from "ml-routine/shared/components/custom-header/custom-header.component";
 import { MatFormFieldModule } from "@angular/material/form-field";
 import { MatDatepickerModule } from "@angular/material/datepicker";
@@ -81,27 +79,17 @@ export const ROUTES: Routes = [
             DropDownRenderer,
             AppComponentDateTime,
             CustomLoadingOverlayComponent,
-        ])
+        ]),
     ],
     declarations: [
         SaleslogComponent,
-        HistoryComponent,
         NewDealComponent,
         ExcelExportComponent,
-        ColumnOptionComponent,
-        CustomDropDownRenderer,
-        CalenderRenderer,
-        CustomDropdownComponent,
-        DropDownRenderer,
         AppComponentDateTime,
-        CustomLoadingOverlayComponent,
     ],
     entryComponents: [
-        HistoryComponent,
         NewDealComponent,
         ExcelExportComponent,
-        ColumnOptionComponent,
-        CustomLoadingOverlayComponent,
     ],
     providers: [CdkColumnDef],
 })

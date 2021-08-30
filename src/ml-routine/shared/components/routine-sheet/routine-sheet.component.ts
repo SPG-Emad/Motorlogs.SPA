@@ -1,38 +1,31 @@
-import {
-    Component,
-    OnInit,
-    Input,
-    ElementRef,
-    ViewChild,
-} from "@angular/core";
-import { HttpClient } from "@angular/common/http";
+
+import { CustomLoadingOverlayComponent } from "../../../saleslog/components/custom-loading-overlay/custom-loading-overlay.component";
+
+import { Component, OnInit, Input, ViewChild, ElementRef } from "@angular/core";
 import { ToastHandlerService } from "app/shared/services/toast-handler.service";
 import { MatDialog } from "@angular/material/dialog";
-import { HistoryComponent } from "../history/history.component";
+import { HistoryComponent } from "ml-routine/saleslog/components/history/history.component";
 import { NewDealComponent } from "../new-deal/new-deal.component";
-import { XlsExportComponent } from "../xls-export/xls-export.component";
-import { ColumnOptionsComponent } from "../column-options/column-options.component";
 
 import { AllModules } from "@ag-grid-enterprise/all-modules";
+import { CustomHeaderComponent } from "ml-routine/shared/components/custom-header/custom-header.component";
 import { SlideInOutAnimation } from "app/shared/animation/animation";
 import { FormBuilder, FormGroup } from "@angular/forms";
 import * as moment from "moment";
 import { EncryptionService } from "app/shared/services/encryption.service";
-import { ActivatedRoute, Router } from "@angular/router";
+import { ActivatedRoute } from "@angular/router";
 import { MatSnackBar } from "@angular/material/snack-bar";
-import { AuthService } from "ml-auth/shared/services/ml-auth/ml-auth.service";
+import { CalenderRenderer } from "../../../saleslog/containers/saleslog/calander-renderer.component";
+// import * as Selectize from '../../../../../node_modules/selectize/dist/js/standalone/selectize.js';
 
+import { CustomDropDownRenderer } from "../../../saleslog/containers/saleslog/custom-dropdown-renderer.component";
+import { DropDownRenderer } from "../../../saleslog/containers/saleslog/dropdown-renderer.component";
 import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.service";
 import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { SharedService } from "ml-setup/shared/services/shared/shared.service";
 import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.service";
-
-import { CalenderRenderer } from "../grid-custom/calander-renderer.component";
-import { CustomLoadingOverlayComponent } from "ml-shared/components/custom-loading-overlay/custom-loading-overlay.component";
-import { CustomHeaderComponent } from "ml-routine/shared/components/custom-header/custom-header.component";
-
-import { CustomDropDownRenderer } from "../grid-custom/custom-dropdown-renderer.component";
-import { DropDownRenderer } from "../grid-custom/dropdown-renderer.component";
+import { ColumnOptionsComponent } from "../column-options/column-options.component";
+import { XlsExportComponent } from "../xls-export/xls-export.component";
 
 declare var $: any;
 
@@ -235,17 +228,14 @@ export class RoutineSheetComponent implements OnInit {
     });
 
     constructor(
-        private http: HttpClient,
         private toastHandlerService: ToastHandlerService,
         public dialog: MatDialog,
         private fb: FormBuilder,
         public sharedService: SharedService,
         private LocalStorageHandlerService: LocalStorageHandlerService,
-        private router: Router,
         public snackBar: MatSnackBar,
         private route: ActivatedRoute,
         private encryptionService: EncryptionService,
-        private authService: AuthService,
         private saleslog: SaleslogService,
         private signalRService: SignalRService // private siteTargetSerivce: SiteTargetsService
     ) {
@@ -502,7 +492,7 @@ export class RoutineSheetComponent implements OnInit {
             config: "{'width':" + width + "}", // or "{'sequence':1}"
         };
 
-        this.saleslog.updateViewColumnOptions(params).subscribe((res) => {
+        this.saleslog.updateViewColumnOptions(params).subscribe(() => {
             this.signalRService.BroadcastLiveSheetData();
         });
     }
@@ -659,13 +649,6 @@ export class RoutineSheetComponent implements OnInit {
             // // // console.log(newItem);
             api.applyTransactionAsync({ update: [itemToUpdate] });
         }
-        function copyObject(object) {
-            var newObject = {};
-            Object.keys(object).forEach(function (key) {
-                newObject[key] = object[key];
-            });
-            return newObject;
-        }
     }
 
     public addBroadcastLiveSheetDataForViewsListener = () => {
@@ -767,7 +750,6 @@ export class RoutineSheetComponent implements OnInit {
                 .departmentAccess;
             this.departmentIDs = department;
             let count = 0;
-            let ID = 0;
             department = department.find((el) => {
                 if (count === 0) {
                     count++;
@@ -789,7 +771,6 @@ export class RoutineSheetComponent implements OnInit {
                 });
             });
             let count = 0;
-            let ID = 0;
             department = department.find((el) => {
                 if (count === 0) {
                     count++;
@@ -875,8 +856,6 @@ export class RoutineSheetComponent implements OnInit {
                     index++;
                 });
 
-                /** Calculate Aggregared Header */
-                let columnData = this.cellData[0];
                 let typeArray = [];
                 // console.log(this.cellData[0]);
                 // console.log(this.cellData[0]['"OD"'], this.cellData[0]['"ED"'], this.cellData[0]['"VEHGRO"'], this.cellData[0]['"AD"'], this.cellData[0]["type"]);
