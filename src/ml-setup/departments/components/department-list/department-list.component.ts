@@ -35,6 +35,7 @@ export class DepartmentListComponent implements OnInit {
     displayedColumns = [
         { def: 'id', label: 'ID', hide: true },
         { def: 'logo', label: 'Logo', hide: true },
+        { def: 'protected', label: 'Protected', hide: true },
         { def: 'picture', label: 'Logo', hide: false },
         { def: 'name', label: 'Name', hide: false },
         { def: 'abbr', label: 'Abbreviation', hide: false },

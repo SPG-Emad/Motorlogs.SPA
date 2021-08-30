@@ -41,6 +41,7 @@
                 [ngClass]="{ inActiveRow: !element.enabled }"
             >
                 <mat-checkbox
+                *ngIf="!element.protected"
                     (change)="changeActive($event, element)"
                     [checked]="element.enabled"
                 ></mat-checkbox>
@@ -48,19 +49,22 @@
         </ng-container>
         <ng-container matColumnDef="action">
             <th mat-header-cell *matHeaderCellDef>Action</th>
-            <td mat-cell *matCellDef="let element" class="action-link" [ngClass]="{ inActiveRow: !element.enabled }">
+            <td mat-cell *matCellDef="let element" class="action-link" [ngClass]="{ inActiveRow: !element.enabled }" >
                 <mat-icon
                     class="pointer secondary-text mat-icon notranslate material-icons mat-icon-no-color deleteImg"
                     role="img"
                     aria-hidden="true"
                     title="Edit"
+                    *ngIf="!element.protected"
                     (click)="editDepartment(element)"
                     >edit</mat-icon
                 >
 
+                <div *ngIf="!element.protected">
                 <delete-confirm
+                
                     (deleteConfirmed)="removeDepartment(element)"
-                ></delete-confirm>
+                ></delete-confirm></div>
             </td>
         </ng-container>
 

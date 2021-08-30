@@ -2071,9 +2071,9 @@ export class SaleslogComponent implements OnInit {
             EntryId: index,
         };
         this.saleslog.deleteRows(params).subscribe(() => {
-            this.signalRService.BroadcastLiveSheetDataForViews();
-            this.gridApi.applyTransaction({ remove: newItems });
             this.gridApi.hideOverlay();
+            this.signalRService.BroadcastLiveSheetData();
+            this.gridApi.applyTransaction({ remove: newItems });
             this.toastHandlerService.generateToast(
                 "Row Deleted Successfully",
                 "",

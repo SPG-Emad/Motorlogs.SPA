@@ -24,7 +24,7 @@ import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.se
 import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { SharedService } from "ml-setup/shared/services/shared/shared.service";
 import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.service";
-import { ColumnOptionsComponent } from "../column-options/column-options.component";
+import { ColumnOptionComponent } from "../../../saleslog/components/column-option/column-option.component";
 import { XlsExportComponent } from "../xls-export/xls-export.component";
 
 declare var $: any;
@@ -2281,7 +2281,7 @@ export class RoutineSheetComponent implements OnInit {
             width: width,
             data: {
                 key: key,
-                ViewId: this.routineSelected,
+                viewId: this.routineSelected,
                 DeptId: this.decryptedDepartmentId
                     ? this.decryptedDepartmentId
                     : this.departmentID,
@@ -2361,9 +2361,9 @@ export class RoutineSheetComponent implements OnInit {
             EntryId: index,
         };
         this.saleslog.deleteRows(params).subscribe(() => {
-            this.signalRService.BroadcastLiveSheetDataForViews();
-            this.gridApi.applyTransaction({ remove: newItems });
             this.gridApi.hideOverlay();
+            this.signalRService.BroadcastLiveSheetData();
+            this.gridApi.applyTransaction({ remove: newItems });
             this.toastHandlerService.generateToast(
                 "Row Deleted Successfully",
                 "",
@@ -2474,13 +2474,12 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     columnOption() {
-        this.openModal(this, ColumnOptionsComponent, "900px", {
-            id: this.decryptedDepartmentId,
-            viewId: this.routineSelected,
-            DeptId: this.decryptedDepartmentId
-                ? this.decryptedDepartmentId
-                : this.departmentID,
-        });
+        this.openModal(
+            this,
+            ColumnOptionComponent,
+            "900px",
+            this.decryptedDepartmentId
+        );
     }
 
     print() {

@@ -20,7 +20,6 @@ import { GoToCurrentMonthComponent } from "./components/go-to-current-month/go-t
 import { PrintComponent } from "./components/print/print.component";
 import { SearchComponent } from "./components/search/search.component";
 import { XlsExportComponent } from "./components/xls-export/xls-export.component";
-import { ColumnOptionsComponent } from "./components/column-options/column-options.component";
 import { DateFiltersComponent } from "./components/date-filters/date-filters.component";
 import { DateCalendarComponent } from "./components/date-filters/date-calendar/date-calendar.component";
 
@@ -101,7 +100,6 @@ import { ColumnOptionComponent } from "ml-routine/saleslog/components/column-opt
     declarations: [
         HistoryComponent,
         ActionModalComponent,
-        ColumnOptionsComponent,
         DataCalculationsComponent,
         DataEntrySheetComponent,
         DateFiltersComponent,
@@ -129,7 +127,6 @@ import { ColumnOptionComponent } from "ml-routine/saleslog/components/column-opt
     exports: [
         HistoryComponent,
         ActionModalComponent,
-        ColumnOptionsComponent,
         DataCalculationsComponent,
         DataEntrySheetComponent,
         DateFiltersComponent,
@@ -157,7 +154,7 @@ import { ColumnOptionComponent } from "ml-routine/saleslog/components/column-opt
     entryComponents: [
         HistoryComponent,
         XlsExportComponent,
-        ColumnOptionsComponent,
+        ColumnOptionComponent,
         NewDealComponent,
         OwlDatePickerComponent,
         CustomLoadingOverlayComponent,
