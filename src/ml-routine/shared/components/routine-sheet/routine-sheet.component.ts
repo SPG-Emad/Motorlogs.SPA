@@ -727,21 +727,21 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     renderDepartmentNameHeading() {
-        let department = this.LocalStorageHandlerService.getFromStorage(
-            "userObj"
-        ).departmentAccess;
-        this.departmentIDs = department;
-        let count = 0;
-        department = department.find((el) => {
-            if (count === 0) {
-                count++;
-                this.departmentID = el.departmentId;
-            }
-            return (
-                Number(el.departmentId) ===  Number(this.decryptedDepartmentId)
-            );
-        });
-        this.departmentNameRendered = department.departmentName;
+        // let department = this.LocalStorageHandlerService.getFromStorage(
+        //     "userObj"
+        // ).departmentAccess;
+        // this.departmentIDs = department;
+        // let count = 0;
+        // department = department.find((el) => {
+        //     if (count === 0) {
+        //         count++;
+        //         this.departmentID = el.departmentId;
+        //     }
+        //     return (
+        //         Number(el.departmentId) ===  Number(this.decryptedDepartmentId)
+        //     );
+        // });
+        // this.departmentNameRendered = department.departmentName;
     }
 
     generateGrid(months?, date?) {
@@ -764,13 +764,16 @@ export class RoutineSheetComponent implements OnInit {
         } else {
             let department = this.LocalStorageHandlerService.getFromStorage("userObj").departmentAccess;
 
+            console.log('department::::::: ', department);
             department.map((res) => {
                 this.departmentIDs.push({
                     value: res.departmentId,
                     viewValue: res.departmentName,
                 });
             });
+
             let count = 0;
+            let ID = 0;
             department = department.find((el) => {
                 if (count === 0) {
                     count++;

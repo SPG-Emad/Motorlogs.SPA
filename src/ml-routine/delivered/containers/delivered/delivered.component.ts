@@ -11,7 +11,7 @@ export class DeliveredComponent implements OnInit {
 
     decryptedDepartmentId: string;
     routineSelected: number = 2;
-    constructor(private router: Router, private route: ActivatedRoute, private encryptionService: EncryptionService) { }
+    constructor(private route: ActivatedRoute, private encryptionService: EncryptionService) { }
 
     ngOnInit() {
         this.route.paramMap.subscribe(params => {
