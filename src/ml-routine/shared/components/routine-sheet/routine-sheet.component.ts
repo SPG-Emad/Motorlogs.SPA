@@ -2478,7 +2478,7 @@ export class RoutineSheetComponent implements OnInit {
             this,
             ColumnOptionComponent,
             "900px",
-            this.decryptedDepartmentId
+            this.departmentID
         );
     }
 
