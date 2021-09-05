@@ -2325,10 +2325,13 @@ export class RoutineSheetComponent implements OnInit {
                         }
                     });
                 }
-                setTimeout(() => {
-                    this.gridApi.refreshView();
-                   // this.gridApi.sizeColumnsToFit();
-                }, 0);
+
+                window.location.reload();
+
+                // setTimeout(() => {
+                //     this.gridApi.refreshView();
+                //    // this.gridApi.sizeColumnsToFit();
+                // }, 0);
             }
         });
     }

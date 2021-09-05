@@ -142,8 +142,9 @@ export class ColumnOptionComponent implements OnInit {
             DeptId: this.decryptedDepartmentId,
         };
         this.saleslogService.resetColumn(params).subscribe(() => {
-            this.signalRService.BroadcastLiveSheetData();
-            this.getColumns();
+            // this.signalRService.BroadcastLiveSheetData();
+            // this.getColumns();
+            window.location.reload();
         });
     }
 
