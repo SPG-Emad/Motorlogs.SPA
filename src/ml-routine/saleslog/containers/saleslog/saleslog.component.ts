@@ -376,7 +376,7 @@ export class SaleslogComponent implements OnInit {
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
             // },
-            //valueFormatter: this.formatNumber.bind(this),
+            // valueFormatter: this.formatNumber.bind(this),
             // maxWidth: 105,
         };
 
@@ -572,6 +572,11 @@ export class SaleslogComponent implements OnInit {
         this.departmentNameRendered = department.departmentName;
     }
 
+    isValidDate(value) {
+        var dateWrapper = new Date(value);
+        return !isNaN(dateWrapper.getDate());
+    }
+
     generateGrid(months?, date?) {
         if (this.rowData.length === 0) {
             this.gridApi.showLoadingOverlay();
@@ -617,22 +622,47 @@ export class SaleslogComponent implements OnInit {
                         color: element1.cellColor,
                     });
 
+                   
+
                     this.cellMap["rowId"] = rowIndexId;
 
-                    if (element1.colCode === "OD") {
-                        this.cellMap[element1.colId] = moment(
-                            element1.currentCellValue
-                        ).format("DD/MM/YYYY");
-
-                        this.cellMap['"' + element1.colCode + '"'] = moment(
-                            element1.currentCellValue
-                        ).format("DD/MM/YYYY");
+                    if (element1.colType && element1.colType === "Date") {
+                        if (
+                            element1.currentCellValue &&
+                            element1.currentCellValue !== null &&
+                            element1.currentCellValue !== undefined &&
+                            this.isValidDate(element1.currentCellValue)
+                        ) {
+                            this.cellMap[element1.colId] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY");
+                        }
+                    } else if (
+                        element1.colType &&
+                        element1.colType === "Combo"
+                    ) {
+                        console.log("COMBOOO: ", element1.currentCellValue);
+                        if (
+                            element1.currentCellValue &&
+                            element1.currentCellValue !== null &&
+                            element1.currentCellValue !== undefined &&
+                            this.isValidDate(element1.currentCellValue)
+                        ) {
+                            this.cellMap[element1.colId] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY hh:mm");
+                        }
                     } else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] =
                             element1.currentCellValue;
-                        //console.log('element1.colCode ', element1.colCode,' element1.currentCellValue: ', element1.currentCellValue);
                     }
 
                     if (element1.cellOptions.length > 0) {
@@ -796,8 +826,7 @@ export class SaleslogComponent implements OnInit {
 
                 if (element.type === "Date") {
                     columnMap["cellEditor"] = "dateEditor";
-                    columnMap["valueFormatter"] =
-                        this.isoDateValueFormatter.bind(this);
+                    // columnMap["valueFormatter"] = this.formatDate.bind(this);
                 } else if (element.type === "DD-Fixed") {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
                 } else if (element.type === "DD-Self") {
@@ -910,14 +939,38 @@ export class SaleslogComponent implements OnInit {
 
                     this.cellMap["rowId"] = rowIndexId;
 
-                    if (element1.colCode === "OD") {
-                        this.cellMap[element1.colId] = moment(
-                            element1.currentCellValue
-                        ).format("DD/MM/YYYY");
-
-                        this.cellMap['"' + element1.colCode + '"'] = moment(
-                            element1.currentCellValue
-                        ).format("DD/MM/YYYY");
+                    if (element1.colType && element1.colType === "Date") {
+                        if (
+                            element1.currentCellValue &&
+                            element1.currentCellValue !== null &&
+                            element1.currentCellValue !== undefined &&
+                            this.isValidDate(element1.currentCellValue)
+                        ) {
+                            this.cellMap[element1.colId] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY");
+                        }
+                    } else if (
+                        element1.colType &&
+                        element1.colType === "Combo"
+                    ) {
+                        console.log("COMBOOO: ", element1.currentCellValue);
+                        if (
+                            element1.currentCellValue &&
+                            element1.currentCellValue !== null &&
+                            element1.currentCellValue !== undefined &&
+                            this.isValidDate(element1.currentCellValue)
+                        ) {
+                            this.cellMap[element1.colId] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY hh:mm");
+                        }
                     } else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
@@ -1566,6 +1619,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     formatNumber(params) {
+        console.log("formatNumberCalled: ", params.colDef.type);
         if (params.colDef.type === "number") {
             return (
                 "$" +
@@ -1573,6 +1627,18 @@ export class SaleslogComponent implements OnInit {
                     .toString()
                     .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
             );
+        }
+    }
+
+    formatDate(params) {
+        console.log("formatDate: ", params);
+        if (
+            params.value !== null &&
+            params.value &&
+            params.value !== undefined &&
+            params.value !== "Invalid date"
+        ) {
+            return moment(params.value).format("DD/MM/YYYY");
         }
     }
 
@@ -2245,17 +2311,6 @@ function getDatePicker() {
             format: "d/m/Y",
             timepicker: false,
             inline: false,
-            // onChangeDateTime:function(dp,$input){
-
-            //     $('.ag-input').trigger({
-            //         type: 'keypress',
-            //         which: 13
-            //     });
-
-            //     console.log(dp);
-            //     console.log($input);
-            //     console.log($input.datetimepicker('getValue'));
-            // }
         });
     };
 

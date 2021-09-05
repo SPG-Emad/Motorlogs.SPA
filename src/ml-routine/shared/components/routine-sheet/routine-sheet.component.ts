@@ -731,26 +731,14 @@ export class RoutineSheetComponent implements OnInit {
         this.gridColumnApi = params.columnApi;
         this.pageCounter = this.pageCounter + 1;
         this.gridApi.showLoadingOverlay();
-
         this.generateGrid();
     }
 
-    renderDepartmentNameHeading() {
-        // let department = this.LocalStorageHandlerService.getFromStorage(
-        //     "userObj"
-        // ).departmentAccess;
-        // this.departmentIDs = department;
-        // let count = 0;
-        // department = department.find((el) => {
-        //     if (count === 0) {
-        //         count++;
-        //         this.departmentID = el.departmentId;
-        //     }
-        //     return (
-        //         Number(el.departmentId) ===  Number(this.decryptedDepartmentId)
-        //     );
-        // });
-        // this.departmentNameRendered = department.departmentName;
+    renderDepartmentNameHeading() {}
+
+    isValidDate(value) {
+        var dateWrapper = new Date(value);
+        return !isNaN(dateWrapper.getDate());
     }
 
     generateGrid(months?, date?) {
@@ -773,26 +761,6 @@ export class RoutineSheetComponent implements OnInit {
             });
             this.departmentName = department.departmentName;
         } else {
-            // let department = this.LocalStorageHandlerService.getFromStorage("userObj").departmentAccess;
-            // console.log('department::::::: ', department);
-            // department.map((res) => {
-            //     this.departmentIDs.push({
-            //         value: res.departmentId,
-            //         viewValue: res.departmentName,
-            //     });
-            // });
-            // let count = 0;
-            // let ID = 0;
-            // department = department.find((el) => {
-            //     if (count === 0) {
-            //         count++;
-            //         this.departmentID = el.departmentId;
-            //     }
-            //     return (
-            //         Number(el.departmentId) ===
-            //         Number(this.decryptedDepartmentId)
-            //     );
-            // });
         }
 
         if (this.rowData.length === 0) {
@@ -844,19 +812,42 @@ export class RoutineSheetComponent implements OnInit {
                     this.rowColor.push({
                         rowId: rowIndex,
                         colId: element1.colId,
-                        color: "",
+                        color: element1.cellColor,
                     });
                     this.cellMap["rowId"] = rowIndexId;
 
-                    if (element1.colCode === "OD") {
-                        this.cellMap[element1.colId] = moment(
-                            element1.currentCellValue
-                        ).format("DD/MM/YYYY");
-
-                        this.cellMap['"' + element1.colCode + '"'] = moment(
-                            element1.currentCellValue
-                        ).format("DD/MM/YYYY");
-                        // console.log(this.cellMap['"'+element1.colCode+'"'])
+                    if (element1.colType && element1.colType === "Date") {
+                        if (
+                            element1.currentCellValue &&
+                            element1.currentCellValue !== null &&
+                            element1.currentCellValue !== undefined &&
+                            this.isValidDate(element1.currentCellValue)
+                        ) {
+                            this.cellMap[element1.colId] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY");
+                        }
+                    } else if (
+                        element1.colType &&
+                        element1.colType === "Combo"
+                    ) {
+                        console.log("COMBOOO: ", element1.currentCellValue);
+                        if (
+                            element1.currentCellValue &&
+                            element1.currentCellValue !== null &&
+                            element1.currentCellValue !== undefined &&
+                            this.isValidDate(element1.currentCellValue)
+                        ) {
+                            this.cellMap[element1.colId] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY hh:mm");
+                        }
                     } else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
@@ -1171,14 +1162,38 @@ export class RoutineSheetComponent implements OnInit {
 
                     this.cellMap["rowId"] = rowIndexId;
 
-                    if (element1.colCode === "OD") {
-                        this.cellMap[element1.colId] = moment(
-                            element1.currentCellValue
-                        ).format("DD/MM/YYYY");
-
-                        this.cellMap['"' + element1.colCode + '"'] = moment(
-                            element1.currentCellValue
-                        ).format("DD/MM/YYYY");
+                    if (element1.colType && element1.colType === "Date") {
+                        if (
+                            element1.currentCellValue &&
+                            element1.currentCellValue !== null &&
+                            element1.currentCellValue !== undefined &&
+                            this.isValidDate(element1.currentCellValue)
+                        ) {
+                            this.cellMap[element1.colId] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY");
+                        }
+                    } else if (
+                        element1.colType &&
+                        element1.colType === "Combo"
+                    ) {
+                        console.log("COMBOOO: ", element1.currentCellValue);
+                        if (
+                            element1.currentCellValue &&
+                            element1.currentCellValue !== null &&
+                            element1.currentCellValue !== undefined &&
+                            this.isValidDate(element1.currentCellValue)
+                        ) {
+                            this.cellMap[element1.colId] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(
+                                element1.currentCellValue
+                            ).format("DD/MM/YYYY hh:mm");
+                        }
                     } else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
@@ -2545,7 +2560,7 @@ function getDatePicker() {
         $.datetimepicker.setLocale("en");
         $(this.eInput).datetimepicker({
             // mask:true,
-            format: "m/d/Y",
+            format: "d/m/Y",
             timepicker: false,
             inline: false,
         });

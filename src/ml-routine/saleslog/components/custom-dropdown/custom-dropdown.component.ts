@@ -41,9 +41,11 @@ export class CustomDropdownComponent
     @Input("colDef") colDef: any;
     @Input("viewId") viewId: any;
 
+    paramsObject: any;
+    selectedItem: string;
+
     protected items: ItemObj[] = [];
     protected dateitems: ItemObj[] = [];
-    paramsObject: any;
 
     /** control for the selected bank */
     public bankCtrl: FormControl = new FormControl();
@@ -59,146 +61,17 @@ export class CustomDropdownComponent
     /** Subject that emits when the component has been destroyed. */
     protected _onDestroy = new Subject<void>();
 
-    selectedItem: string;
-
     constructor(
         private salesLogService: SaleslogService,
         private LocalStorageHandlerService: LocalStorageHandlerService,
         private signalRService: SignalRService,
         private cdref: ChangeDetectorRef
-    ) {}
+    ) {
+        console.log("custom-dropdown-component CONSTRUCTOR");
+    }
 
     ngAfterContentChecked() {
         this.cdref.detectChanges();
-    }
-
-    open() {
-        console.log("cal open");
-
-        $.datetimepicker.setLocale("en");
-        $("#_datetimepicker4").datetimepicker({
-            format: "d/m/Y H:i",
-            allowTimes: [
-                "0:00",
-                "9:00",
-                "9:30",
-                "10:00",
-                "10:30",
-                "11:00",
-                "11:30",
-                "12:00",
-                "12:30",
-                "01:00",
-                "1:30",
-                "2:30",
-                "3:00",
-                "3:30",
-                "4:00",
-                "4:30",
-                "5:00",
-                "5:30",
-            ],
-            inline: true,
-        });
-    }
-
-    openedChange(opened: boolean) {
-        this.open();
-
-        $('[id^="mat-input"]').attr("placeholder", "Search");
-        $(".mat-select-search-no-entries-found").text("");
-
-        opened ? $("#calDisplay").show() : $("#calDisplay").hide();
-    }
-
-    doSomething() {
-        this.selectedItem = $("#_datetimepicker4").val();
-        
-        if (
-            this.items.length == this.itemArray.length &&
-            this.selectedItem != null
-            ) {
-                // console.log(this.items);
-                let item = new ItemObj();
-                
-                item.name = this.selectedItem;
-                item.id = "-1";
-                item.code = null;
-                item.details = null;
-                this.dateitems.push(item);
-
-                //this.ngOnInit();
-            }
-            if (
-                this.items.length == this.itemArray.length + 1 &&
-                this.selectedItem != null
-                ) {
-                    // console.log(this.selectedItem+ " "+this.items.length);
-                    this.items.splice(0, 1); // delete the last item
-                    //  this.items.push({code:  this.selectedItem, id:  this.selectedItem ,name:null ,details:null});
-                    // console.log(this.items);
-            let item = new ItemObj();
-            
-            item.name = this.selectedItem;
-            item.id = "-1";
-            item.code = null;
-            item.details = null;
-            this.dateitems.push(item);
-            
-            // this.ngOnInit();
-        }
-        
-        console.log("doSomething this.items: ", this.items);
-        console.log("doSomething this.dateitems: ", this.dateitems);
-        this.ngOnInit();
-    }
-
-    dateTimePushToItems(item): boolean {
-        if (this.items.some((x) => x.code === item)) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    ngOnInit() {
-        console.log("SELECTED ITEM: ", this.selected);
-        let itemObjArray: ItemObj[] = [];
-        let selected = this.selected;
-        if (this.itemArray) {
-            this.itemArray.forEach(function (k: any) {
-                let item = new ItemObj();
-                item.name = k.valText;
-                item.id = k.id;
-                if (k.code) {
-                    item.code = k.code;
-                } else {
-                    item.code = k.valText;
-                }
-                item.details = k.details;
-                if (item.name != selected) {
-                    itemObjArray.push(item); // dates will be inserted here mostly
-                }
-            });
-        }
-        if (this.dateitems.length >= 1) {
-            this.items = this.dateitems.concat(itemObjArray); // add date time to existing combo value from json
-            console.log("date items exists 1: ", this.dateitems);
-        } else {
-            this.items = itemObjArray; // add date time to existing combo value from json
-        }
-
-        // set initial selection
-        this.bankCtrl.setValue(this.items[10]);
-        // load the initial bank list
-        this.filteredBanks.next(this.items.slice());
-
-        // listen for search field value changes
-        this.bankFilterCtrl.valueChanges
-            .pipe(takeUntil(this._onDestroy))
-            .subscribe(() => {
-                this.filterBanks();
-            });
     }
 
     ngAfterViewInit() {
@@ -220,15 +93,7 @@ export class CustomDropdownComponent
     protected setInitialValue() {
         this.filteredBanks
             .pipe(take(1), takeUntil(this._onDestroy))
-            .subscribe(() => {
-                // setting the compareWith property to a comparison function
-                // triggers initializing the selection according to the initial value of
-                // the form control (i.e. _initializeSelection())
-                // this needs to be done after the filteredBanks are loaded initially
-                // and after the mat-option elements are available
-                // this.singleSelect.compareWith = (a: ItemObj, b: ItemObj) =>
-                //     a && b && a.id === b.id;
-            });
+            .subscribe(() => {});
     }
 
     private filterBanks() {
@@ -240,9 +105,9 @@ export class CustomDropdownComponent
             this.bankFilterCtrl.value != null
                 ? this.bankFilterCtrl.value
                 : this.selectedItem;
-        
-        console.log('search value: ', search);
-        console.log('this.items in filterBanks: ', this.items);
+
+        // console.log("search value: ", search);
+        // console.log("this.items in filterBanks: ", this.items);
 
         if (!search) {
             this.filteredBanks.next(this.items.slice());
@@ -281,10 +146,160 @@ export class CustomDropdownComponent
         );
     }
 
+    open() {
+        // console.log("cal open");
+
+        $.datetimepicker.setLocale("en");
+        $("#_datetimepicker4").datetimepicker({
+            format: "d/m/Y H:i",
+            allowTimes: [
+                "0:00",
+                "9:00",
+                "9:30",
+                "10:00",
+                "10:30",
+                "11:00",
+                "11:30",
+                "12:00",
+                "12:30",
+                "01:00",
+                "1:30",
+                "2:30",
+                "3:00",
+                "3:30",
+                "4:00",
+                "4:30",
+                "5:00",
+                "5:30",
+            ],
+            inline: true,
+        });
+    }
+
+    openedChange(opened: boolean) {
+        this.open();
+        $('[id^="mat-input"]').attr("placeholder", "Search");
+        $(".mat-select-search-no-entries-found").text("");
+        opened ? $("#calDisplay").show() : $("#calDisplay").hide();
+    }
+
+    doSomething() {
+        this.selectedItem = $("#_datetimepicker4").val();
+
+        console.log("doSomething Items1: ", this.items);
+        console.log("doSomething ItemsArray1: ", this.itemArray);
+        console.log("doSomething this.dateitems1: ", this.dateitems);
+        console.log("doSomething SelectedItem1: ", this.selectedItem);
+
+        if (
+            this.items.length == this.itemArray.length &&
+            this.selectedItem != null
+        ) {
+            // console.log(this.items);
+            let item = new ItemObj();
+
+            item.name = this.selectedItem;
+            item.id = "-1";
+            item.code = null;
+            item.details = null;
+            this.dateitems.push(item);
+
+            //this.ngOnInit();
+        }
+        if (
+            this.items.length == this.itemArray.length + 1 &&
+            this.selectedItem != null
+        ) {
+            // console.log(this.selectedItem+ " "+this.items.length);
+            this.items.splice(0, 1); // delete the last item
+            //  this.items.push({code:  this.selectedItem, id:  this.selectedItem ,name:null ,details:null});
+            // console.log(this.items);
+            let item = new ItemObj();
+
+            item.name = this.selectedItem;
+            item.id = "-1";
+            item.code = null;
+            item.details = null;
+            this.dateitems.push(item);
+
+            // this.ngOnInit();
+        }
+
+        console.log("doSomething this.items2: ", this.items);
+        console.log("doSomething ItemsArray2: ", this.itemArray);
+        console.log("doSomething this.dateitems2: ", this.dateitems);
+        console.log("doSomething SelectedItem2: ", this.selectedItem);
+        // this.ngOnInit();
+        this.saveComboDropDownValueToDatabase(this.selectedItem);
+    }
+
+    dateTimePushToItems(item): boolean {
+        if (this.items.some((x) => x.code === item)) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    ngOnInit() {
+        console.log("custom-dropdown-component ngOnInIt");
+        console.log("custom-dropdown-component SELECTED ITEM: ", this.selected);
+        
+        let itemObjArray: ItemObj[] = [];
+        let selected = this.selected;
+
+        if (this.itemArray) {
+            this.itemArray.forEach(function (k: any) {
+                let item = new ItemObj();
+                item.name = k.valText;
+                item.id = k.id;
+                if (k.code) {
+                    item.code = k.code;
+                } else {
+                    item.code = k.valText;
+                }
+                item.details = k.details;
+                if (item.name != selected) {
+                    itemObjArray.push(item); // dates will be inserted here mostly
+                }
+            });
+        }
+        if (this.dateitems.length >= 1 || this.rowDate) {
+            let x = new ItemObj();
+            x.name= this.rowDate;
+            x.id= '-1';
+            x.code= this.rowDate;
+            x.details= null;
+
+            this.dateitems.unshift(x);
+            this.items = this.dateitems.concat(itemObjArray); // add date time to existing combo value from json
+        } else {
+            this.items = itemObjArray; // add date time to existing combo value from json
+        }
+        
+        console.log("custom-dropdown-component rowDate: ", this.rowDate);
+        console.log("custom-dropdown-component dateitems: ", this.dateitems);
+        console.log("custom-dropdown-component itemArray: ", this.itemArray);
+        console.log("custom-dropdown-component items: ", this.items);
+        console.log("custom-dropdown-component itemObjArray: ", itemObjArray);
+        
+        // set initial selection
+        this.bankCtrl.setValue(this.items[10]);
+        // load the initial bank list
+        this.filteredBanks.next(this.items.slice());
+
+        // listen for search field value changes
+        this.bankFilterCtrl.valueChanges
+            .pipe(takeUntil(this._onDestroy))
+            .subscribe(() => {
+                this.filterBanks();
+            });
+    }
+
     go(event) {
         // console.log("****************");
-         console.log("go event: " + event.value);
-         console.log("ColType Initial: ", this.colDef.colDef.columnType);
+        console.log("go event: " + event.value);
+        console.log("ColType Initial: ", this.colDef.colDef.columnType);
         // console.log("****************");
 
         if (event.value) {
@@ -292,7 +307,6 @@ export class CustomDropdownComponent
             let colId;
 
             if (this.colDef.colDef.columnType === "Combo") {
-
             } else {
                 colId = this.itemArray.find(
                     (res) => res.code === this.selected
@@ -308,27 +322,7 @@ export class CustomDropdownComponent
             console.log("ColType: ", this.colDef.colDef.columnType);
 
             if (this.colDef.colDef.columnType === "Combo") {
-                let params = {};
-                params = {
-                    userid: this.LocalStorageHandlerService.getFromStorage(
-                        "userObj"
-                    ).userId,
-                    EntryId: this.colDef.data.rowId, // Parent ID of the row for which cell he is editing
-                    ViewID: this.viewId,
-                    colId: this.colDef.colDef.colId,
-                    ColType: this.colDef.colDef.columnType, // You need to send the column type
-                    Value: event.value,
-                };
-
-                 console.log("Combo params", params);
-
-                if (Object.keys(params).length !== 0) {
-                    this.salesLogService
-                        .insertCellValue(params)
-                        .subscribe(() => {
-                            this.signalRService.BroadcastLiveSheetData();
-                        });
-                }
+                this.saveComboDropDownValueToDatabase(event.value);
             } 
             else {
                 if (colId !== undefined) {
@@ -380,5 +374,29 @@ export class CustomDropdownComponent
                 }
             }
         }
+    }
+
+    saveComboDropDownValueToDatabase(value) {
+        let params = {};
+                params = {
+                    userid: this.LocalStorageHandlerService.getFromStorage(
+                        "userObj"
+                    ).userId,
+                    EntryId: this.colDef.data.rowId, // Parent ID of the row for which cell he is editing
+                    ViewID: this.viewId,
+                    colId: this.colDef.colDef.colId,
+                    ColType: this.colDef.colDef.columnType, // You need to send the column type
+                    Value: value,
+                };
+
+                console.log("Combo params", params);
+
+                if (Object.keys(params).length !== 0) {
+                    this.salesLogService
+                        .insertCellValue(params)
+                        .subscribe(() => {
+                            this.signalRService.BroadcastLiveSheetData();
+                        });
+                }
     }
 }

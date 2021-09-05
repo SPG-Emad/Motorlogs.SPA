@@ -1,4 +1,5 @@
 <!-- This is used in saleslog sheet component -->
+<!-- // working -->
 <mat-form-field class="mat-form-fieldClass custom-dropdown-row">
     <mat-select
         *ngIf="!customDropdownFlag"
@@ -66,14 +67,15 @@
             <ngx-mat-select-search
                 [(ngModel)]="selectedItem"
                 [formControl]="bankFilterCtrl"
+                noEntriesFoundLabel="''"
             ></ngx-mat-select-search>
         </mat-option>
 
-        <mat-option
+        <!-- <mat-option
             selected
             *ngIf="selected && selected.includes('/') && selected.includes(':')"
-            >{{ selected }}</mat-option
-        >
+            >{{ selected }}
+        </mat-option> -->
 
         <mat-option
             *ngFor="let item of filteredBanks | async"
@@ -145,6 +147,5 @@
             >
         </mat-option>
     </mat-select>
-
     <!-- Other dropdowns except Estimated Delivery COMBO END -->
 </mat-form-field>

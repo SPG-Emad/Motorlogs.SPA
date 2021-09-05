@@ -25,11 +25,11 @@ export class CustomDropDownRenderer implements OnInit {
     viewId: number;
 
     constructor() {
-        console.log("CustomDropDownRenderer Constructor: " + this.header);
+       // console.log("CustomDropDownRenderer Constructor: " + this.header);
     }
 
     ngOnInit() {
-        console.log("CustomDropDownRenderer ngOnInIt: " + this.header);
+       // console.log("CustomDropDownRenderer ngOnInIt: " + this.header);
     }
 
     agInit(params): void {
@@ -39,7 +39,7 @@ export class CustomDropDownRenderer implements OnInit {
             this.viewId = 1;
         }
 
-        console.log("params from customdropdownrederer: ", params);
+    //    console.log("params from customdropdownrederer: ", params);
         this.header = params.colDef.headerName;
         this.colDef = params;
         this.rowDate = params.value;

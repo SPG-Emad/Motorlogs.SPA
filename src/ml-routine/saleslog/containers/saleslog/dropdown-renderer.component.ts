@@ -5,11 +5,12 @@ import { Component, OnInit } from "@angular/core";
         [colDef]="colDef"
         [selected]="selected"
         [itemArray]="itemsArray"
-        [rowDate]="rowDate" 
+        [rowDate]="rowDate"
         [flag]="customFlag"
+        [viewId]="viewId"
     ></custom-dropdown> `,
 })
-export class DropDownRenderer implements OnInit{
+export class DropDownRenderer implements OnInit {
     item: string = "";
     options: [];
     dateFlag: boolean = false;
@@ -19,8 +20,9 @@ export class DropDownRenderer implements OnInit{
     selected: string;
     header: string;
     colDef: any;
+    viewId: number;
 
-    constructor(){
+    constructor() {
         console.log("DropDownRenderer Constructor");
     }
 
@@ -29,23 +31,34 @@ export class DropDownRenderer implements OnInit{
     }
 
     agInit(params): void {
+
+        if (window.location.href.toLowerCase().indexOf("arriving") > -1) {
+            this.viewId = 3;
+        } else {
+            this.viewId = 1;
+        }
+
         this.colDef = params;
         this.itemsArray = params.data["cellOptions_" + params.colDef.colCode];
         this.selected = params.value;
 
-        console.log('items array: ', this.itemsArray);
-        console.log('params: ', params);
+        console.log("agInit items array: ", this.itemsArray);
+        console.log("agInit params: ", params);
 
-        if(params.value != null && this.itemsArray.find(x=> x.code.toLowerCase() === params.value.toLowerCase()) === undefined){
-            console.log('not found ', params.value);
-            this.rowDate = params.value;
-            this.selected = params.value;
-        }else{
-            console.log('found');
-            this.selected = params.value;
+        // This code will only run on grid initialization
+        if (params.value != null) {
+            if (
+                this.itemsArray.find(
+                    (x) => x.code.toLowerCase() === params.value.toLowerCase()
+                ) === undefined
+            ) {
+                console.log("not found ", params.value);
+                this.rowDate = params.value;
+                this.selected = params.value;
+            } else {
+                console.log("found: ", params.value);
+                this.selected = params.value;
+            }
         }
-       
-        console.log("params :::: ", params);
-        console.log("this.itemsArray :::: ", this.itemsArray);
     }
 }
