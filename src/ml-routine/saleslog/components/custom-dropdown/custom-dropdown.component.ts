@@ -39,6 +39,7 @@ export class CustomDropdownComponent
     @Input("selected") selected: string;
     @Input("header") header: string;
     @Input("colDef") colDef: any;
+    @Input("viewId") viewId: any;
 
     protected items: ItemObj[] = [];
     protected dateitems: ItemObj[] = [];
@@ -304,16 +305,7 @@ export class CustomDropdownComponent
                 }
             }
 
-            // console.log("****************");
-            // console.log("colDef: ", this.colDef);
-            // console.log("SELECTED: ", this.selected);
-            // console.log("ITEM ARRAY: ", this.itemArray);
-            // console.log("COLID: ", colId);
-            // console.log("EntryID: ", this.colDef.data.rowId);
-            // console.log("Column ID: ", this.colDef.colDef.colId);
             console.log("ColType: ", this.colDef.colDef.columnType);
-            // // console.log("Value: ", colId.id);
-            // console.log("****************");
 
             if (this.colDef.colDef.columnType === "Combo") {
                 let params = {};
@@ -322,7 +314,7 @@ export class CustomDropdownComponent
                         "userObj"
                     ).userId,
                     EntryId: this.colDef.data.rowId, // Parent ID of the row for which cell he is editing
-                    ViewID: 1,
+                    ViewID: this.viewId,
                     colId: this.colDef.colDef.colId,
                     ColType: this.colDef.colDef.columnType, // You need to send the column type
                     Value: event.value,
@@ -351,7 +343,7 @@ export class CustomDropdownComponent
                                 "userObj"
                             ).userId,
                             EntryId: this.colDef.data.rowId, // Parent ID of the row for which cell he is editing
-                            ViewID: 1,
+                            ViewID: this.viewId,
                             colId: this.colDef.colDef.colId,
                             ColType: this.colDef.colDef.columnType, // You need to send the column type
                             Value: event.value,
@@ -371,7 +363,7 @@ export class CustomDropdownComponent
                                 "userObj"
                             ).userId,
                             EntryId: this.colDef.data.rowId, // Parent ID of the row for which cell he is editing
-                            ViewID: 1,
+                            ViewID: this.viewId,
                             colId: this.colDef.colDef.colId,
                             ColType: this.colDef.colDef.columnType, // You need to send the column type
                             Value: colId.id,

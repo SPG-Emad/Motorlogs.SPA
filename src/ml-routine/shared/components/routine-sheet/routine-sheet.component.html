@@ -55,108 +55,15 @@
             <!-- Header Starts -->
             <div fxlayoutalign="space-between" style="padding: 0px 0px 20px 0px;place-content: stretch space-between; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex;">
                 <h2 style="margin: 0px;">{{departmentName}}
-                    <mat-form-field  *ngIf = "routineSelected === 3"  appearance="fill" class="departmentID">
-                        <mat-label>Department ID</mat-label>
-                        <mat-select [(ngModel)]="departmentID" (change)="generateGrid()">
-                          <mat-option *ngFor="let item of departmentIDs" [value]="item.value">
-                            {{item.viewValue}}
-                          </mat-option>
-                        </mat-select>
-                    </mat-form-field>
-                    <b *ngIf = "routineSelected === 1" style="margin-left: 10px;color: #ef1e75;">(Saleslog)</b>
+                  
                     <b *ngIf = "routineSelected === 2" style="margin-left: 10px;color: #ef1e75;">(Delivered)</b>
-                    <b *ngIf = "routineSelected === 3" style="margin-left: 10px;color: #ef1e75;">(Arriving)</b>
+                    <b *ngIf = "routineSelected === 3" style="margin-left: 10px;color: #ef1e75;">Arriving</b>
                 </h2>
                 <div class="secondary-options">
                     <app-search (click)="toggleShowDiv('divA')"></app-search>
                     <app-print [printData]="printdata" (generatePrint)="onBtPrint()"></app-print>
                 </div>
             </div>
-
-            <!-- Saleslog Cards -->
-            <div *ngIf="routineSelected === 1" fxlayout.lt-lg="column" fxlayout.lt-md="column" fxlayoutalign="space-between" style="place-content: stretch space-between; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex;">
-                <div class="summaryBox" fxflex="20" style="flex: 1 1 100%; box-sizing: border-box; max-width: 20%;">
-                    <table>
-                        <tr>
-                            <td>
-                            <span class="heading">Carry Over</span>
-                            </td>
-                            <td>
-                            <span class="value" [ngClass]="{'red-amount': carryOverAmount<0}">$ {{carryOverAmount| number:'.2-2' }}</span>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td>
-                            <a (click)="filterGrid(0)" class="heading2">{{carryOverUnits| number:'1.0-0' }} Units</a>
-                            </td>
-                            <td>
-                            <span class="value">$ {{carryOverAvg |number: '.2-2' }} Av.</span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="summaryBox" fxflex="20" style="flex: 1 1 100%; box-sizing: border-box; max-width: 20%;">
-                    <table>
-                        <tr>
-                        <td>
-                            <span class="heading">Sold</span><
-                        /td>
-                        <td>
-                            <span class="value negative">$ {{soldAmount| number:'.2-2' }}</span>
-                        </td>
-                        </tr>
-                        <tr>
-                            <td>
-                            <a (click)="filterGrid(1)" class="heading2">{{ soldUnits| number:'1.0-0' }} Units</a>
-                            </td>
-                            <td>
-                            <span class="value negative">$ {{soldAvg |number: '.2-2' }} Av.</span>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="summaryBox" fxflex="20" style="flex: 1 1 100%; box-sizing: border-box; max-width: 20%;">
-                    <table>
-                    <tr>
-                        <td>
-                        <span class="heading">Covered</span>
-                        </td>
-                        <td>
-                        <span class="value">$ {{coveredAmount| number:'.2-2' }}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <a (click)="filterGrid(2)" class="heading2">{{ coveredUnits| number:'1.0-0' }} Units</a>
-                        </td>
-                        <td>
-                        <span class="value negative">$ {{coveredAvg |number: '.2-2' }} Av.</span>
-                        </td>
-                    </tr>
-                    </table>
-                </div>
-                <div class="summaryBox" fxflex="20" style="flex: 1 1 100%; box-sizing: border-box; max-width: 20%;">
-                    <table>
-                    <tr>
-                        <td>
-                        <span class="heading">Delivered</span>
-                        </td>
-                        <td>
-                        <span class="value">$ {{deliveredAmount| number:'.2-2' }}</span>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>
-                        <a (click)="filterGrid(3)" class="heading2">{{ deliveredUnits| number:'1.0-0' }} Units</a>
-                        </td>
-                        <td>
-                        <span class="value negative">$ {{deliveredAvg |number: '.2-2' }} Av.</span>
-                        </td>
-                    </tr>
-                    </table>
-                </div>
-            </div>
-            <!-- / Saleslog Cards -->
 
 
             <!-- Delivered Cards -->

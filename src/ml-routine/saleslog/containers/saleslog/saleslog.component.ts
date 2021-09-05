@@ -183,10 +183,11 @@ export class SaleslogComponent implements OnInit {
         private signalRService: SignalRService // private siteTargetSerivce: SiteTargetsService
     ) {
         this.route.paramMap.subscribe((params) => {
-            this.decryptedDepartmentId = this.encryptionService.convertToEncOrDecFormat(
-                "decrypt",
-                params.get("id")
-            );
+            this.decryptedDepartmentId =
+                this.encryptionService.convertToEncOrDecFormat(
+                    "decrypt",
+                    params.get("id")
+                );
             this.dateFilterApplied = 0;
             if (this.pageCounter !== 0) {
                 this.generateGrid();
@@ -366,12 +367,12 @@ export class SaleslogComponent implements OnInit {
                     }
                 },
             },
-         //   headerComponentParams: { menuIcon: "fa-chevron-down" },
+            //   headerComponentParams: { menuIcon: "fa-chevron-down" },
             onCellValueChanged: this.onCellChanged.bind(this),
             minWidth: 200,
             // flex: 1,
             // filter: 'customFilter',
-            menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
+            menuTabs: ["filterMenuTab", "columnsMenuTab", "generalMenuTab"],
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
             // },
@@ -399,8 +400,8 @@ export class SaleslogComponent implements OnInit {
         this.rowSelection = "single";
 
         this.components = {
-        //     // datePicker: getDatePicker(),
-            'dateEditor': getDatePicker(),
+            //     // datePicker: getDatePicker(),
+            dateEditor: getDatePicker(),
         };
 
         this.loadingOverlayComponent = "customLoadingOverlay";
@@ -440,9 +441,11 @@ export class SaleslogComponent implements OnInit {
 
         // console.log("store column resize");
 
-        this.saleslog.updateViewColumnOptions(params).subscribe(() => {
-            this.signalRService.BroadcastLiveSheetData();
-        });
+        if (cid !== 0) {
+            this.saleslog.updateViewColumnOptions(params).subscribe(() => {
+                this.signalRService.BroadcastLiveSheetData();
+            });
+        }
     }
 
     ngOnInit() {
@@ -551,9 +554,10 @@ export class SaleslogComponent implements OnInit {
     public departmentID: number = 0;
 
     renderDepartmentNameHeading() {
-        let department = this.LocalStorageHandlerService.getFromStorage(
-            "userObj"
-        ).departmentAccess;
+        let department =
+            this.LocalStorageHandlerService.getFromStorage(
+                "userObj"
+            ).departmentAccess;
         this.departmentIDs = department;
         let count = 0;
         department = department.find((el) => {
@@ -628,7 +632,7 @@ export class SaleslogComponent implements OnInit {
                             element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] =
                             element1.currentCellValue;
-                            //console.log('element1.colCode ', element1.colCode,' element1.currentCellValue: ', element1.currentCellValue);
+                        //console.log('element1.colCode ', element1.colCode,' element1.currentCellValue: ', element1.currentCellValue);
                     }
 
                     if (element1.cellOptions.length > 0) {
@@ -792,7 +796,8 @@ export class SaleslogComponent implements OnInit {
 
                 if (element.type === "Date") {
                     columnMap["cellEditor"] = "dateEditor";
-                    columnMap["valueFormatter"] = this.isoDateValueFormatter.bind(this)
+                    columnMap["valueFormatter"] =
+                        this.isoDateValueFormatter.bind(this);
                 } else if (element.type === "DD-Fixed") {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
                 } else if (element.type === "DD-Self") {
@@ -801,7 +806,7 @@ export class SaleslogComponent implements OnInit {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
                 } else if (element.type === "Combo") {
                     columnMap["cellRenderer"] = "dropDownRenderer";
-                }  
+                }
 
                 column.push(columnMap);
             });
@@ -823,7 +828,7 @@ export class SaleslogComponent implements OnInit {
 
     onCellChanged(event) {
         console.log("on cell changed");
-        console.log("event: ",event);
+        console.log("event: ", event);
         if (event.newValue === undefined) {
             event.newValue = "";
         }
@@ -2020,7 +2025,7 @@ export class SaleslogComponent implements OnInit {
                 }
                 setTimeout(() => {
                     this.gridApi.refreshView();
-                    this.gridApi.sizeColumnsToFit();
+                    //this.gridApi.sizeColumnsToFit();
                 }, 0);
             }
         });

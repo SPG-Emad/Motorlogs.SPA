@@ -1,4 +1,3 @@
-
 import { CustomLoadingOverlayComponent } from "../../../saleslog/components/custom-loading-overlay/custom-loading-overlay.component";
 
 import { Component, OnInit, Input, ViewChild, ElementRef } from "@angular/core";
@@ -38,12 +37,12 @@ declare var $: any;
 export class RoutineSheetComponent implements OnInit {
     @ViewChild("myGrid", { static: true }) agGrid: ElementRef;
     printData: any;
-    
+
     @Input()
     public routineSelected: number = 1;
     public totalRows: number = 0;
-    public departmentID: number = 0;
-   
+    public departmentID: number = -2;
+
     public vehicleProfit: number = 0;
     public processGross: number = 0;
 
@@ -86,51 +85,50 @@ export class RoutineSheetComponent implements OnInit {
     resetSummaryValues() {
         this.vehicleProfit = 0;
         this.processGross = 0;
-    
+
         this.processedAmount = -0;
         this.processedUnits = 0;
         this.processedAvg = 0;
-    
+
         this.varianceAmount = -0;
         this.varianceUnits = 0;
         this.varianceAvg = 0;
-    
+
         this.totalAmount = -0;
         this.totalUnits = 0;
         this.totalAvg = 0;
-    
+
         this.missingAmount = -0;
         this.missingUnits = 0;
         this.missingAvg = 0;
-    
+
         this.carryOverAmount = -0;
         this.carryOverUnits = 0;
         this.carryOverAvg = 0;
-    
+
         this.tradeinAmount = -0;
         this.tradeinUnits = 0;
         this.tradeinAvg = 0;
-    
+
         this.soldAmount = -0;
         this.soldUnits = 0;
         this.soldAvg = 0;
-    
+
         this.coveredAmount = -0;
         this.coveredUnits = 0;
         this.coveredAvg = 0;
-    
+
         this.deliveredAmount = -0;
         this.deliveredUnits = 0;
         this.deliveredAvg = 0;
     }
 
-    
     public modules: any[] = AllModules;
     public rowSelection;
     public thisComponent = this;
     public emptyFieldsCount: number = 0;
     public rowColor = [];
-    
+
     dateFilterApplied: number = 0;
     selectedCity: number;
     departmentNameRendered: string = "";
@@ -240,11 +238,20 @@ export class RoutineSheetComponent implements OnInit {
         private signalRService: SignalRService // private siteTargetSerivce: SiteTargetsService
     ) {
         this.route.paramMap.subscribe((params) => {
-            this.decryptedDepartmentId = this.encryptionService.convertToEncOrDecFormat(
-                "decrypt",
-                params.get("id")
-            );
+            this.decryptedDepartmentId =
+                this.encryptionService.convertToEncOrDecFormat(
+                    "decrypt",
+                    params.get("id")
+                );
             console.log(this.decryptedDepartmentId);
+
+            if (
+                !this.decryptedDepartmentId ||
+                this.decryptedDepartmentId == ""
+            ) {
+                this.decryptedDepartmentId = "-2";
+            }
+
             if (this.pageCounter !== 0) {
                 this.generateGrid();
             }
@@ -423,12 +430,12 @@ export class RoutineSheetComponent implements OnInit {
                     }
                 },
             },
-         //   headerComponentParams: { menuIcon: "fa-chevron-down" },
+            //   headerComponentParams: { menuIcon: "fa-chevron-down" },
             onCellValueChanged: this.onCellChanged.bind(this),
             minWidth: 200,
             // flex: 1,
             // filter: 'customFilter',
-            menuTabs: ['filterMenuTab','columnsMenuTab','generalMenuTab'],
+            menuTabs: ["filterMenuTab", "columnsMenuTab", "generalMenuTab"],
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
             // },
@@ -456,8 +463,8 @@ export class RoutineSheetComponent implements OnInit {
         this.rowSelection = "single";
 
         this.components = {
-        //     // datePicker: getDatePicker(),
-            'dateEditor': getDatePicker(),
+            //     // datePicker: getDatePicker(),
+            dateEditor: getDatePicker(),
         };
 
         this.loadingOverlayComponent = "customLoadingOverlay";
@@ -483,7 +490,8 @@ export class RoutineSheetComponent implements OnInit {
     storeColumnResizeValue(width, colId) {
         let cid = colId.replace('/"/g', "");
         let params = {
-            userId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
+            userId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .userId,
             deptid: this.decryptedDepartmentId
                 ? this.decryptedDepartmentId
                 : this.departmentID,
@@ -492,9 +500,11 @@ export class RoutineSheetComponent implements OnInit {
             config: "{'width':" + width + "}", // or "{'sequence':1}"
         };
 
-        this.saleslog.updateViewColumnOptions(params).subscribe(() => {
-            this.signalRService.BroadcastLiveSheetData();
-        });
+        if (cid !== 0) {
+            this.saleslog.updateViewColumnOptions(params).subscribe(() => {
+                this.signalRService.BroadcastLiveSheetData();
+            });
+        }
     }
 
     getContextMenuItems1(params) {
@@ -639,7 +649,6 @@ export class RoutineSheetComponent implements OnInit {
         /*----------------------------*/
     }
 
-
     onAsyncUpdate() {
         var api = this.gridApi;
 
@@ -746,8 +755,10 @@ export class RoutineSheetComponent implements OnInit {
 
     generateGrid(months?, date?) {
         if (this.routineSelected !== 3) {
-            let department = this.LocalStorageHandlerService.getFromStorage("userObj")
-                .departmentAccess;
+            let department =
+                this.LocalStorageHandlerService.getFromStorage(
+                    "userObj"
+                ).departmentAccess;
             this.departmentIDs = department;
             let count = 0;
             department = department.find((el) => {
@@ -762,37 +773,44 @@ export class RoutineSheetComponent implements OnInit {
             });
             this.departmentName = department.departmentName;
         } else {
-            let department = this.LocalStorageHandlerService.getFromStorage("userObj").departmentAccess;
-
-            console.log('department::::::: ', department);
-            department.map((res) => {
-                this.departmentIDs.push({
-                    value: res.departmentId,
-                    viewValue: res.departmentName,
-                });
-            });
-
-            let count = 0;
-            let ID = 0;
-            department = department.find((el) => {
-                if (count === 0) {
-                    count++;
-                    this.departmentID = el.departmentId;
-                }
-                return (
-                    Number(el.departmentId) ===
-                    Number(this.decryptedDepartmentId)
-                );
-            });
+            // let department = this.LocalStorageHandlerService.getFromStorage("userObj").departmentAccess;
+            // console.log('department::::::: ', department);
+            // department.map((res) => {
+            //     this.departmentIDs.push({
+            //         value: res.departmentId,
+            //         viewValue: res.departmentName,
+            //     });
+            // });
+            // let count = 0;
+            // let ID = 0;
+            // department = department.find((el) => {
+            //     if (count === 0) {
+            //         count++;
+            //         this.departmentID = el.departmentId;
+            //     }
+            //     return (
+            //         Number(el.departmentId) ===
+            //         Number(this.decryptedDepartmentId)
+            //     );
+            // });
         }
 
         if (this.rowData.length === 0) {
             this.gridApi.showLoadingOverlay();
         }
 
+        console.log(
+            "special: ",
+            this.decryptedDepartmentId,
+            " ..... ",
+            this.departmentID
+        );
+
         let obj = {
-            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
-            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .userId,
+            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .roleID,
             ViewId: this.routineSelected,
             DeptId: this.decryptedDepartmentId
                 ? this.decryptedDepartmentId
@@ -821,7 +839,7 @@ export class RoutineSheetComponent implements OnInit {
                     this.carryOverUnits++;
                 }
                 this.cellData = [];
-               
+
                 element.cells.forEach((element1, index) => {
                     this.rowColor.push({
                         rowId: rowIndex,
@@ -915,7 +933,7 @@ export class RoutineSheetComponent implements OnInit {
                         this.deliveredAmount +
                         Number(this.cellData[0]['"VEHGRO"']);
                 }
-                
+
                 if (this.cellData[0]['"PROGRO"'] !== null) {
                     this.processedUnits = this.processedUnits + 1;
                     this.processedAmount =
@@ -934,7 +952,7 @@ export class RoutineSheetComponent implements OnInit {
                 rows.push(this.cellData[0]);
             });
 
-             if (this.routineSelected === 2) {
+            if (this.routineSelected === 2) {
                 this.deliveredAvg =
                     this.totalRows > 0
                         ? Number(this.vehicleProfit) / Number(this.totalRows)
@@ -1038,7 +1056,8 @@ export class RoutineSheetComponent implements OnInit {
 
                 if (element.type === "Date") {
                     columnMap["cellEditor"] = "dateEditor";
-                    columnMap["valueFormatter"] = this.isoDateValueFormatter.bind(this)
+                    columnMap["valueFormatter"] =
+                        this.isoDateValueFormatter.bind(this);
                 } else if (element.type === "DD-Fixed") {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
                 } else if (element.type === "DD-Self") {
@@ -1047,7 +1066,7 @@ export class RoutineSheetComponent implements OnInit {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
                 } else if (element.type === "Combo") {
                     columnMap["cellRenderer"] = "dropDownRenderer";
-                }  
+                }
 
                 column.push(columnMap);
             });
@@ -1069,7 +1088,7 @@ export class RoutineSheetComponent implements OnInit {
 
     onCellChanged(event) {
         console.log("on cell changed");
-        console.log("event: ",event);
+        console.log("event: ", event);
         if (event.newValue === undefined) {
             event.newValue = "";
         }
@@ -1108,8 +1127,10 @@ export class RoutineSheetComponent implements OnInit {
         this.gridApi.showLoadingOverlay();
 
         let obj = {
-            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
-            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj").roleID,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .userId,
+            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj")
+                .roleID,
             ViewId: this.routineSelected,
             DeptId: this.decryptedDepartmentId
                 ? this.decryptedDepartmentId
@@ -1320,8 +1341,8 @@ export class RoutineSheetComponent implements OnInit {
                 );
             });
 
-             /*Dispaly search results in grid row array and number of display records found*/
-             this.displaySearchResult(searchResult);
+            /*Dispaly search results in grid row array and number of display records found*/
+            this.displaySearchResult(searchResult);
             /*-------------------------*/
         });
     }
@@ -1792,7 +1813,6 @@ export class RoutineSheetComponent implements OnInit {
         this.generateFilter(this.monthSelected);
     }
 
-    
     generateFilter(length) {
         /*Generate Key and value for startFrom Object from momentJs*/
         let currentDisplayFormat;
@@ -2307,7 +2327,7 @@ export class RoutineSheetComponent implements OnInit {
                 }
                 setTimeout(() => {
                     this.gridApi.refreshView();
-                    this.gridApi.sizeColumnsToFit();
+                   // this.gridApi.sizeColumnsToFit();
                 }, 0);
             }
         });
@@ -2387,10 +2407,10 @@ export class RoutineSheetComponent implements OnInit {
             Value: value,
             UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
                 .userId,
-                ViewId: this.routineSelected,
-                DeptId: this.decryptedDepartmentId
-                    ? this.decryptedDepartmentId
-                    : this.departmentID,
+            ViewId: this.routineSelected,
+            DeptId: this.decryptedDepartmentId
+                ? this.decryptedDepartmentId
+                : this.departmentID,
         };
 
         this.saleslog.updateCellColor(params).subscribe(() => {
@@ -2407,7 +2427,7 @@ export class RoutineSheetComponent implements OnInit {
         });
         this.monthSliderSearch(this.sliderItem);
     }
-     
+
     getRowData() {
         var rowData = [];
         this.gridApi.forEachNode(function (node) {
@@ -2420,11 +2440,13 @@ export class RoutineSheetComponent implements OnInit {
             panelClass: "custom-dialog-container",
             width: "400px",
             data: {
-                key: { id: this.departmentID, 
-                viewId: this.routineSelected, 
-                DeptId: this.decryptedDepartmentId
-                    ? this.decryptedDepartmentId
-                    : this.departmentID, },
+                key: {
+                    id: this.departmentID,
+                    viewId: this.routineSelected,
+                    DeptId: this.decryptedDepartmentId
+                        ? this.decryptedDepartmentId
+                        : this.departmentID,
+                },
             },
         });
         this.dialogRef.afterClosed().subscribe((res) => {
@@ -2468,18 +2490,12 @@ export class RoutineSheetComponent implements OnInit {
         api.setDomLayout(null);
     }
 
-
     excelExport() {
         this.openModal(this, XlsExportComponent, "400px");
     }
 
     columnOption() {
-        this.openModal(
-            this,
-            ColumnOptionComponent,
-            "900px",
-            this.departmentID
-        );
+        this.openModal(this, ColumnOptionComponent, "900px", this.departmentID);
     }
 
     print() {

@@ -8,11 +8,12 @@ import { Component, OnInit } from "@angular/core";
         [itemArray]="itemsArray"
         [rowDate]="rowDate"
         [flag]="customFlag"
+        [viewId]="viewId"
     ></custom-dropdown> `,
 })
 
 // used for dd-fixed, dd-suggest, dd-self
-export class CustomDropDownRenderer  implements OnInit{
+export class CustomDropDownRenderer implements OnInit {
     options: [];
     dateFlag: boolean = false;
     customFlag: boolean = true;
@@ -21,8 +22,9 @@ export class CustomDropDownRenderer  implements OnInit{
     selected: string;
     header: string;
     colDef: any;
+    viewId: number;
 
-    constructor(){
+    constructor() {
         console.log("CustomDropDownRenderer Constructor: " + this.header);
     }
 
@@ -31,10 +33,16 @@ export class CustomDropDownRenderer  implements OnInit{
     }
 
     agInit(params): void {
+        if (window.location.href.toLowerCase().indexOf("arriving") > -1) {
+            this.viewId = 3;
+        } else {
+            this.viewId = 1;
+        }
+
+        console.log("params from customdropdownrederer: ", params);
         this.header = params.colDef.headerName;
         this.colDef = params;
         this.rowDate = params.value;
-
         this.itemsArray = params.data["cellOptions_" + params.colDef.colCode];
         this.selected = params.value;
     }
