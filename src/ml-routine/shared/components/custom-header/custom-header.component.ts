@@ -72,7 +72,7 @@ export class CustomHeaderComponent {
     }
 
     onMenuClicked() {
-        console.log(this.menuButton);
+        // console.log(this.menuButton);
         this.params.showColumnMenu(this.menuButton.nativeElement);
     }
 }

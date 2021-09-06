@@ -45,7 +45,7 @@ export class SiteTargetsService {
     }
     
     postTarget(params: ISiteTarget) {
-        console.log('postTarget: ', params);
+        // console.log('postTarget: ', params);
         return this.http
             .post(`${SITE_TARGET}/SiteTargetInsert`,params)
             .map(this.extractData);
@@ -53,7 +53,7 @@ export class SiteTargetsService {
     
     
     updateTarget(params) {
-        console.log('updateTarget: ', params);
+        // console.log('updateTarget: ', params);
         return this.http
             .post(`${SITE_TARGET}/SiteTargetInsert`, params)
             .map(this.extractData);

@@ -151,7 +151,7 @@ export class PermissionsComponent implements OnInit {
     }
 
     onRowClicked(e) {
-        console.log('Column Event: ' + e.type, e);
+        // console.log('Column Event: ' + e.type, e);
     }
 
     filterColumns(columnID) {
@@ -237,12 +237,12 @@ export class PermissionsComponent implements OnInit {
         const sortState = this.gridApi.getSortModel();
         const filterState = this.gridApi.getFilterModel();
 
-        console.log('***********************');
-        console.log('colState: ', colState);
-        console.log('groupState: ', groupState);
-        console.log('sortState: ', sortState);
-        console.log('filterState: ', filterState);
-        console.log('***********************');
+        // console.log('***********************');
+        // console.log('colState: ', colState);
+        // console.log('groupState: ', groupState);
+        // console.log('sortState: ', sortState);
+        // console.log('filterState: ', filterState);
+        // console.log('***********************');
     }
 
     onGridReady(params) {
@@ -253,9 +253,9 @@ export class PermissionsComponent implements OnInit {
         this.gridApi.showLoadingOverlay();
         this.generateGrid();
 
-        console.log('************************');
-        console.log('onGridReady');
-        console.log('************************');
+        // console.log('************************');
+        // console.log('onGridReady');
+        // console.log('************************');
     }
 
     generateGrid() {
@@ -316,7 +316,7 @@ export class PermissionsComponent implements OnInit {
                 if (res.viewId === viewId) {
                     const menuSuppress = (col.isEditable) ? false : true;
                     
-                    console.log('Menu Suppress', menuSuppress);
+                    // console.log('Menu Suppress', menuSuppress);
 
                     if (col.code !== null) {
                         columField.push({
@@ -390,12 +390,12 @@ export class PermissionsComponent implements OnInit {
 
     cellEditorSelector(params) {
 
-        console.log('************************');
-        console.log('params.colDef.field: ', params.colDef.field);
-        console.log('params.value.field: ', params.value);
-        console.log('params.rowIndex: ', params.rowIndex);
-        console.log('this.rolePos: ', this.rolePos);
-        console.log('************************');
+        // console.log('************************');
+        // console.log('params.colDef.field: ', params.colDef.field);
+        // console.log('params.value.field: ', params.value);
+        // console.log('params.rowIndex: ', params.rowIndex);
+        // console.log('this.rolePos: ', this.rolePos);
+        // console.log('************************');
 
         if (params.colDef.field !== 'permission' &&
             params.value !== undefined &&

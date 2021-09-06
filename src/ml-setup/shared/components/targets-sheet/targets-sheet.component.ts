@@ -196,7 +196,7 @@ export class TargetsSheetComponent implements OnInit {
                 this.selectedDepartment = x.code;
             });
 
-        console.log(this.selectedDepartment, " :: ", this.targetSelected);
+        // console.log(this.selectedDepartment, " :: ", this.targetSelected);
 
         this.generateGridForcefully();
     }
@@ -247,7 +247,7 @@ export class TargetsSheetComponent implements OnInit {
 
     getAllDepartmentsByUserId() {
         this.selectedDepartment = "-1";
-        console.log("targetSelected", this.targetSelected);
+        // console.log("targetSelected", this.targetSelected);
         this.departmentsService.getAllDepartmentsByUserId().subscribe((res) => {
             res.map((res) => {
                 this.departmentsList.push({
@@ -258,10 +258,10 @@ export class TargetsSheetComponent implements OnInit {
             if (this.targetSelected != 0) {
                 // this.selectedDepartment = this.departmentsList[0].code;
                 this.defaultValueOfDepartment = this.selectedDepartment;
-                console.log("0: ", this.selectedDepartment);
+                // console.log("0: ", this.selectedDepartment);
             } else {
                 this.defaultValueOfDepartment = "View all";
-                console.log("1: ", this.selectedDepartment);
+                // console.log("1: ", this.selectedDepartment);
             }
             this.generateGridForcefully();
         });
@@ -282,7 +282,7 @@ export class TargetsSheetComponent implements OnInit {
                 switch (propName) {
                     case "dateFilters": {
                         if (this.dateFilters) {
-                            console.log("date filter");
+                            // console.log("date filter");
                             this.dateFilter(this.dateFilters);
                         }
                     }
@@ -296,10 +296,10 @@ export class TargetsSheetComponent implements OnInit {
             let columnName = params.column.userProvidedColDef.field;
             let rowData = this.getAllRows(columnName);
             rowData.forEach((res) => {
-                // console.log(res.data);
+                // // console.log(res.data);
             });
         }
-        // console.log(params.newValue,params.oldValue);
+        // // console.log(params.newValue,params.oldValue);
 
         return params.newValue;
     }
@@ -310,7 +310,7 @@ export class TargetsSheetComponent implements OnInit {
                 params.colDef.type === "current" &&
                 params.data.department !== environment.PARENT_SITE_NAME
             ) {
-                // console.log(params.value, isNaN(params.value));
+                // // console.log(params.value, isNaN(params.value));
                 return (
                     params.value === "" ||
                     params.value === undefined ||
@@ -472,8 +472,8 @@ export class TargetsSheetComponent implements OnInit {
                         node.data[column.userProvidedColDef.field]
                     );
 
-                    // console.log("value:",value)
-                    // console.log("value:",isNaN(value))
+                    // // console.log("value:",value)
+                    // // console.log("value:",isNaN(value))
                     if (value === 0 || isNaN(value)) {
                         this.emptyRows.push(node.data);
                         this.emptyFieldsCount = this.emptyFieldsCount + 1;
@@ -482,7 +482,7 @@ export class TargetsSheetComponent implements OnInit {
             });
         });
 
-        // console.log(this.emptyRows);
+        // // console.log(this.emptyRows);
 
         return this.emptyFieldsCount;
     }
@@ -683,7 +683,7 @@ export class TargetsSheetComponent implements OnInit {
         rowName: string,
         option?: number
     ) {
-        console.log("params.colDef", params.colDef);
+        // console.log("params.colDef", params.colDef);
         let columnName;
 
         if (option === 1) {
@@ -708,12 +708,12 @@ export class TargetsSheetComponent implements OnInit {
             }
         });
         /*-----------------------*/
-        // // console.log(columnName,targetColumn,rowData);
+        // // // console.log(columnName,targetColumn,rowData);
 
         /*Fetch Total orders Node with getRowNode method of gridAPI*/
         var rowNode = this.gridApi.getRowNode(rowName);
         /*----------------------------------------------------*/
-        // // console.log("rowNode:",rowNode.data)
+        // // // console.log("rowNode:",rowNode.data)
 
         if (option === 1) {
             if (total && total > 0) {
@@ -793,7 +793,7 @@ export class TargetsSheetComponent implements OnInit {
         this.emptyFieldsCount = 0;
         /*------------------------*/
 
-        console.log("targetResponse", targetResponse);
+        // console.log("targetResponse", targetResponse);
         response = targetResponse;
 
         /*Generate History, Current and Period Columns*/
@@ -940,8 +940,8 @@ export class TargetsSheetComponent implements OnInit {
         });
         /*------------------------------*/
 
-        console.log("Column:", column);
-        // console.log('DepartmentRow:',departmentRow);
+        // console.log("Column:", column);
+        // // console.log('DepartmentRow:',departmentRow);
 
         /*Load Fetched data into Grid*/
         this.columnDefs = column;

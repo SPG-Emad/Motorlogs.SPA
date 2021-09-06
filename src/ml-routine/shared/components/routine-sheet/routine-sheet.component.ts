@@ -243,7 +243,7 @@ export class RoutineSheetComponent implements OnInit {
                     "decrypt",
                     params.get("id")
                 );
-            console.log(this.decryptedDepartmentId);
+            // console.log(this.decryptedDepartmentId);
 
             if (
                 !this.decryptedDepartmentId ||
@@ -407,7 +407,7 @@ export class RoutineSheetComponent implements OnInit {
                             ).isBefore(date);
                             choice = isBefore;
                         }
-                        // // // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
+                        // // // // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
                         return params.value === "" && choice;
                     } else if (params.colDef.colCode === "PT") {
                         let date = moment().format("DD-MMM-YY");
@@ -422,7 +422,7 @@ export class RoutineSheetComponent implements OnInit {
                         } else {
                             choice = isAfter;
                         }
-                        // // // // console.log(params.data.orderDate);
+                        // // // // // console.log(params.data.orderDate);
 
                         return params.value === "" && choice;
                     } else {
@@ -528,21 +528,21 @@ export class RoutineSheetComponent implements OnInit {
                     {
                         name: "Ireland",
                         action: function () {
-                            console.log("Ireland was pressed");
+                            // console.log("Ireland was pressed");
                         },
                         icon: createFlagImg("ie"),
                     },
                     {
                         name: "UK",
                         action: function () {
-                            console.log("UK was pressed");
+                            // console.log("UK was pressed");
                         },
                         icon: createFlagImg("gb"),
                     },
                     {
                         name: "France",
                         action: function () {
-                            console.log("France was pressed");
+                            // console.log("France was pressed");
                         },
                         icon: createFlagImg("fr"),
                     },
@@ -554,55 +554,55 @@ export class RoutineSheetComponent implements OnInit {
                     {
                         name: "Niall",
                         action: function () {
-                            console.log("Niall was pressed");
+                            // console.log("Niall was pressed");
                         },
                     },
                     {
                         name: "Sean",
                         action: function () {
-                            console.log("Sean was pressed");
+                            // console.log("Sean was pressed");
                         },
                     },
                     {
                         name: "John",
                         action: function () {
-                            console.log("John was pressed");
+                            // console.log("John was pressed");
                         },
                     },
                     {
                         name: "Alberto",
                         action: function () {
-                            console.log("Alberto was pressed");
+                            // console.log("Alberto was pressed");
                         },
                     },
                     {
                         name: "Tony",
                         action: function () {
-                            console.log("Tony was pressed");
+                            // console.log("Tony was pressed");
                         },
                     },
                     {
                         name: "Andrew",
                         action: function () {
-                            console.log("Andrew was pressed");
+                            // console.log("Andrew was pressed");
                         },
                     },
                     {
                         name: "Kev",
                         action: function () {
-                            console.log("Kev was pressed");
+                            // console.log("Kev was pressed");
                         },
                     },
                     {
                         name: "Will",
                         action: function () {
-                            console.log("Will was pressed");
+                            // console.log("Will was pressed");
                         },
                     },
                     {
                         name: "Armaan",
                         action: function () {
-                            console.log("Armaan was pressed");
+                            // console.log("Armaan was pressed");
                         },
                     },
                 ],
@@ -612,7 +612,7 @@ export class RoutineSheetComponent implements OnInit {
                 name: "Windows",
                 shortcut: "Alt + W",
                 action: function () {
-                    console.log("Windows Item Selected");
+                    // console.log("Windows Item Selected");
                 },
                 icon: '<img src="../images/skills/windows.png"/>',
             },
@@ -620,7 +620,7 @@ export class RoutineSheetComponent implements OnInit {
                 name: "Mac",
                 shortcut: "Alt + M",
                 action: function () {
-                    console.log("Mac Item Selected");
+                    // console.log("Mac Item Selected");
                 },
                 icon: '<img src="../images/skills/mac.png"/>',
             },
@@ -629,7 +629,7 @@ export class RoutineSheetComponent implements OnInit {
                 name: "Checked",
                 checked: true,
                 action: function () {
-                    console.log("Checked Selected");
+                    // console.log("Checked Selected");
                 },
                 icon: '<img src="../images/skills/mac.png"/>',
             },
@@ -653,9 +653,9 @@ export class RoutineSheetComponent implements OnInit {
         var api = this.gridApi;
 
         for (var i = 0; i < this.rowData.length; i++) {
-            // // // console.log("i:", i);
+            // // // // console.log("i:", i);
             var itemToUpdate = this.rowData[i];
-            // // // console.log(newItem);
+            // // // // console.log(newItem);
             api.applyTransactionAsync({ update: [itemToUpdate] });
         }
     }
@@ -717,7 +717,7 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     public loadScript() {
-        // // // console.log("preparing to load...");
+        // // // // console.log("preparing to load...");
         let node = document.createElement("script");
         node.src = this.url;
         node.type = "text/javascript";
@@ -767,13 +767,6 @@ export class RoutineSheetComponent implements OnInit {
             this.gridApi.showLoadingOverlay();
         }
 
-        console.log(
-            "special: ",
-            this.decryptedDepartmentId,
-            " ..... ",
-            this.departmentID
-        );
-
         let obj = {
             UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
                 .userId,
@@ -796,7 +789,7 @@ export class RoutineSheetComponent implements OnInit {
             let rows = [];
             this.salesData = res;
             this.monthObject.oneMonth = true;
-            console.log(res);
+            // console.log(res);
 
             this.salesData.rowData.row.forEach((element, rowIndex) => {
                 this.cellMap = new Object();
@@ -834,7 +827,7 @@ export class RoutineSheetComponent implements OnInit {
                         element1.colType &&
                         element1.colType === "Combo"
                     ) {
-                        console.log("COMBOOO: ", element1.currentCellValue);
+                        // console.log("COMBOOO: ", element1.currentCellValue);
                         if (
                             element1.currentCellValue &&
                             element1.currentCellValue !== null &&
@@ -869,8 +862,8 @@ export class RoutineSheetComponent implements OnInit {
                 });
 
                 let typeArray = [];
-                // console.log(this.cellData[0]);
-                // console.log(this.cellData[0]['"OD"'], this.cellData[0]['"ED"'], this.cellData[0]['"VEHGRO"'], this.cellData[0]['"AD"'], this.cellData[0]["type"]);
+                // // console.log(this.cellData[0]);
+                // // console.log(this.cellData[0]['"OD"'], this.cellData[0]['"ED"'], this.cellData[0]['"VEHGRO"'], this.cellData[0]['"AD"'], this.cellData[0]["type"]);
                 if (
                     moment(this.cellData[0]['"OD"']).isBefore(
                         moment().format("DD-MMM-YY"),
@@ -903,6 +896,9 @@ export class RoutineSheetComponent implements OnInit {
                 }
 
                 if (
+                    this.cellData[0]['"ED"'] !== "" &&
+                    this.cellData[0]['"ED"'] !== undefined &&
+                    this.cellData[0]['"ED"'] !== null &&
                     moment().isSameOrBefore(
                         moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
                         "months"
@@ -916,7 +912,11 @@ export class RoutineSheetComponent implements OnInit {
                         Number(this.cellData[0]['"VEHGRO"']);
                 }
 
-                if (this.cellData[0]['"AD"'] !== "") {
+                if (
+                    this.cellData[0]['"AD"'] !== "" &&
+                    this.cellData[0]['"AD"'] !== undefined &&
+                    this.cellData[0]['"AD"'] !== null
+                ) {
                     typeArray.push("delivered");
 
                     this.deliveredUnits = this.deliveredUnits + 1;
@@ -932,7 +932,7 @@ export class RoutineSheetComponent implements OnInit {
                         Number(this.cellData[0]['"PROGRO"']);
                 } else {
                     this.missingUnits = this.missingUnits + 1;
-                    // console.log(this.missingUnits);
+                    // // console.log(this.missingUnits);
                 }
 
                 this.cellData[0]["type"] = typeArray;
@@ -968,7 +968,7 @@ export class RoutineSheetComponent implements OnInit {
                         ? this.totalAmount / Number(this.totalRows)
                         : 0;
 
-                console.log(this.missingUnits);
+                // console.log(this.missingUnits);
 
                 // this.missingAvg =(this.missingUnits > 0)? Number(this.missingAmount)/Number(this.missingUnits):0;
             } else {
@@ -995,7 +995,7 @@ export class RoutineSheetComponent implements OnInit {
             rowIdcolumn["filter"] = true;
             rowIdcolumn["lockPosition"] = true;
             rowIdcolumn["cellClass"] = function (params) {
-                // // // console.log(params.data);
+                // // // // console.log(params.data);
                 return params.data.carryOver === true
                     ? "agClassCarryOver"
                     : "agClassNoCarryOver";
@@ -1003,20 +1003,7 @@ export class RoutineSheetComponent implements OnInit {
 
             let carryOverCount = this.carryOverUnits;
             rowIdcolumn["valueGetter"] = function (params) {
-                // // // // console.log(params.node.rowIndex, carryOverCount);
-                if (params.data.carryOver === true) {
-                    count = 0;
-                    // // // // console.log(count);
-                    return null;
-                } else {
-                    //i++;
-                    if (params.node.rowIndex >= carryOverCount) {
-                        return params.node.rowIndex + 1 - carryOverCount;
-                    } else {
-                        count++;
-                        return count;
-                    }
-                }
+                return params.node.rowIndex + 1;
             };
 
             column.push(rowIdcolumn);
@@ -1074,18 +1061,18 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     isoDateValueFormatter(params) {
-        // console.log(params.value);
+        // // console.log(params.value);
     }
 
     onCellChanged(event) {
-        console.log("on cell changed");
-        console.log("event: ", event);
+        // console.log("on cell changed");
+        // console.log("event: ", event);
         if (event.newValue === undefined) {
             event.newValue = "";
         }
-        // // console.log("------------------");
-        // // console.log("event::", event);
-        // // console.log("------------------");
+        // // // console.log("------------------");
+        // // // console.log("event::", event);
+        // // // console.log("------------------");
         if (
             event.newValue ||
             event.newValue === "" ||
@@ -1180,7 +1167,7 @@ export class RoutineSheetComponent implements OnInit {
                         element1.colType &&
                         element1.colType === "Combo"
                     ) {
-                        console.log("COMBOOO: ", element1.currentCellValue);
+                        // console.log("COMBOOO: ", element1.currentCellValue);
                         if (
                             element1.currentCellValue &&
                             element1.currentCellValue !== null &&
@@ -1250,6 +1237,9 @@ export class RoutineSheetComponent implements OnInit {
                 }
 
                 if (
+                    this.cellData[0]['"ED"'] !== "" &&
+                    this.cellData[0]['"ED"'] !== undefined &&
+                    this.cellData[0]['"ED"'] !== null &&
                     moment().isSameOrBefore(
                         moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
                         "months"
@@ -1263,7 +1253,11 @@ export class RoutineSheetComponent implements OnInit {
                         Number(this.cellData[0]['"VEHGRO"']);
                 }
 
-                if (this.cellData[0]['"AD"'] !== "") {
+                if (
+                    this.cellData[0]['"AD"'] !== "" &&
+                    this.cellData[0]['"AD"'] !== undefined &&
+                    this.cellData[0]['"AD"'] !== null
+                ) {
                     typeArray.push("delivered");
 
                     this.deliveredUnits = this.deliveredUnits + 1;
@@ -1313,11 +1307,11 @@ export class RoutineSheetComponent implements OnInit {
                         ? this.totalAmount / Number(this.totalRows)
                         : 0;
 
-                console.log(
-                    this.totalAmount,
-                    this.processedAmount,
-                    this.vehicleProfit
-                );
+                // // console.log(
+                //     this.totalAmount,
+                //     this.processedAmount,
+                //     this.vehicleProfit
+                // );
 
                 // this.missingAvg =(this.missingUnits > 0)? Number(this.missingAmount)/Number(this.missingUnits):0;
             } else {
@@ -1327,7 +1321,7 @@ export class RoutineSheetComponent implements OnInit {
                         : 0;
             }
 
-            // console.log(rows);
+            // // console.log(rows);
             let searchResult = rows.filter((resp) => {
                 let payType = resp['"PT"'];
                 let financeManager = resp['"FM"'];
@@ -1366,7 +1360,7 @@ export class RoutineSheetComponent implements OnInit {
         this.records = this.rowData;
         this.rowData = [];
         this.rowData = searchResult;
-        console.log(this.rowResponse);
+        // console.log(this.rowResponse);
         this.toastHandlerService.generateToast(
             searchResult.length + " Record found",
             "",
@@ -1401,11 +1395,11 @@ export class RoutineSheetComponent implements OnInit {
                 this.gridFilter(previousMonthFilter, month, searchVal);
 
                 if (this.searchForm.get("deletedRecords").value) {
-                    // console.log('Delete Value 1',this.searchForm.get("deletedRecords").value);
+                    // // console.log('Delete Value 1',this.searchForm.get("deletedRecords").value);
                     this.monthObject.reset();
                     this.monthObject.oneMonth = true;
                 } else {
-                    // console.log('Delete Value 2',this.searchForm.get("deletedRecords").value);
+                    // // console.log('Delete Value 2',this.searchForm.get("deletedRecords").value);
                     searchResult = this.rowResponse.filter((resp) => {
                         let orderDate = resp['"OD"'];
                         let payType = resp['"PT"'];
@@ -1549,12 +1543,12 @@ export class RoutineSheetComponent implements OnInit {
             let email = resp['"EM"'];
             let dept = resp['"Dept"'];
 
-            // // // console.log(
+            // // // // console.log(
             //     email,
             //     searchVal,
             //     email && email.toLowerCase().includes(searchVal.toLowerCase())
             // );
-            // // // console.log(
+            // // // // console.log(
             //     moment(orderDate).isAfter(searchedDate) &&
             //         moment(orderDate).isBefore(endDate)
             // );
@@ -1600,7 +1594,7 @@ export class RoutineSheetComponent implements OnInit {
             }
             // datefilter = Object.keys(resp).filter(res=> {
             //   // if(res !=="" && isNaN(Number(resp[res]))){
-            //   //   // // // console.log(resp[res], Number(resp[res]))
+            //   //   // // // // console.log(resp[res], Number(resp[res]))
             //   //   return resp[res].toLowerCase()=== searchVal;
             //   // }
             // });
@@ -1620,19 +1614,19 @@ export class RoutineSheetComponent implements OnInit {
             let row = this.rowResponse.filter((res) => {
                 return res.type.find((el) => el === "carryOver");
             });
-            // // // console.log(this.rowResponse, row);
+            // // // // console.log(this.rowResponse, row);
             if (row.length > 0) {
                 this.rowData = [];
                 this.rowData = row;
                 this.toastHandlerService.generateToast(
                     "1 filter applied",
-                    "Clear",
+                    "",
                     null
                 );
             }
         } else if (option === 1) {
             let row = this.rowResponse.filter((res) => {
-                // // // // console.log(res.type);
+                // // // // // console.log(res.type);
                 return res.type.find((el) => el === "sold");
             });
             if (row.length > 0) {
@@ -1640,13 +1634,13 @@ export class RoutineSheetComponent implements OnInit {
                 this.rowData = row;
                 this.toastHandlerService.generateToast(
                     "1 filter applied",
-                    "Clear",
+                    "",
                     null
                 );
             }
         } else if (option === 2) {
             let row = this.rowResponse.filter((res) => {
-                // // // // console.log(res.type);
+                // // // // // console.log(res.type);
                 return res.type.find((el) => el === "covered");
             });
             if (row.length > 0) {
@@ -1654,13 +1648,13 @@ export class RoutineSheetComponent implements OnInit {
                 this.rowData = row;
                 this.toastHandlerService.generateToast(
                     "1 filter applied",
-                    "Clear",
+                    "",
                     null
                 );
             }
         } else if (option === 3) {
             let row = this.rowResponse.filter((res) => {
-                // // // // console.log(res.type);
+                // // // // // console.log(res.type);
                 return res.type.find((el) => el === "delivered");
             });
             if (row.length > 0) {
@@ -1668,7 +1662,7 @@ export class RoutineSheetComponent implements OnInit {
                 this.rowData = row;
                 this.toastHandlerService.generateToast(
                     "1 filter applied",
-                    "Clear",
+                    "",
                     null
                 );
             }
@@ -1676,7 +1670,7 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     calenderSearch(searchingFormat, month, startingMonth) {
-        // // // console.log(searchingFormat, startingMonth);
+        // // // // console.log(searchingFormat, startingMonth);
         let searchResult = [];
 
         searchResult = this.rowData.filter((resp) => {
@@ -1702,7 +1696,7 @@ export class RoutineSheetComponent implements OnInit {
                             moment(resp[res]).isBefore(startingMonth)
                         );
                     }
-                    // // // console.log(
+                    // // // // console.log(
                     //     date,
                     //     searchingFormat,
                     //     moment(resp[res]).isAfter(searchingFormat)
@@ -1726,7 +1720,7 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     monthSliderSearch(searchingFormat) {
-        // // // console.log(searchingFormat);
+        // // // // console.log(searchingFormat);
         let searchResult = [];
 
         this.monthFilter = searchingFormat + " - " + searchingFormat;
@@ -1823,7 +1817,7 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     applyCalenderFilter() {
-        // // // console.log(this.monthSelected);
+        // // // // console.log(this.monthSelected);
         this.monthModal = false;
         this.generateFilter(this.monthSelected);
     }
@@ -2029,10 +2023,10 @@ export class RoutineSheetComponent implements OnInit {
     getContextMenuItems(params) {
         let thisRef = params.context.thisComponent;
 
-        // // console.log("********************");
-        // // console.log("thisRef.rowColor: ", thisRef.rowColor);
-        // // console.log("params: ", params);
-        // // console.log("********************");
+        // // // console.log("********************");
+        // // // console.log("thisRef.rowColor: ", thisRef.rowColor);
+        // // // console.log("params: ", params);
+        // // // console.log("********************");
 
         var result = [
             {
@@ -2051,7 +2045,7 @@ export class RoutineSheetComponent implements OnInit {
                     {
                         name: "Only this cell",
                         action: function () {
-                            // // // console.log(params);
+                            // // // // console.log(params);
                             thisRef.openModal(
                                 thisRef,
                                 HistoryComponent,
@@ -2068,8 +2062,8 @@ export class RoutineSheetComponent implements OnInit {
                     // {
                     //     name: "Show All",
                     //     action: function () {
-                    //         // // // console.log(params.column.colId);
-                    //         // // // console.log(params.node.rowIndex);
+                    //         // // // // console.log(params.column.colId);
+                    //         // // // // console.log(params.node.rowIndex);
                     //         thisRef.openModal(
                     //             thisRef,
                     //             HistoryComponent,
@@ -2097,7 +2091,7 @@ export class RoutineSheetComponent implements OnInit {
                 name: "DUPLICATE - Entire Record",
                 action: function () {
                     var newItems = [params.node.data];
-                    // // // // console.log(params);
+                    // // // // // console.log(params);
                     thisRef.duplicateRow(newItems, params.node.data.rowId);
                     // thisRef.gridApi.applyTransaction({ add: newItems });
                 },
@@ -2310,7 +2304,7 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     openModal(thisRef, component, width, key?: any) {
-        console.log(key);
+        // console.log(key);
         thisRef.dialogRef = thisRef.dialog.open(component, {
             panelClass: "custom-dialog-container",
             width: width,
@@ -2324,7 +2318,7 @@ export class RoutineSheetComponent implements OnInit {
         });
         thisRef.dialogRef.afterClosed().subscribe((res) => {
             if (res && res.column) {
-                console.log(res.column);
+                // console.log(res.column);
 
                 if (res.column.length > 0) {
                     res.column.map((res) => {
@@ -2332,7 +2326,7 @@ export class RoutineSheetComponent implements OnInit {
                             (el) => el.headerName === res.columnName
                         );
                         if (column !== undefined) {
-                            console.log(column.colId);
+                            // console.log(column.colId);
                             this.gridColumnApi.setColumnVisible(
                                 column.colId,
                                 res.display
@@ -2352,9 +2346,9 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     duplicateRow(newItems, index) {
-        // // console.log("************");
-        // // console.log("duplicate row method called", newItems, index);
-        // // console.log("************");
+        // // // console.log("************");
+        // // // console.log("duplicate row method called", newItems, index);
+        // // // console.log("************");
         this.gridApi.showLoadingOverlay();
 
         let params = {

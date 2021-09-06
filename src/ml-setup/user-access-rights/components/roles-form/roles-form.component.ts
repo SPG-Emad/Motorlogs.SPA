@@ -228,7 +228,7 @@ export class RolesFormComponent implements OnInit, OnDestroy {
 
     updateRole(): void {
         this.myNgForm.value.oldCode = this.oldCode;
-        console.log(this.myNgForm.value);
+        // console.log(this.myNgForm.value);
         this.roleService
             .putRole(this.myNgForm.value)
             .pipe(takeUntil(this._unsubscribeAll))

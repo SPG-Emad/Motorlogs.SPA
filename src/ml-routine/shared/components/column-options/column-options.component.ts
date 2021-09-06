@@ -38,7 +38,7 @@ export class ColumnOptionsComponent implements OnInit {
 
         @Inject(MAT_DIALOG_DATA) public modalParams?: any
     ) {
-        console.log(modalParams);
+        // console.log(modalParams);
         if (modalParams && modalParams.hasOwnProperty("key")) {
             this.decryptedDepartmentId = modalParams.key.id;
             this.viewId = modalParams.key.viewId;
@@ -114,7 +114,7 @@ export class ColumnOptionsComponent implements OnInit {
             .getColumnOptionsListing(params)
             .subscribe((res) => {
                 this.columnLoader = false;
-                console.log(this.columnLoader);
+                // console.log(this.columnLoader);
                 res.map((res) => {
                     let field =
                         "" + res.colName.toLowerCase().replace(" ", "_");

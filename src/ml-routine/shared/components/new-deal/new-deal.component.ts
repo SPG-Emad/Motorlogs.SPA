@@ -61,7 +61,7 @@ export class NewDealComponent implements OnInit {
 
     InsertRows() {
         this.loader = true;
-        console.log(this.decryptedDepartmentId);
+        // console.log(this.decryptedDepartmentId);
         let purchaseDate = this.arrivingForm.get("purchaseDate").value;
 
         const d = new Date(purchaseDate);
@@ -83,8 +83,8 @@ export class NewDealComponent implements OnInit {
             PurchaseFrom: this.arrivingForm.get("purchaseFrom").value,
         };
         
-        console.log("order date: ", finalDate);
-        console.log("params: ", params);
+        // console.log("order date: ", finalDate);
+        // console.log("params: ", params);
 
         this.saleslogService.postRows(params).subscribe(() => {
             this.loader = false;

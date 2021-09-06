@@ -21,7 +21,7 @@ export class PermissionStateService {
   getPermissionStore(form:any, params?:any){
     /*Subscribe to store and get permission state if exist*/ 
     this.permissionStoreData$.subscribe(res=>{
-      console.log(res);
+      // console.log(res);
       if(res && res.firstName){
         if(params){
           form.patchValue(res[params][0]);

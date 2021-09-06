@@ -130,7 +130,8 @@ export class UserProfileService {
                             id: 'arriving',
                             title: 'Arriving',
                             type: 'item',
-                            url: '/routine/trade-in-log/arriving'
+                            url: '/routine/trade-in-log/arriving',
+                            openInNewTab: true
                         },
                     ]
                 });

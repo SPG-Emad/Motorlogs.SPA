@@ -113,7 +113,7 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
 
 
     initializeDatePicker() {
-        console.log('cal open');
+        // console.log('cal open');
         $.datetimepicker.setLocale('en');
         $('#_datetimepicker4').datetimepicker({
             format: 'd.m.Y H:i',
@@ -136,7 +136,7 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
 
         opened ? $("#calDisplay").show() : $("#calDisplay").hide();
 
-        console.log(opened ? 'opened' : 'closed');
+        // console.log(opened ? 'opened' : 'closed');
 
     }
 
@@ -235,7 +235,7 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
         if (event.value) {
             this.selectedItem = event.value.name;
             let colId = this.itemArray.find(res => res.code === this.selected);
-            console.log(this.colDef);
+            // console.log(this.colDef);
 
             let params = {
                 "userid": this.LocalStorageHandlerService.getFromStorage('userObj').userId,

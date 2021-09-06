@@ -23,11 +23,11 @@ export class DropDownRenderer implements OnInit {
     viewId: number;
 
     constructor() {
-        console.log("DropDownRenderer Constructor");
+        // console.log("DropDownRenderer Constructor");
     }
 
     ngOnInit() {
-        console.log("DropDownRenderer ngOnInIt");
+        // console.log("DropDownRenderer ngOnInIt");
     }
 
     agInit(params): void {
@@ -42,8 +42,8 @@ export class DropDownRenderer implements OnInit {
         this.itemsArray = params.data["cellOptions_" + params.colDef.colCode];
         this.selected = params.value;
 
-        console.log("agInit items array: ", this.itemsArray);
-        console.log("agInit params: ", params);
+        // // console.log("agInit items array: ", this.itemsArray);
+        // // console.log("agInit params: ", params);
 
         // This code will only run on grid initialization
         if (params.value != null) {
@@ -52,11 +52,11 @@ export class DropDownRenderer implements OnInit {
                     (x) => x.code.toLowerCase() === params.value.toLowerCase()
                 ) === undefined
             ) {
-                console.log("not found ", params.value);
+                // console.log("not found ", params.value);
                 this.rowDate = params.value;
                 this.selected = params.value;
             } else {
-                console.log("found: ", params.value);
+                // console.log("found: ", params.value);
                 this.selected = params.value;
             }
         }

@@ -21,11 +21,11 @@ export class NotificationService {
         });
 
     constructor(private http: HttpClient, private store: Store, private userProfileService: UserProfileService) {
-      console.log('Notification Service');
+    //   console.log('Notification Service');
     }
 
     getNotifications(): Observable<NotificationDto[]> {
-        console.log('Get Notification');
+        // console.log('Get Notification');
         return this.http
             .get(GlobalConstants.apiURL + 'user/GetNotifications/' + this.userProfileService.currentUser.userId)
             .pipe(

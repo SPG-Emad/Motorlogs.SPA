@@ -80,7 +80,7 @@ export class SaleslogService {
     }
 
     insertCellValue(params: any) {
-        console.log("insertCellValue hit:: ", params);
+        // console.log("insertCellValue hit:: ", params);
         return this._http
             .post<salesLog[]>(`${SALESLOG_API}/AddEntryValue`, params)
             .map(this.extractData);

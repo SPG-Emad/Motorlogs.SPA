@@ -37,7 +37,7 @@ export class ColumnOptionComponent implements OnInit {
         private LocalStorageHandlerService: LocalStorageHandlerService,
         @Inject(MAT_DIALOG_DATA) public modalParams?: any
     ) {
-        console.log("modalParams:", modalParams);
+        // console.log("modalParams:", modalParams);
         if (modalParams && modalParams.hasOwnProperty("key")) {
             this.decryptedDepartmentId = modalParams.key;
         }
@@ -109,7 +109,7 @@ export class ColumnOptionComponent implements OnInit {
             .getColumnOptionsListing(params)
             .subscribe((res) => {
                 this.columnLoader = false;
-                console.log(this.columnLoader);
+                // console.log(this.columnLoader);
                 res.map((res) => {
                     let field =
                         "" + res.colName.toLowerCase().replace(" ", "_");

@@ -21,7 +21,7 @@ export class NewDealComponent implements OnInit {
         private signalRService: SignalRService,
         @Inject(MAT_DIALOG_DATA) public modalParams?: any
     ) {
-        console.log(modalParams);
+        // console.log(modalParams);
         if (modalParams && modalParams.hasOwnProperty("key")) {
             this.decryptedDepartmentId = modalParams.key;
         }
@@ -49,7 +49,7 @@ export class NewDealComponent implements OnInit {
 
     InsertRows() {
         this.loader = true;
-        console.log(this.decryptedDepartmentId);
+        // console.log(this.decryptedDepartmentId);
         let orderDate = this.columnForm.get("orderDate").value;
 
         const d = new Date(orderDate);
@@ -73,8 +73,8 @@ export class NewDealComponent implements OnInit {
             StockNumber: String(this.columnForm.get("stockNumber").value),
         };
 
-        console.log("order date: ", finalDate);
-        console.log("params: ", params);
+        // console.log("order date: ", finalDate);
+        // console.log("params: ", params);
         this.saleslogService.postRows(params).subscribe(() => {
             this.loader = false;
             this.signalRService.BroadcastLiveSheetData();

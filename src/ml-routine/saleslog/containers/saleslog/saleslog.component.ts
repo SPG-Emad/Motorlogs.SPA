@@ -344,7 +344,7 @@ export class SaleslogComponent implements OnInit {
                             ).isBefore(date);
                             choice = isBefore;
                         }
-                        // // // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
+                        // // // // // console.log("after",params.data.orderDate,isAfter,"choice:",choice);
                         return params.value === "" && choice;
                     } else if (params.colDef.colCode === "PT") {
                         let date = moment().format("DD-MMM-YY");
@@ -359,7 +359,7 @@ export class SaleslogComponent implements OnInit {
                         } else {
                             choice = isAfter;
                         }
-                        // // // // console.log(params.data.orderDate);
+                        // // // // // console.log(params.data.orderDate);
 
                         return params.value === "" && choice;
                     } else {
@@ -439,7 +439,7 @@ export class SaleslogComponent implements OnInit {
             config: "{'width':" + width + "}", // or "{'sequence':1}"
         };
 
-        // console.log("store column resize");
+        // // console.log("store column resize");
 
         if (cid !== 0) {
             this.saleslog.updateViewColumnOptions(params).subscribe(() => {
@@ -461,9 +461,9 @@ export class SaleslogComponent implements OnInit {
         var api = this.gridApi;
 
         for (var i = 0; i < this.rowData.length; i++) {
-            // // // console.log("i:", i);
+            // // // // console.log("i:", i);
             var itemToUpdate = this.rowData[i];
-            // // // console.log(newItem);
+            // // // // console.log(newItem);
             api.applyTransactionAsync({ update: [itemToUpdate] });
         }
         function copyObject(object) {
@@ -532,7 +532,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     public loadScript() {
-        // // // console.log("preparing to load...");
+        // // // // console.log("preparing to load...");
         let node = document.createElement("script");
         node.src = this.url;
         node.type = "text/javascript";
@@ -615,14 +615,12 @@ export class SaleslogComponent implements OnInit {
                 this.cellData = [];
 
                 element.cells.forEach((element1, index) => {
-                    // console.log('element1',element1);
+                    // // console.log('element1',element1);
                     this.rowColor.push({
                         rowId: rowIndex,
                         colId: element1.colId,
                         color: element1.cellColor,
                     });
-
-                   
 
                     this.cellMap["rowId"] = rowIndexId;
 
@@ -644,7 +642,7 @@ export class SaleslogComponent implements OnInit {
                         element1.colType &&
                         element1.colType === "Combo"
                     ) {
-                        console.log("COMBOOO: ", element1.currentCellValue);
+                        // console.log("COMBOOO: ", element1.currentCellValue);
                         if (
                             element1.currentCellValue &&
                             element1.currentCellValue !== null &&
@@ -682,61 +680,66 @@ export class SaleslogComponent implements OnInit {
                 });
 
                 let typeArray = [];
-                if (
-                    moment(this.cellData[0]['"OD"']).isBefore(
-                        moment().format("DD-MMM-YY"),
-                        "months"
-                    )
-                ) {
-                    let time = moment().isSameOrAfter(
-                        moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
-                        "months"
-                    );
-                    if (time) {
-                        this.carryOverAmount =
-                            this.carryOverAmount +
-                            Number(this.cellData[0]['"VEHGRO"']);
-                        typeArray.push("carryOver");
-                    } else {
-                        typeArray.push("sold");
+                // means order date month is LESS THAN current month ??
+                // Carry over formula : Orders for previous months which are being delivered in the current month or later
+                var OD_M = moment(this.cellData[0]['"OD"'], 'DD/MM/YYYY').format('M');
+                var ED_M = moment(this.cellData[0]['"ED"'], 'DD/MM/YYYY').format('M');
+                var AD_M = moment(this.cellData[0]['"AD"'], 'DD/MM/YYYY').format('M');
+                var SD_M = moment().format("M");
 
-                        this.soldUnits = this.soldUnits + 1;
-                        this.soldAmount =
-                            this.soldAmount +
-                            Number(this.cellData[0]['"VEHGRO"']);
+                if (OD_M <= SD_M) 
+                {
+                    if(this.cellData[0]['"ED"'] !== undefined) {
+                        let time = SD_M >= ED_M;
+                        
+                        if (time) {
+                         //   console.log('time: YES');
+                            this.carryOverAmount = 
+                            this.carryOverAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                            typeArray.push("carryOver");
+                        } else {
+                       //     console.log('time: No');
+                            typeArray.push("sold");
+                            this.soldUnits = this.soldUnits + 1;
+                            this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                        }
                     }
-                } else {
+                    else{
+                     //   console.log('No Estimated Delivery');
+                        typeArray.push("sold");
+                        this.soldUnits = this.soldUnits + 1;
+                        this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                    }
+                } 
+                else {
                     typeArray.push("sold");
-
                     this.soldUnits = this.soldUnits + 1;
-                    this.soldAmount =
-                        this.soldAmount + Number(this.cellData[0]['"VEHGRO"']);
+                    this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);;
+                }
+
+                // Covered: Whose Est. Del is not in future months.
+                if (
+                    this.cellData[0]['"ED"'] !== "" &&
+                    this.cellData[0]['"ED"'] !== undefined &&
+                    this.cellData[0]['"ED"'] !== null &&
+                    ED_M <= SD_M  
+                    ) 
+                {
+                    typeArray.push("covered");
+                    this.coveredUnits = this.coveredUnits + 1;
+                    this.coveredAmount = this.coveredAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
 
                 if (
-                    moment().isSameOrBefore(
-                        moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
-                        "months"
-                    )
+                    this.cellData[0]['"AD"'] !== "" &&
+                    this.cellData[0]['"AD"'] !== undefined &&
+                    this.cellData[0]['"AD"'] !== null
                 ) {
-                    typeArray.push("covered");
-
-                    this.coveredUnits = this.coveredUnits + 1;
-                    this.coveredAmount =
-                        this.coveredAmount +
-                        Number(this.cellData[0]['"VEHGRO"']);
-                }
-
-                if (this.cellData[0]['"AD"'] !== "") {
                     typeArray.push("delivered");
-
                     this.deliveredUnits = this.deliveredUnits + 1;
-                    this.deliveredAmount =
-                        this.deliveredAmount +
-                        Number(this.cellData[0]['"VEHGRO"']);
+                    this.deliveredAmount = this.deliveredAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
                 this.cellData[0]["type"] = typeArray;
-                // // // // console.log(this.cellData[0])
                 rows.push(this.cellData[0]);
             });
 
@@ -774,29 +777,17 @@ export class SaleslogComponent implements OnInit {
             rowIdcolumn["filter"] = true;
             rowIdcolumn["lockPosition"] = true;
             rowIdcolumn["cellClass"] = function (params) {
-                // // // console.log(params.data);
+                // // // // console.log(params.data);
                 return params.data.carryOver === true
                     ? "agClassCarryOver"
                     : "agClassNoCarryOver";
             };
 
-            let carryOverCount = this.carryOverUnits;
             rowIdcolumn["valueGetter"] = function (params) {
-                // // // // console.log(params.node.rowIndex, carryOverCount);
-                if (params.data.carryOver === true) {
-                    count = 0;
-                    // // // // console.log(count);
-                    return null;
-                } else {
-                    //i++;
-                    if (params.node.rowIndex >= carryOverCount) {
-                        return params.node.rowIndex + 1 - carryOverCount;
-                    } else {
-                        count++;
-                        return count;
-                    }
-                }
+                return params.node.rowIndex + 1;
             };
+
+            // console.log("count :::: ", count);
 
             column.push(rowIdcolumn);
 
@@ -826,7 +817,6 @@ export class SaleslogComponent implements OnInit {
 
                 if (element.type === "Date") {
                     columnMap["cellEditor"] = "dateEditor";
-                    // columnMap["valueFormatter"] = this.formatDate.bind(this);
                 } else if (element.type === "DD-Fixed") {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
                 } else if (element.type === "DD-Self") {
@@ -852,18 +842,18 @@ export class SaleslogComponent implements OnInit {
     }
 
     isoDateValueFormatter(params) {
-        // console.log(params.value);
+        // // console.log(params.value);
     }
 
     onCellChanged(event) {
-        console.log("on cell changed");
-        console.log("event: ", event);
+        // console.log("on cell changed");
+        // console.log("event: ", event);
         if (event.newValue === undefined) {
             event.newValue = "";
         }
-        // // console.log("------------------");
-        // // console.log("event::", event);
-        // // console.log("------------------");
+        // // // console.log("------------------");
+        // // // console.log("event::", event);
+        // // // console.log("------------------");
         if (
             event.newValue ||
             event.newValue === "" ||
@@ -891,7 +881,7 @@ export class SaleslogComponent implements OnInit {
 
     gridFilter(months?, date?, searchValue?) {
         this.gridApi.showLoadingOverlay();
-        // // console.log(
+        // // // console.log(
         //     'this.searchForm.get("deletedRecords").value',
         //     this.searchForm.get("deletedRecords").value
         // );
@@ -957,7 +947,7 @@ export class SaleslogComponent implements OnInit {
                         element1.colType &&
                         element1.colType === "Combo"
                     ) {
-                        console.log("COMBOOO: ", element1.currentCellValue);
+                        // console.log("COMBOOO: ", element1.currentCellValue);
                         if (
                             element1.currentCellValue &&
                             element1.currentCellValue !== null &&
@@ -995,61 +985,64 @@ export class SaleslogComponent implements OnInit {
                 });
 
                 let typeArray = [];
-                if (
-                    moment(this.cellData[0]['"OD"']).isBefore(
-                        moment().format("DD-MMM-YY"),
-                        "months"
-                    )
-                ) {
-                    let time = moment().isSameOrAfter(
-                        moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
-                        "months"
-                    );
-                    if (time) {
-                        this.carryOverAmount =
-                            this.carryOverAmount +
-                            Number(this.cellData[0]['"VEHGRO"']);
-                        typeArray.push("carryOver");
-                    } else {
-                        typeArray.push("sold");
+                var OD_M = moment(this.cellData[0]['"OD"'], 'DD/MM/YYYY').format('M');
+                var ED_M = moment(this.cellData[0]['"ED"'], 'DD/MM/YYYY').format('M');
+                var AD_M = moment(this.cellData[0]['"AD"'], 'DD/MM/YYYY').format('M');
+                var SD_M = moment().format("M");
 
-                        this.soldUnits = this.soldUnits + 1;
-                        this.soldAmount =
-                            this.soldAmount +
-                            Number(this.cellData[0]['"VEHGRO"']);
+                if (OD_M <= SD_M) 
+                {
+                    if(this.cellData[0]['"ED"'] !== undefined) {
+                        let time = SD_M >= ED_M;
+                        
+                        if (time) {
+                         //   console.log('time: YES');
+                            this.carryOverAmount = 
+                            this.carryOverAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                            typeArray.push("carryOver");
+                        } else {
+                       //     console.log('time: No');
+                            typeArray.push("sold");
+                            this.soldUnits = this.soldUnits + 1;
+                            this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                        }
                     }
-                } else {
+                    else{
+                     //   console.log('No Estimated Delivery');
+                        typeArray.push("sold");
+                        this.soldUnits = this.soldUnits + 1;
+                        this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                    }
+                } 
+                else {
                     typeArray.push("sold");
-
                     this.soldUnits = this.soldUnits + 1;
-                    this.soldAmount =
-                        this.soldAmount + Number(this.cellData[0]['"VEHGRO"']);
+                    this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);;
+                }
+
+                // Covered: Whose Est. Del is not in future months.
+                if (
+                    this.cellData[0]['"ED"'] !== "" &&
+                    this.cellData[0]['"ED"'] !== undefined &&
+                    this.cellData[0]['"ED"'] !== null &&
+                    ED_M <= SD_M  
+                    ) 
+                {
+                    typeArray.push("covered");
+                    this.coveredUnits = this.coveredUnits + 1;
+                    this.coveredAmount = this.coveredAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
 
                 if (
-                    moment().isSameOrBefore(
-                        moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
-                        "months"
-                    )
+                    this.cellData[0]['"AD"'] !== "" &&
+                    this.cellData[0]['"AD"'] !== undefined &&
+                    this.cellData[0]['"AD"'] !== null
                 ) {
-                    typeArray.push("covered");
-
-                    this.coveredUnits = this.coveredUnits + 1;
-                    this.coveredAmount =
-                        this.coveredAmount +
-                        Number(this.cellData[0]['"VEHGRO"']);
-                }
-
-                if (this.cellData[0]['"AD"'] !== "") {
                     typeArray.push("delivered");
-
                     this.deliveredUnits = this.deliveredUnits + 1;
-                    this.deliveredAmount =
-                        this.deliveredAmount +
-                        Number(this.cellData[0]['"VEHGRO"']);
+                    this.deliveredAmount = this.deliveredAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
                 this.cellData[0]["type"] = typeArray;
-                // // // // console.log(this.cellData[0])
                 rows.push(this.cellData[0]);
             });
 
@@ -1108,7 +1101,7 @@ export class SaleslogComponent implements OnInit {
         this.records = this.rowData;
         this.rowData = [];
         this.rowData = searchResult;
-        // // // console.log(this.rowResponse);
+        // // // // console.log(this.rowResponse);
         this.toastHandlerService.generateToast(
             searchResult.length + " Record found",
             "",
@@ -1117,7 +1110,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     methodFromParent(cell) {
-        console.log("Parent Component Method from " + cell + "!");
+        // console.log("Parent Component Method from " + cell + "!");
     }
 
     getClassRules(params, color) {
@@ -1143,11 +1136,11 @@ export class SaleslogComponent implements OnInit {
                 this.gridFilter(previousMonthFilter, month, searchVal);
 
                 if (this.searchForm.get("deletedRecords").value) {
-                    // console.log('Delete Value 1',this.searchForm.get("deletedRecords").value);
+                    // // console.log('Delete Value 1',this.searchForm.get("deletedRecords").value);
                     this.monthObject.reset();
                     this.monthObject.oneMonth = true;
                 } else {
-                    // console.log('Delete Value 2',this.searchForm.get("deletedRecords").value);
+                    // // console.log('Delete Value 2',this.searchForm.get("deletedRecords").value);
                     searchResult = this.rowResponse.filter((resp) => {
                         let orderDate = resp['"OD"'];
                         let payType = resp['"PT"'];
@@ -1291,12 +1284,12 @@ export class SaleslogComponent implements OnInit {
             let email = resp['"EM"'];
             let dept = resp['"Dept"'];
 
-            // // // console.log(
+            // // // // console.log(
             //     email,
             //     searchVal,
             //     email && email.toLowerCase().includes(searchVal.toLowerCase())
             // );
-            // // // console.log(
+            // // // // console.log(
             //     moment(orderDate).isAfter(searchedDate) &&
             //         moment(orderDate).isBefore(endDate)
             // );
@@ -1342,7 +1335,7 @@ export class SaleslogComponent implements OnInit {
             }
             // datefilter = Object.keys(resp).filter(res=> {
             //   // if(res !=="" && isNaN(Number(resp[res]))){
-            //   //   // // // console.log(resp[res], Number(resp[res]))
+            //   //   // // // // console.log(resp[res], Number(resp[res]))
             //   //   return resp[res].toLowerCase()=== searchVal;
             //   // }
             // });
@@ -1357,60 +1350,62 @@ export class SaleslogComponent implements OnInit {
     }
 
     filterGrid(option) {
+        
         // If filter matches change active state of columns*/
         if (option === 0) {
+            
             let row = this.rowResponse.filter((res) => {
-                return res.type.find((el) => el === "carryOver");
+                return res.carryOver == true;
             });
-            // // // console.log(this.rowResponse, row);
+
             if (row.length > 0) {
                 this.rowData = [];
                 this.rowData = row;
                 this.toastHandlerService.generateToast(
-                    "1 filter applied",
-                    "Clear",
+                    "1 Filter Applied",
+                    "",
                     null
                 );
             }
         } else if (option === 1) {
             let row = this.rowResponse.filter((res) => {
-                // // // // console.log(res.type);
+                // // // // // console.log(res.type);
                 return res.type.find((el) => el === "sold");
             });
             if (row.length > 0) {
                 this.rowData = [];
                 this.rowData = row;
                 this.toastHandlerService.generateToast(
-                    "1 filter applied",
-                    "Clear",
+                    "1 Filter Applied",
+                    "",
                     null
                 );
             }
         } else if (option === 2) {
             let row = this.rowResponse.filter((res) => {
-                // // // // console.log(res.type);
+                // // // // // console.log(res.type);
                 return res.type.find((el) => el === "covered");
             });
             if (row.length > 0) {
                 this.rowData = [];
                 this.rowData = row;
                 this.toastHandlerService.generateToast(
-                    "1 filter applied",
-                    "Clear",
+                    "1 Filter Applied",
+                    "",
                     null
                 );
             }
         } else if (option === 3) {
             let row = this.rowResponse.filter((res) => {
-                // // // // console.log(res.type);
+                // // // // // console.log(res.type);
                 return res.type.find((el) => el === "delivered");
             });
             if (row.length > 0) {
                 this.rowData = [];
                 this.rowData = row;
                 this.toastHandlerService.generateToast(
-                    "1 filter applied",
-                    "Clear",
+                    "1 Filter Applied",
+                    "",
                     null
                 );
             }
@@ -1418,7 +1413,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     calenderSearch(searchingFormat, month, startingMonth) {
-        // // // console.log(searchingFormat, startingMonth);
+        // // // // console.log(searchingFormat, startingMonth);
         let searchResult = [];
 
         searchResult = this.rowData.filter((resp) => {
@@ -1444,7 +1439,7 @@ export class SaleslogComponent implements OnInit {
                             moment(resp[res]).isBefore(startingMonth)
                         );
                     }
-                    // // // console.log(
+                    // // // // console.log(
                     //     date,
                     //     searchingFormat,
                     //     moment(resp[res]).isAfter(searchingFormat)
@@ -1468,7 +1463,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     monthSliderSearch(searchingFormat) {
-        // // // console.log(searchingFormat);
+        // // // // console.log(searchingFormat);
         let searchResult = [];
 
         this.monthFilter = searchingFormat + " - " + searchingFormat;
@@ -1565,7 +1560,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     applyCalenderFilter() {
-        // // // console.log(this.monthSelected);
+        // // // // console.log(this.monthSelected);
         this.monthModal = false;
         this.generateFilter(this.monthSelected);
     }
@@ -1619,7 +1614,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     formatNumber(params) {
-        console.log("formatNumberCalled: ", params.colDef.type);
+        // console.log("formatNumberCalled: ", params.colDef.type);
         if (params.colDef.type === "number") {
             return (
                 "$" +
@@ -1631,7 +1626,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     formatDate(params) {
-        console.log("formatDate: ", params);
+        // console.log("formatDate: ", params);
         if (
             params.value !== null &&
             params.value &&
@@ -1784,10 +1779,10 @@ export class SaleslogComponent implements OnInit {
     getContextMenuItems(params) {
         let thisRef = params.context.thisComponent;
 
-        // // console.log("********************");
-        // // console.log("thisRef.rowColor: ", thisRef.rowColor);
-        // // console.log("params: ", params);
-        // // console.log("********************");
+        // // // console.log("********************");
+        // // // console.log("thisRef.rowColor: ", thisRef.rowColor);
+        // // // console.log("params: ", params);
+        // // // console.log("********************");
 
         var result = [
             {
@@ -1806,7 +1801,7 @@ export class SaleslogComponent implements OnInit {
                     {
                         name: "Only this cell",
                         action: function () {
-                            // // // console.log(params);
+                            // // // // console.log(params);
                             thisRef.openModal(
                                 thisRef,
                                 HistoryComponent,
@@ -1823,8 +1818,8 @@ export class SaleslogComponent implements OnInit {
                     // {
                     //     name: "Show All",
                     //     action: function () {
-                    //         // // // console.log(params.column.colId);
-                    //         // // // console.log(params.node.rowIndex);
+                    //         // // // // console.log(params.column.colId);
+                    //         // // // // console.log(params.node.rowIndex);
                     //         thisRef.openModal(
                     //             thisRef,
                     //             HistoryComponent,
@@ -1852,7 +1847,7 @@ export class SaleslogComponent implements OnInit {
                 name: "DUPLICATE - Entire Record",
                 action: function () {
                     var newItems = [params.node.data];
-                    // // // // console.log(params);
+                    // // // // // console.log(params);
                     thisRef.duplicateRow(newItems, params.node.data.rowId);
                     // thisRef.gridApi.applyTransaction({ add: newItems });
                 },
@@ -2065,7 +2060,7 @@ export class SaleslogComponent implements OnInit {
     }
 
     openModal(thisRef, component, width, key?: any) {
-        // // // console.log(key);
+        // // // // console.log(key);
         thisRef.dialogRef = thisRef.dialog.open(component, {
             panelClass: "custom-dialog-container",
             width: width,
@@ -2101,9 +2096,9 @@ export class SaleslogComponent implements OnInit {
     }
 
     duplicateRow(newItems, index) {
-        // // console.log("************");
-        // // console.log("duplicate row method called", newItems, index);
-        // // console.log("************");
+        // // // console.log("************");
+        // // // console.log("duplicate row method called", newItems, index);
+        // // // console.log("************");
         this.gridApi.showLoadingOverlay();
 
         let params = {

@@ -165,7 +165,7 @@ export class ToolbarComponent implements OnInit, OnDestroy {
     }
 
     selectedClient($event) {
-        console.log($event);
+        // console.log($event);
         this.items = {};
         this.clientData
             .filter(x => x.entryId === $event)

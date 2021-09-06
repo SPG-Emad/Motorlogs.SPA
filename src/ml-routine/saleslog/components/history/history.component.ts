@@ -33,8 +33,8 @@ export class HistoryComponent implements OnInit {
     };
     if(modalParams && modalParams.hasOwnProperty('key') && modalParams.key.option){
       this.searchOption = modalParams.key;
-      console.log(modalParams.key);
-      console.log(this.searchOption);
+    //   // console.log(modalParams.key);
+    //   // console.log(this.searchOption);
       if(this.searchOption.option === 1){
         this.modalTitle = "History All";
       }
@@ -166,13 +166,13 @@ export class HistoryComponent implements OnInit {
 
   search(type){
     let val = this.allSearchForm.get('searchbar').value;
-    console.log(val);
+    // // console.log(val);
     if(val){
       let result = [];
       switch(this.searchOption.option){
         case 1:
           result = this.rowResponse.filter(res=> (res.editedBy && res.editedBy.includes(val) || res.newValues && res.newValues.includes(val) || res.oldValues && res.oldValues.includes(val)));
-          console.log(result);
+          // console.log(result);
           if(result !== undefined){
             this.rowData = result;
           }
@@ -180,7 +180,7 @@ export class HistoryComponent implements OnInit {
         case 2:
           let date = this.searchForm.get('history').value;
           result = this.rowResponse.filter(res=> (res.editedBy && res.editedBy.includes(val) || res.newValues && res.newValues.includes(val) || res.oldValues && res.oldValues.includes(val)));
-          console.log(result);
+          // console.log(result);
           if(result !== undefined){
             this.rowData = result;
           }

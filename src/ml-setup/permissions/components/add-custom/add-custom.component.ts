@@ -165,7 +165,7 @@ export class AddCustomComponent implements OnInit {
     }
 
     onDropDownTypeSelect(event) {
-        console.log("option", event.value);
+        // console.log("option", event.value);
 
         let cellName = "";
 
@@ -233,7 +233,7 @@ export class AddCustomComponent implements OnInit {
         const options = [];
         if (this.setupForm.get("dropDownType").value !== "") {
             this.setupForm.get("dropDownType").value.map((res) => {
-                console.log(res);
+                // console.log(res);
                 options.push(res);
             });
         }
@@ -297,7 +297,7 @@ export class AddCustomComponent implements OnInit {
         obj.options = [];
         obj.options = options;
 
-        console.log(options);
+        // console.log(options);
 
         this.permissionService.postPermission(obj).subscribe(
             (res) => {

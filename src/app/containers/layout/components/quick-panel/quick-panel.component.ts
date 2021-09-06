@@ -30,7 +30,7 @@ export class QuickPanelComponent implements OnInit, OnDestroy {
     }
 
     ngOnInit() {
-        console.log('Quick Panel');
+        // console.log('Quick Panel');
         this.subscription = this.notificationService.notifications$.subscribe((data) => this.notificationsArr = data);
         this.notifications$ = this.store.select<NotificationDto[]>('notifications');
     }

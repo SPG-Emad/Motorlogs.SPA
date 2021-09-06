@@ -156,7 +156,7 @@ export class RolesListComponent implements OnInit, OnDestroy {
         roleFetched.oldCode = roleFetched.code;
         this.roleService.selectedRole = Object.assign({}, roleFetched);
         this.editValue.emit(this.roleService.selectedRole);
-        console.log(roleFetched);
+        // console.log(roleFetched);
     }
 
 

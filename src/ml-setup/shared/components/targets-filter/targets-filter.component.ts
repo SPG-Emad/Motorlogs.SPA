@@ -50,7 +50,7 @@ export class TargetsFilterComponent implements OnInit {
         let dateFormat = moment().format("MMM YYYY");
         this.startDateValue = { key: date, value: date, months: dateFormat };
 
-        console.log("this.historyValue", this.historyValue);
+        // console.log("this.historyValue", this.historyValue);
         setTimeout(() => {
             this.dateFilter.emit({
                 filter: 1,

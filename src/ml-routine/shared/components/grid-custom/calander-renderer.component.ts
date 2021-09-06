@@ -45,7 +45,7 @@ export class CalenderRenderer {
 
     // Emad - Check this please
     insertData(dateText) {
-        console.log("Selected date: " + dateText);
+        // console.log("Selected date: " + dateText);
         let params = {
             userid: this.LocalStorageHandlerService.getFromStorage("userObj")
                 .userId,

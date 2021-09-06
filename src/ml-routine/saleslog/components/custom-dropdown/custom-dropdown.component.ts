@@ -67,7 +67,7 @@ export class CustomDropdownComponent
         private signalRService: SignalRService,
         private cdref: ChangeDetectorRef
     ) {
-        console.log("custom-dropdown-component CONSTRUCTOR");
+        // console.log("custom-dropdown-component CONSTRUCTOR");
     }
 
     ngAfterContentChecked() {
@@ -186,10 +186,10 @@ export class CustomDropdownComponent
     doSomething() {
         this.selectedItem = $("#_datetimepicker4").val();
 
-        console.log("doSomething Items1: ", this.items);
-        console.log("doSomething ItemsArray1: ", this.itemArray);
-        console.log("doSomething this.dateitems1: ", this.dateitems);
-        console.log("doSomething SelectedItem1: ", this.selectedItem);
+        // console.log("doSomething Items1: ", this.items);
+        // console.log("doSomething ItemsArray1: ", this.itemArray);
+        // console.log("doSomething this.dateitems1: ", this.dateitems);
+        // console.log("doSomething SelectedItem1: ", this.selectedItem);
 
         if (
             this.items.length == this.itemArray.length &&
@@ -225,10 +225,10 @@ export class CustomDropdownComponent
             // this.ngOnInit();
         }
 
-        console.log("doSomething this.items2: ", this.items);
-        console.log("doSomething ItemsArray2: ", this.itemArray);
-        console.log("doSomething this.dateitems2: ", this.dateitems);
-        console.log("doSomething SelectedItem2: ", this.selectedItem);
+        // console.log("doSomething this.items2: ", this.items);
+        // console.log("doSomething ItemsArray2: ", this.itemArray);
+        // console.log("doSomething this.dateitems2: ", this.dateitems);
+        // console.log("doSomething SelectedItem2: ", this.selectedItem);
         // this.ngOnInit();
         this.saveComboDropDownValueToDatabase(this.selectedItem);
     }
@@ -242,8 +242,8 @@ export class CustomDropdownComponent
     }
 
     ngOnInit() {
-        console.log("custom-dropdown-component ngOnInIt");
-        console.log("custom-dropdown-component SELECTED ITEM: ", this.selected);
+        // console.log("custom-dropdown-component ngOnInIt");
+        // console.log("custom-dropdown-component SELECTED ITEM: ", this.selected);
         
         let itemObjArray: ItemObj[] = [];
         let selected = this.selected;
@@ -277,11 +277,11 @@ export class CustomDropdownComponent
             this.items = itemObjArray; // add date time to existing combo value from json
         }
         
-        console.log("custom-dropdown-component rowDate: ", this.rowDate);
-        console.log("custom-dropdown-component dateitems: ", this.dateitems);
-        console.log("custom-dropdown-component itemArray: ", this.itemArray);
-        console.log("custom-dropdown-component items: ", this.items);
-        console.log("custom-dropdown-component itemObjArray: ", itemObjArray);
+        // console.log("custom-dropdown-component rowDate: ", this.rowDate);
+        // console.log("custom-dropdown-component dateitems: ", this.dateitems);
+        // console.log("custom-dropdown-component itemArray: ", this.itemArray);
+        // console.log("custom-dropdown-component items: ", this.items);
+        // console.log("custom-dropdown-component itemObjArray: ", itemObjArray);
         
         // set initial selection
         this.bankCtrl.setValue(this.items[10]);
@@ -298,8 +298,8 @@ export class CustomDropdownComponent
 
     go(event) {
         // console.log("****************");
-        console.log("go event: " + event.value);
-        console.log("ColType Initial: ", this.colDef.colDef.columnType);
+        // console.log("go event: " + event.value);
+        // console.log("ColType Initial: ", this.colDef.colDef.columnType);
         // console.log("****************");
 
         if (event.value) {
@@ -319,7 +319,7 @@ export class CustomDropdownComponent
                 }
             }
 
-            console.log("ColType: ", this.colDef.colDef.columnType);
+            // console.log("ColType: ", this.colDef.colDef.columnType);
 
             if (this.colDef.colDef.columnType === "Combo") {
                 this.saveComboDropDownValueToDatabase(event.value);
@@ -389,7 +389,7 @@ export class CustomDropdownComponent
                     Value: value,
                 };
 
-                console.log("Combo params", params);
+                // console.log("Combo params", params);
 
                 if (Object.keys(params).length !== 0) {
                     this.salesLogService

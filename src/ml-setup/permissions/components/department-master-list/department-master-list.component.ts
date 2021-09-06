@@ -72,7 +72,7 @@ export class DepartmentMasterListComponent implements OnInit {
       this.departments = departments;
       this.loader = false;
 
-      console.log(this.loader);
+      // console.log(this.loader);
 
       /*-----------------------*/ 
   }

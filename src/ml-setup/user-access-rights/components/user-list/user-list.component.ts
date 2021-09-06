@@ -174,7 +174,7 @@ export class UserListComponent implements OnInit, OnChanges, OnDestroy {
                          * */
 
                         if (this.searchFilters !== undefined) {
-                            console.log("searchFilters:: ", this.searchFilters);
+                            // console.log("searchFilters:: ", this.searchFilters);
                             // implement some relevant logic to build the filters array
                             this.generateUserTable(
                                 1,
