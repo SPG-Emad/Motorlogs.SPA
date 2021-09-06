@@ -816,12 +816,8 @@ export class RoutineSheetComponent implements OnInit {
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY");
+                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format("DD/MM/YYYY");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format("DD/MM/YYYY");
                         }
                     } else if (
                         element1.colType &&
@@ -834,26 +830,18 @@ export class RoutineSheetComponent implements OnInit {
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY hh:mm");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY hh:mm");
+                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
                         }
                     } else {
-                        this.cellMap["" + element1.colId + ""] =
-                            element1.currentCellValue;
-                        this.cellMap['"' + element1.colCode + '"'] =
-                            element1.currentCellValue;
+                        this.cellMap["" + element1.colId + ""] = element1.currentCellValue;
+                        this.cellMap['"' + element1.colCode + '"'] = element1.currentCellValue;
                     }
                     if (element1.cellOptions.length > 0) {
-                        this.cellMap["cellOptions_" + element1.colCode] =
-                            element1.cellOptions;
+                        this.cellMap["cellOptions_" + element1.colCode] = element1.cellOptions;
                     }
                     this.cellMap["carryOver"] = carryOver;
-                    this.cellMap["cellColor_" + element1.colCode] =
-                        element1.cellColor;
+                    this.cellMap["cellColor_" + element1.colCode] = element1.cellColor;
 
                     if (index == element.cells.length - 1) {
                         this.cellData.push(this.cellMap);
@@ -862,54 +850,52 @@ export class RoutineSheetComponent implements OnInit {
                 });
 
                 let typeArray = [];
-                // // console.log(this.cellData[0]);
-                // // console.log(this.cellData[0]['"OD"'], this.cellData[0]['"ED"'], this.cellData[0]['"VEHGRO"'], this.cellData[0]['"AD"'], this.cellData[0]["type"]);
-                if (
-                    moment(this.cellData[0]['"OD"']).isBefore(
-                        moment().format("DD-MMM-YY"),
-                        "months"
-                    )
-                ) {
-                    let time = moment().isSameOrAfter(
-                        moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
-                        "months"
-                    );
-                    if (time) {
-                        this.carryOverAmount =
-                            this.carryOverAmount +
-                            Number(this.cellData[0]['"VEHGRO"']);
-                        typeArray.push("carryOver");
-                    } else {
-                        typeArray.push("sold");
+                var OD_M = moment(this.cellData[0]['"OD"'], 'DD/MM/YYYY').format('M');
+                var ED_M = moment(this.cellData[0]['"ED"'], 'DD/MM/YYYY').format('M');
+                var AD_M = moment(this.cellData[0]['"AD"'], 'DD/MM/YYYY').format('M');
+                var SD_M = moment().format("M");
 
-                        this.soldUnits = this.soldUnits + 1;
-                        this.soldAmount =
-                            this.soldAmount +
-                            Number(this.cellData[0]['"VEHGRO"']);
+                if (OD_M <= SD_M) 
+                {
+                    if(this.cellData[0]['"ED"'] !== undefined) {
+                        let time = SD_M >= ED_M;
+                        
+                        if (time) {
+                         //   console.log('time: YES');
+                            this.carryOverAmount = 
+                            this.carryOverAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                            typeArray.push("carryOver");
+                        } else {
+                       //     console.log('time: No');
+                            typeArray.push("sold");
+                            this.soldUnits = this.soldUnits + 1;
+                            this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                        }
                     }
-                } else {
+                    else{
+                     //   console.log('No Estimated Delivery');
+                        typeArray.push("sold");
+                        this.soldUnits = this.soldUnits + 1;
+                        this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                    }
+                } 
+                else {
                     typeArray.push("sold");
-
                     this.soldUnits = this.soldUnits + 1;
-                    this.soldAmount =
-                        this.soldAmount + Number(this.cellData[0]['"VEHGRO"']);
+                    this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);;
                 }
 
+                // Covered: Whose Est. Del is not in future months.
                 if (
                     this.cellData[0]['"ED"'] !== "" &&
                     this.cellData[0]['"ED"'] !== undefined &&
                     this.cellData[0]['"ED"'] !== null &&
-                    moment().isSameOrBefore(
-                        moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
-                        "months"
-                    )
-                ) {
+                    ED_M <= SD_M  
+                    ) 
+                {
                     typeArray.push("covered");
-
                     this.coveredUnits = this.coveredUnits + 1;
-                    this.coveredAmount =
-                        this.coveredAmount +
-                        Number(this.cellData[0]['"VEHGRO"']);
+                    this.coveredAmount = this.coveredAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
 
                 if (
@@ -918,26 +904,19 @@ export class RoutineSheetComponent implements OnInit {
                     this.cellData[0]['"AD"'] !== null
                 ) {
                     typeArray.push("delivered");
-
                     this.deliveredUnits = this.deliveredUnits + 1;
-                    this.deliveredAmount =
-                        this.deliveredAmount +
-                        Number(this.cellData[0]['"VEHGRO"']);
+                    this.deliveredAmount = this.deliveredAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
 
                 if (this.cellData[0]['"PROGRO"'] !== null) {
                     this.processedUnits = this.processedUnits + 1;
-                    this.processedAmount =
-                        this.processedAmount +
-                        Number(this.cellData[0]['"PROGRO"']);
+                    this.processedAmount = this.processedAmount + Number(this.cellData[0]['"PROGRO"']);
                 } else {
                     this.missingUnits = this.missingUnits + 1;
-                    // // console.log(this.missingUnits);
                 }
 
                 this.cellData[0]["type"] = typeArray;
-                this.vehicleProfit =
-                    this.vehicleProfit + Number(this.cellData[0]['"VEHPRO"']);
+                this.vehicleProfit = this.vehicleProfit + Number(this.cellData[0]['"VEHPRO"']);
                 this.totalRows = this.totalRows + 1;
 
                 rows.push(this.cellData[0]);
@@ -968,9 +947,6 @@ export class RoutineSheetComponent implements OnInit {
                         ? this.totalAmount / Number(this.totalRows)
                         : 0;
 
-                // console.log(this.missingUnits);
-
-                // this.missingAvg =(this.missingUnits > 0)? Number(this.missingAmount)/Number(this.missingUnits):0;
             } else {
                 this.tradeinAvg =
                     this.tradeinUnits > 0
@@ -1205,52 +1181,52 @@ export class RoutineSheetComponent implements OnInit {
                 });
 
                 let typeArray = [];
-                if (
-                    moment(this.cellData[0]['"OD"']).isBefore(
-                        moment().format("DD-MMM-YY"),
-                        "months"
-                    )
-                ) {
-                    let time = moment().isSameOrAfter(
-                        moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
-                        "months"
-                    );
-                    if (time) {
-                        this.carryOverAmount =
-                            this.carryOverAmount +
-                            Number(this.cellData[0]['"VEHGRO"']);
-                        typeArray.push("carryOver");
-                    } else {
-                        typeArray.push("sold");
+                var OD_M = moment(this.cellData[0]['"OD"'], 'DD/MM/YYYY').format('M');
+                var ED_M = moment(this.cellData[0]['"ED"'], 'DD/MM/YYYY').format('M');
+                var AD_M = moment(this.cellData[0]['"AD"'], 'DD/MM/YYYY').format('M');
+                var SD_M = moment().format("M");
 
-                        this.soldUnits = this.soldUnits + 1;
-                        this.soldAmount =
-                            this.soldAmount +
-                            Number(this.cellData[0]['"VEHGRO"']);
+                if (OD_M <= SD_M) 
+                {
+                    if(this.cellData[0]['"ED"'] !== undefined) {
+                        let time = SD_M >= ED_M;
+                        
+                        if (time) {
+                         //   console.log('time: YES');
+                            this.carryOverAmount = 
+                            this.carryOverAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                            typeArray.push("carryOver");
+                        } else {
+                       //     console.log('time: No');
+                            typeArray.push("sold");
+                            this.soldUnits = this.soldUnits + 1;
+                            this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                        }
                     }
-                } else {
+                    else{
+                     //   console.log('No Estimated Delivery');
+                        typeArray.push("sold");
+                        this.soldUnits = this.soldUnits + 1;
+                        this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                    }
+                } 
+                else {
                     typeArray.push("sold");
-
                     this.soldUnits = this.soldUnits + 1;
-                    this.soldAmount =
-                        this.soldAmount + Number(this.cellData[0]['"VEHGRO"']);
+                    this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);;
                 }
 
+                // Covered: Whose Est. Del is not in future months.
                 if (
                     this.cellData[0]['"ED"'] !== "" &&
                     this.cellData[0]['"ED"'] !== undefined &&
                     this.cellData[0]['"ED"'] !== null &&
-                    moment().isSameOrBefore(
-                        moment(this.cellData[0]['"ED"']).format("DD-MMM-YY"),
-                        "months"
-                    )
-                ) {
+                    ED_M <= SD_M  
+                    ) 
+                {
                     typeArray.push("covered");
-
                     this.coveredUnits = this.coveredUnits + 1;
-                    this.coveredAmount =
-                        this.coveredAmount +
-                        Number(this.cellData[0]['"VEHGRO"']);
+                    this.coveredAmount = this.coveredAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
 
                 if (
@@ -1259,11 +1235,8 @@ export class RoutineSheetComponent implements OnInit {
                     this.cellData[0]['"AD"'] !== null
                 ) {
                     typeArray.push("delivered");
-
                     this.deliveredUnits = this.deliveredUnits + 1;
-                    this.deliveredAmount =
-                        this.deliveredAmount +
-                        Number(this.cellData[0]['"VEHGRO"']);
+                    this.deliveredAmount = this.deliveredAmount + Number(this.cellData[0]['"VEHGRO"']);
                 }
 
                 if (this.cellData[0]['"PROGRO"'] !== "") {
@@ -1306,15 +1279,9 @@ export class RoutineSheetComponent implements OnInit {
                     this.totalUnits > 0
                         ? this.totalAmount / Number(this.totalRows)
                         : 0;
-
-                // // console.log(
-                //     this.totalAmount,
-                //     this.processedAmount,
-                //     this.vehicleProfit
-                // );
-
-                // this.missingAvg =(this.missingUnits > 0)? Number(this.missingAmount)/Number(this.missingUnits):0;
-            } else {
+               
+            } 
+            else {
                 this.tradeinAvg =
                     this.tradeinUnits > 0
                         ? Number(this.tradeinAmount) / Number(this.tradeinUnits)
