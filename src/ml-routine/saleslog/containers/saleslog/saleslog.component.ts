@@ -771,6 +771,7 @@ export class SaleslogComponent implements OnInit {
             rowIdcolumn["cellClass"] = "row-no";
             rowIdcolumn["editable"] = true;
             rowIdcolumn["sequence"] = 0;
+            rowIdcolumn["suppressMovable"] = true;
             rowIdcolumn["hide"] = false;
             rowIdcolumn["pinned"] = "left";
             rowIdcolumn["lockPinned"] = true;
@@ -802,6 +803,7 @@ export class SaleslogComponent implements OnInit {
                 columnMap["sortable"] = true;
                 columnMap["filter"] = true;
                 columnMap["volatile"] = true;
+                columnMap["suppressMovable"] = true;
                 columnMap["hide"] = !element.display;
                 columnMap["columnType"] = element.type;
                 columnMap["width"] = element.colWidth;
@@ -2241,7 +2243,23 @@ export class SaleslogComponent implements OnInit {
     }
 
     excelExport() {
-        this.openModal(this, ExcelExportComponent, "400px");
+        var excelParams = {
+            fileName: this.generateFileName()+'.xlsx',
+        }
+        this.gridApi.exportDataAsExcel(excelParams);
+        // this.openModal(this, ExcelExportComponent, "400px");
+    }
+
+    csvExport() {
+        var csvParams = {
+            fileName: this.generateFileName()+'.csv',
+        }
+        this.gridApi.exportDataAsCsv(csvParams);
+        // this.openModal(this, ExcelExportComponent, "400px");
+    }
+
+    generateFileName() {
+       return this.departmentNameRendered.replace('-','_').replace(' ','_').trim()+'_'+'Saleslog';
     }
 
     columnOption() {

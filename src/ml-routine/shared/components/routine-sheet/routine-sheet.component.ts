@@ -965,6 +965,7 @@ export class RoutineSheetComponent implements OnInit {
             rowIdcolumn["cellClass"] = "row-no";
             rowIdcolumn["editable"] = true;
             rowIdcolumn["sequence"] = 0;
+            rowIdcolumn["suppressMovable"] = true;
             rowIdcolumn["hide"] = false;
             rowIdcolumn["pinned"] = "left";
             rowIdcolumn["lockPinned"] = true;
@@ -993,6 +994,7 @@ export class RoutineSheetComponent implements OnInit {
                 columnMap["sequence"] = element.sequence;
                 columnMap["resizable"] = true;
                 columnMap["sortable"] = true;
+                columnMap["suppressMovable"] = true;
                 columnMap["filter"] = true;
                 columnMap["volatile"] = true;
                 columnMap["hide"] = !element.display;
@@ -2470,7 +2472,27 @@ export class RoutineSheetComponent implements OnInit {
     }
 
     excelExport() {
-        this.openModal(this, XlsExportComponent, "400px");
+        var excelParams = {
+            fileName: this.generateFileName()+'.xlsx',
+        }
+        this.gridApi.exportDataAsExcel(excelParams);
+        // this.openModal(this, ExcelExportComponent, "400px");
+    }
+
+    csvExport() {
+        var csvParams = {
+            fileName: this.generateFileName()+'.csv',
+        }
+        this.gridApi.exportDataAsCsv(csvParams);
+        // this.openModal(this, ExcelExportComponent, "400px");
+    }
+
+    generateFileName() {
+        if(this.routineSelected === 3) {
+            return 'Arriving_'+ new Date().toLocaleDateString();
+        }else{
+            return this.departmentName.replace('-','_').replace(' ','_').trim()+'_'+'Delivered';
+        }
     }
 
     columnOption() {
