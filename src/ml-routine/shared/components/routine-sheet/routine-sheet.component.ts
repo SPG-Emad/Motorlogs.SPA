@@ -1068,6 +1068,7 @@ export class RoutineSheetComponent implements OnInit {
                 colId: event.colDef.colId,
                 ColType: event.colDef.columnType, // You need to send the column type
                 Value: event.newValue,
+                OriginalValue: event.newValue
             };
 
             if (Object.keys(params).length !== 0) {
@@ -1854,7 +1855,8 @@ export class RoutineSheetComponent implements OnInit {
         if (divName === "divA") {
             if (this.animationState === "in") {
                 this.searchForm.get("searchbar").setValue("");
-                this.rowData = this.rowResponse;
+                // this.rowData = this.rowResponse;
+                this.search();
             }
             this.animationState = this.animationState === "out" ? "in" : "out";
         }

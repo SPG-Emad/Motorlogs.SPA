@@ -186,11 +186,6 @@ export class CustomDropdownComponent
     doSomething() {
         this.selectedItem = $("#_datetimepicker4").val();
 
-        // console.log("doSomething Items1: ", this.items);
-        // console.log("doSomething ItemsArray1: ", this.itemArray);
-        // console.log("doSomething this.dateitems1: ", this.dateitems);
-        // console.log("doSomething SelectedItem1: ", this.selectedItem);
-
         if (
             this.items.length == this.itemArray.length &&
             this.selectedItem != null
@@ -230,7 +225,7 @@ export class CustomDropdownComponent
         // console.log("doSomething this.dateitems2: ", this.dateitems);
         // console.log("doSomething SelectedItem2: ", this.selectedItem);
         // this.ngOnInit();
-        this.saveComboDropDownValueToDatabase(this.selectedItem);
+        this.saveComboDropDownValueToDatabase(this.selectedItem,this.selectedItem);
     }
 
     dateTimePushToItems(item): boolean {
@@ -244,7 +239,7 @@ export class CustomDropdownComponent
     ngOnInit() {
         // console.log("custom-dropdown-component ngOnInIt");
         // console.log("custom-dropdown-component SELECTED ITEM: ", this.selected);
-        
+
         let itemObjArray: ItemObj[] = [];
         let selected = this.selected;
 
@@ -266,23 +261,23 @@ export class CustomDropdownComponent
         }
         if (this.dateitems.length >= 1 || this.rowDate) {
             let x = new ItemObj();
-            x.name= this.rowDate;
-            x.id= '-1';
-            x.code= this.rowDate;
-            x.details= null;
+            x.name = this.rowDate;
+            x.id = "-1";
+            x.code = this.rowDate;
+            x.details = null;
 
             this.dateitems.unshift(x);
             this.items = this.dateitems.concat(itemObjArray); // add date time to existing combo value from json
         } else {
             this.items = itemObjArray; // add date time to existing combo value from json
         }
-        
+
         // console.log("custom-dropdown-component rowDate: ", this.rowDate);
         // console.log("custom-dropdown-component dateitems: ", this.dateitems);
         // console.log("custom-dropdown-component itemArray: ", this.itemArray);
         // console.log("custom-dropdown-component items: ", this.items);
         // console.log("custom-dropdown-component itemObjArray: ", itemObjArray);
-        
+
         // set initial selection
         this.bankCtrl.setValue(this.items[10]);
         // load the initial bank list
@@ -298,16 +293,17 @@ export class CustomDropdownComponent
 
     go(event) {
         // console.log("****************");
-        // console.log("go event: " + event.value);
+        // console.log("go event: ", event);
+        // console.log("this.itemArray: ", this.itemArray);
         // console.log("ColType Initial: ", this.colDef.colDef.columnType);
         // console.log("****************");
 
+        let getTextOfComboValue: any;
         if (event.value) {
             this.selectedItem = event.value;
             let colId;
 
-            if (this.colDef.colDef.columnType === "Combo") {
-            } else {
+            if (this.colDef.colDef.columnType !== "Combo") {
                 colId = this.itemArray.find(
                     (res) => res.code === this.selected
                 );
@@ -317,14 +313,25 @@ export class CustomDropdownComponent
                         (res) => res.valText === this.selected
                     );
                 }
+            } else {
+                const check: [] = this.itemArray.filter(
+                    (res) => res.code === event.value
+                );
+                if (check.length > 0) {
+                    getTextOfComboValue = check.map((x: any) => {return x.valText;})[0];
+                } else {
+                    getTextOfComboValue = event.value;
+                }
             }
 
-            // console.log("ColType: ", this.colDef.colDef.columnType);
+            // console.log(getTextOfComboValue);
 
             if (this.colDef.colDef.columnType === "Combo") {
-                this.saveComboDropDownValueToDatabase(event.value);
-            } 
-            else {
+                this.saveComboDropDownValueToDatabase(
+                    event.value,
+                    getTextOfComboValue
+                );
+            } else {
                 if (colId !== undefined) {
                     let params = {};
                     if (
@@ -341,6 +348,7 @@ export class CustomDropdownComponent
                             colId: this.colDef.colDef.colId,
                             ColType: this.colDef.colDef.columnType, // You need to send the column type
                             Value: event.value,
+                            OriginalValue: event.value,
                         };
 
                         if (Object.keys(params).length !== 0) {
@@ -361,6 +369,7 @@ export class CustomDropdownComponent
                             colId: this.colDef.colDef.colId,
                             ColType: this.colDef.colDef.columnType, // You need to send the column type
                             Value: colId.id,
+                            OriginalValue: event.value,
                         };
                     }
 
@@ -376,27 +385,24 @@ export class CustomDropdownComponent
         }
     }
 
-    saveComboDropDownValueToDatabase(value) {
+    saveComboDropDownValueToDatabase(value, text?) {
         let params = {};
-                params = {
-                    userid: this.LocalStorageHandlerService.getFromStorage(
-                        "userObj"
-                    ).userId,
-                    EntryId: this.colDef.data.rowId, // Parent ID of the row for which cell he is editing
-                    ViewID: this.viewId,
-                    colId: this.colDef.colDef.colId,
-                    ColType: this.colDef.colDef.columnType, // You need to send the column type
-                    Value: value,
-                };
+        params = {
+            userid: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
+            EntryId: this.colDef.data.rowId, // Parent ID of the row for which cell he is editing
+            ViewID: this.viewId,
+            colId: this.colDef.colDef.colId,
+            ColType: this.colDef.colDef.columnType, // You need to send the column type
+            Value: value,
+            OriginalValue: text
+        };
 
-                // console.log("Combo params", params);
+        // console.log("Combo params", params);
 
-                if (Object.keys(params).length !== 0) {
-                    this.salesLogService
-                        .insertCellValue(params)
-                        .subscribe(() => {
-                            this.signalRService.BroadcastLiveSheetData();
-                        });
-                }
+        if (Object.keys(params).length !== 0) {
+            this.salesLogService.insertCellValue(params).subscribe(() => {
+                this.signalRService.BroadcastLiveSheetData();
+            });
+        }
     }
 }

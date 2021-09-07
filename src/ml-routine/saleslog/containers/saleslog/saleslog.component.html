@@ -18,7 +18,7 @@
             <div class="search-first-row" style="flex-direction: row; box-sizing: border-box; display: flex;">
                 <div fxflex="" fxlayoutalign="space-between" style="place-content: stretch space-between; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex; flex: 1 1 0%;">
                     <mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" fxflex="2" role="img" aria-hidden="true" style="flex: 1 1 100%; box-sizing: border-box; max-width: 2%;" (click)="toggleShowDiv('divA')">cancel</mat-icon>
-                    <input class="search-box" formControlName="searchbar" fxflex="95" placeholder="Search here" style="flex: 1 1 100%; box-sizing: border-box; max-width: 95%;">
+                    <input class="search-box" formControlName="searchbar" fxflex="95" placeholder="Search By: Pay Type, Finance Manager, Email, Department, Client" style="flex: 1 1 100%; box-sizing: border-box; max-width: 95%; font-family: monospace;">
                     <button >
                       <mat-icon class="mat-icon notranslate material-icons mat-icon-no-color" fxflex="2" role="img" aria-hidden="true" style="flex: 1 1 100%; box-sizing: border-box; max-width: 2%;cursor: pointer !important;">search</mat-icon>
                     </button>
@@ -27,12 +27,12 @@
             <div class="search-second-row" style="flex-direction: row; box-sizing: border-box; display: flex;">
                 <div fxflex="" fxlayoutalign="space-between" style="place-content: stretch space-between; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex; flex: 1 1 0%;">
                     <div class="search-column">
-                        <span class="faded">FILTER BY</span>
+                        <span class="faded" style="font-family: monospace;">FILTER BY</span>
                         <mat-slide-toggle formControlName="currentMonth" (change)="currentMonth()"></mat-slide-toggle>
                         <span class="space">This month</span>
                     </div>
                     <div class="search-column">
-                        <span class="faded">PREVIOUS</span>
+                        <span class="faded" style="font-family: monospace;">PREVIOUS</span>
                         <mat-radio-group aria-label="Select an option" formControlName="previousMonth" (change)="previousMonth($event)">
                             <mat-radio-button class="space" value="3">3 Months</mat-radio-button>
                             <mat-radio-button class="space" value="6">6 Months</mat-radio-button>
@@ -55,8 +55,17 @@
           <!-- Header Starts -->
           <div fxlayoutalign="space-between" style="padding: 0px 0px 20px 0px;place-content: stretch space-between; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex;">
             <h2 style="margin: 0px;">{{departmentNameRendered}} <b style="margin-left: 10px;color: #ef1e75;">(Saleslog)</b></h2>
-            <div class="secondary-options">
-              <app-search (click)="toggleShowDiv('divA')"></app-search>
+            <div class="secondary-options" style="    cursor: pointer;
+            background: #f5f5f5;
+            padding: 10px;
+            border-radius: 7px;
+            color: #1b1b1b;
+            padding-bottom: 3px;
+            padding-right: 14px;
+            border: 1px solid #e3e3e3;
+            font-family: monospace;" (click)="toggleShowDiv('divA')">
+                <app-search ></app-search>
+                <span style="font-weight: bold;margin-bottom: 7px;">Search</span>
               <!-- <app-print [printData]="printdata" (generatePrint)="onBtPrint()"></app-print> -->
             </div>
           </div>

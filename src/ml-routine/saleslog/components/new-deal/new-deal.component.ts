@@ -47,6 +47,30 @@ export class NewDealComponent implements OnInit {
 
     ngOnInit() {}
 
+    departmentNameRendered: string;
+    departmentIDs: [];
+    departmentID: any;
+
+    renderDepartmentNameHeading() {
+        let department =
+            this.LocalStorageHandlerService.getFromStorage(
+                "userObj"
+            ).departmentAccess;
+        this.departmentIDs = department;
+        let count = 0;
+        department = department.find((el) => {
+            if (count === 0) {
+                count++;
+                this.departmentID = el.departmentId;
+            }
+            return (
+                Number(el.departmentId) === Number(this.decryptedDepartmentId)
+            );
+        });
+        this.departmentNameRendered = department.departmentName;
+        return this.departmentNameRendered; 
+    }
+
     InsertRows() {
         this.loader = true;
         // console.log(this.decryptedDepartmentId);
@@ -71,6 +95,7 @@ export class NewDealComponent implements OnInit {
             CustomerName: this.columnForm.get("customerName").value,
             DealNumber: String(this.columnForm.get("dealNumber").value),
             StockNumber: String(this.columnForm.get("stockNumber").value),
+            OriginalValue: this.renderDepartmentNameHeading()
         };
 
         // console.log("order date: ", finalDate);

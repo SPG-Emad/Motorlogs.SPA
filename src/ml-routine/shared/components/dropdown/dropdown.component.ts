@@ -243,7 +243,8 @@ export class ShareableDropDownComponent implements OnInit, AfterViewInit, OnDest
                 "ViewID": 1,
                 "colId": this.colDef.colDef.colId,
                 "ColType": this.colDef.colDef.columnType, // You need to send the column type 
-                "Value": colId.id
+                "Value": colId.id,
+                "OriginalValue": colId.name
             }
 
             if (Object.keys(params).length !== 0) {

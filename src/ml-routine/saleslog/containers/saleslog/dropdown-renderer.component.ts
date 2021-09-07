@@ -1,4 +1,6 @@
 import { Component, OnInit } from "@angular/core";
+import { ICellRendererParams } from "@ag-grid-community/core";
+
 @Component({
     selector: "dropdown-renderer",
     template: `<custom-dropdown
@@ -31,7 +33,6 @@ export class DropDownRenderer implements OnInit {
     }
 
     agInit(params): void {
-
         if (window.location.href.toLowerCase().indexOf("arriving") > -1) {
             this.viewId = 3;
         } else {
@@ -42,10 +43,8 @@ export class DropDownRenderer implements OnInit {
         this.itemsArray = params.data["cellOptions_" + params.colDef.colCode];
         this.selected = params.value;
 
-        // // console.log("agInit items array: ", this.itemsArray);
-        // // console.log("agInit params: ", params);
-
         // This code will only run on grid initialization
+        // console.log(params);
         if (params.value != null) {
             if (
                 this.itemsArray.find(

@@ -54,6 +54,7 @@ export class CalenderRenderer {
             colId: this.paramsObject.colDef.colId,
             ColType: this.paramsObject.colDef.columnType, // You need to send the column type
             Value: dateText,
+            OriginalValue: dateText
         };
 
         if (Object.keys(params).length !== 0) {

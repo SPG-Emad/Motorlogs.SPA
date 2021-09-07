@@ -638,25 +638,24 @@ export class SaleslogComponent implements OnInit {
                                 element1.currentCellValue
                             ).format("DD/MM/YYYY");
                         }
-                    } else if (
-                        element1.colType &&
-                        element1.colType === "Combo"
-                    ) {
-                        // console.log("COMBOOO: ", element1.currentCellValue);
+                    } 
+                    else if (element1.colType &&element1.colType === "Combo") 
+                    {
                         if (
                             element1.currentCellValue &&
                             element1.currentCellValue !== null &&
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY hh:mm");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY hh:mm");
+                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
                         }
-                    } else {
+                        else{
+                            this.cellMap["" + element1.colId + ""] = element1.currentCellValue;
+                            this.cellMap['"' + element1.colCode + '"'] =element1.currentCellValue; 
+                        }
+                    } 
+                    else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] =
@@ -870,6 +869,7 @@ export class SaleslogComponent implements OnInit {
                 colId: event.colDef.colId,
                 ColType: event.colDef.columnType, // You need to send the column type
                 Value: event.newValue,
+                OriginalValue: event.newValue
             };
 
             if (Object.keys(params).length !== 0) {
@@ -949,21 +949,21 @@ export class SaleslogComponent implements OnInit {
                         element1.colType &&
                         element1.colType === "Combo"
                     ) {
-                        // console.log("COMBOOO: ", element1.currentCellValue);
                         if (
                             element1.currentCellValue &&
                             element1.currentCellValue !== null &&
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY hh:mm");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY hh:mm");
+                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
                         }
-                    } else {
+                        else{
+                            this.cellMap["" + element1.colId + ""] = element1.currentCellValue;
+                            this.cellMap['"' + element1.colCode + '"'] =element1.currentCellValue; 
+                        }
+                    } 
+                    else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] =
@@ -1090,6 +1090,8 @@ export class SaleslogComponent implements OnInit {
                             .toLowerCase()
                             .includes(searchValue.toLowerCase())) ||
                     (cL && cL.toLowerCase().includes(searchValue.toLowerCase()))
+                    ||
+                    searchValue == ""
                 );
             });
 
@@ -1643,7 +1645,8 @@ export class SaleslogComponent implements OnInit {
         if (divName === "divA") {
             if (this.animationState === "in") {
                 this.searchForm.get("searchbar").setValue("");
-                this.rowData = this.rowResponse;
+                // this.rowData = this.rowResponse;
+                this.search();
             }
             this.animationState = this.animationState === "out" ? "in" : "out";
         }
