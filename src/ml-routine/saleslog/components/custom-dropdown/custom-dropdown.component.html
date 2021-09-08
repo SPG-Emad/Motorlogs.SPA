@@ -116,35 +116,30 @@
         <mat-option
             class="paytype-option"
             *ngFor="let item of filteredBanks | async"
-            [value]="item.code"
-        >
+            [value]="item.code">
             <span
-                *ngIf="header != 'Pay Type'"
+                *ngIf="header != 'PT'"
                 [style.color]="item.details != null ? item.details.color : null"
-                [style.background-color]="
-                    item.details != null ? item.details.background : null
-                "
-                [hidden]="selected === item.code ? true : false"
-            >
+                [style.background-color]="item.details != null ? item.details.background : null"
+                [hidden]="selected === item.code ? true : false">
                 {{ item.code }}
             </span>
 
             <span
                 class="paytype-code"
-                *ngIf="header === 'Pay Type'"
+                *ngIf="header && header === 'PT'"
                 [style.color]="item.details != null ? item.details.color : null"
-                [style.background-color]="
-                    item.details != null ? item.details.background : null
-                "
-            >
+                [style.background-color]="item.details != null ? item.details.background : null">
                 {{ item.code }}
             </span>
+
             <span
                 class="paytype-desc"
-                *ngIf="header === 'Pay Type'"
+                *ngIf="header && header === 'PT'"
                 class="right"
-                >{{ item.name }}</span
-            >
+                >{{ item.name }}
+            </span>
+            
         </mat-option>
     </mat-select>
     <!-- Other dropdowns except Estimated Delivery COMBO END -->

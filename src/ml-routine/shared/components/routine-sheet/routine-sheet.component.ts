@@ -783,6 +783,9 @@ export class RoutineSheetComponent implements OnInit {
 
         this.renderDepartmentNameHeading();
 
+        this.tradeinUnits = 0;
+        this.tradeinAmount = 0;
+
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
             this.rowData = [];
             this.columnDefs = [];
@@ -920,6 +923,15 @@ export class RoutineSheetComponent implements OnInit {
                 this.totalRows = this.totalRows + 1;
 
                 rows.push(this.cellData[0]);
+
+                // Estimated del. in this month --ARRIVING Calculation
+                if(ED_M == SD_M) {
+                    this.tradeinUnits++;
+                    if (this.cellData[0]['"TRVALU"'] !== null) {
+                        this.tradeinAmount = this.tradeinAmount + Number(this.cellData[0]['"TRVALU"']);
+                    }
+                }
+
             });
 
             if (this.routineSelected === 2) {
@@ -942,12 +954,13 @@ export class RoutineSheetComponent implements OnInit {
 
                 this.totalAmount =
                     Number(this.processedAmount) + Number(this.vehicleProfit);
+              
                 this.totalAvg =
                     this.totalRows > 0
                         ? this.totalAmount / Number(this.totalRows)
                         : 0;
-
-            } else {
+            } 
+            else {
                 this.tradeinAvg =
                     this.tradeinUnits > 0
                         ? Number(this.tradeinAmount) / Number(this.tradeinUnits)
@@ -1005,15 +1018,35 @@ export class RoutineSheetComponent implements OnInit {
                 columnMap["cellStyle"] = function (params) {
                     if (required && params.value === "") {
                         return { backgroundColor: "red" };
-                    } else {
+                    }
+
+                    if (element.type === "Currency" 
+                    && 
+                    (params.value === "" || params.value === null || params.value === undefined)) {
+                        return { color: "#bebebe" };
+                    }
+
+                    if (element.type === "Currency" 
+                    && 
+                    (params.value !== "" || params.value !== null || params.value !== undefined)
+                    ) {
+                        if(params.value.includes('-')){
+                        return { color: "red" };
+                    }
+                    }
+                    
+                    else {
                         return null;
                     }
                 };
 
+                if (element.type === "Currency") {
+                    columnMap["valueFormatter"] = formatCurrency;
+                    columnMap["filter"] = 'agNumberColumnFilter';
+                } 
+
                 if (element.type === "Date") {
                     columnMap["cellEditor"] = "dateEditor";
-                    columnMap["valueFormatter"] =
-                        this.isoDateValueFormatter.bind(this);
                 } else if (element.type === "DD-Fixed") {
                     columnMap["cellRenderer"] = "customDropDownRenderer";
                 } else if (element.type === "DD-Self") {
@@ -1034,6 +1067,7 @@ export class RoutineSheetComponent implements OnInit {
             this.columnDefs = column;
             this.rowData = rows;
             this.rowResponse = rows;
+            
             // this.gridApi.sizeColumnsToFit();
         });
     }
@@ -1098,6 +1132,9 @@ export class RoutineSheetComponent implements OnInit {
                 ? this.searchForm.get("deletedRecords").value
                 : null,
         };
+
+        this.tradeinUnits = 0;
+        this.tradeinAmount = 0;
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
             this.resetSummaryValues();
@@ -1257,6 +1294,14 @@ export class RoutineSheetComponent implements OnInit {
                 this.totalRows = this.totalRows + 1;
 
                 rows.push(this.cellData[0]);
+
+                  // Estimated del. in this month --ARRIVING Calculation
+                  if(ED_M == SD_M) {
+                    this.tradeinUnits++;
+                    if (this.cellData[0]['"TRVALU"'] !== null) {
+                        this.tradeinAmount = this.tradeinAmount + Number(this.cellData[0]['"TRVALU"']);
+                    }
+                }
             });
 
             if (this.routineSelected === 2) {
@@ -1331,11 +1376,11 @@ export class RoutineSheetComponent implements OnInit {
         this.rowData = [];
         this.rowData = searchResult;
         // console.log(this.rowResponse);
-        this.toastHandlerService.generateToast(
-            searchResult.length + " Record found",
-            "",
-            2000
-        );
+        // this.toastHandlerService.generateToast(
+        //     searchResult.length + " Record found",
+        //     "",
+        //     2000
+        // );
     }
 
     methodFromParent(cell) {
@@ -2531,6 +2576,34 @@ function createFlagImg(flag) {
         flag +
         '.png"/>'
     );
+}
+
+function formatCurrency(params) {
+
+    if( params.value === "" || params.value === null || params.value === undefined) {
+        return '$' +Math.floor(params.value)
+        .toString()
+        .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
+else{
+    let value = params.value;
+    let addMinus = false;
+
+    if(value.includes('-')){
+        value = value.replace('-','');
+        addMinus = true;
+    }
+
+    if(addMinus) {
+        return '-'+'$' +Math.floor(value)
+          .toString()
+          .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
+
+    return '$' +Math.floor(value)
+      .toString()
+      .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  }
 }
 
 function getDatePicker() {

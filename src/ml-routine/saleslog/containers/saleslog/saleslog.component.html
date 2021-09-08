@@ -182,7 +182,6 @@
               [columnDefs]="columnDefs"
               [defaultColDef]="defaultColDef"
               [autoGroupColumnDef]="autoGroupColumnDef"
-              [suppressMenuHide]="true"
               [postProcessPopup]="postProcessPopup"
               [components]="components"
               [rowHeight]="rowHeight"
@@ -198,7 +197,7 @@
               (gridReady)="onGridReady($event)"
               (columnResized)="onColumnResized($event)"
               [blockLoadDebounceMillis]="true"
-              [rowBuffer]="20"
+              [rowBuffer]="20" 
               ></ag-grid-angular>
             <!-- / Sales Log Table Ends-->
           </div>

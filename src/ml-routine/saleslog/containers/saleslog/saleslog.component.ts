@@ -162,7 +162,7 @@ export class SaleslogComponent implements OnInit {
     loadingOverlayComponent;
     loadingOverlayComponentParams;
     pageCounter: number = 0;
-
+    
     searchForm: FormGroup = this.fb.group({
         searchbar: [""],
         currentMonth: [true],
@@ -372,7 +372,8 @@ export class SaleslogComponent implements OnInit {
             minWidth: 200,
             // flex: 1,
             // filter: 'customFilter',
-            menuTabs: ["filterMenuTab", "columnsMenuTab", "generalMenuTab"],
+            menuTabs: ["filterMenuTab", "columnsMenuTab", "generalMenuTab"]
+            // menuTabs: [ "columnsMenuTab", "generalMenuTab"],
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
             // },
@@ -806,15 +807,39 @@ export class SaleslogComponent implements OnInit {
                 columnMap["hide"] = !element.display;
                 columnMap["columnType"] = element.type;
                 columnMap["width"] = element.colWidth;
+                
+
 
                 let required = element.required;
                 columnMap["cellStyle"] = function (params) {
                     if (required && params.value === "") {
                         return { backgroundColor: "red" };
-                    } else {
+                    }
+
+                    if (element.type === "Currency" 
+                    && 
+                    (params.value === "" || params.value === null || params.value === undefined)) {
+                        return { color: "#bebebe" };
+                    }
+
+                    if (element.type === "Currency" 
+                    && 
+                    (params.value !== "" || params.value !== null || params.value !== undefined)
+                    ) {
+                        if(params.value.includes('-')){
+                        return { color: "red" };
+                    }
+                    }
+                    
+                    else {
                         return null;
                     }
                 };
+
+                if (element.type === "Currency") {
+                    columnMap["valueFormatter"] = formatCurrency;
+                    columnMap["filter"] = 'agNumberColumnFilter';
+                } 
 
                 if (element.type === "Date") {
                     columnMap["cellEditor"] = "dateEditor";
@@ -841,6 +866,8 @@ export class SaleslogComponent implements OnInit {
             // this.gridApi.sizeColumnsToFit();
         });
     }
+
+    
 
     isoDateValueFormatter(params) {
         // // console.log(params.value);
@@ -1106,11 +1133,11 @@ export class SaleslogComponent implements OnInit {
         this.rowData = [];
         this.rowData = searchResult;
         // // // // console.log(this.rowResponse);
-        this.toastHandlerService.generateToast(
-            searchResult.length + " Record found",
-            "",
-            2000
-        );
+        // this.toastHandlerService.generateToast(
+        //     searchResult.length + " Record found",
+        //     "",
+        //     2000
+        // );
     }
 
     methodFromParent(cell) {
@@ -1617,17 +1644,7 @@ export class SaleslogComponent implements OnInit {
         this.monthModal = false;
     }
 
-    formatNumber(params) {
-        // console.log("formatNumberCalled: ", params.colDef.type);
-        if (params.colDef.type === "number") {
-            return (
-                "$" +
-                Math.floor(params.value)
-                    .toString()
-                    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
-            );
-        }
-    }
+    
 
     formatDate(params) {
         // console.log("formatDate: ", params);
@@ -2309,7 +2326,35 @@ function createFlagImg(flag) {
         '.png"/>'
     );
 }
+ 
+  
+function formatCurrency(params) {
 
+    if( params.value === "" || params.value === null || params.value === undefined) {
+        return '$' +Math.floor(params.value)
+        .toString()
+        .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
+else{
+    let value = params.value;
+    let addMinus = false;
+
+    if(value.includes('-')){
+        value = value.replace('-','');
+        addMinus = true;
+    }
+
+    if(addMinus) {
+        return '-'+'$' +Math.floor(value)
+          .toString()
+          .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+    }
+
+    return '$' +Math.floor(value)
+      .toString()
+      .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+  }
+}
 // This is used to generate order date and other calendar components
 function getDatePicker() {
     function Datepicker() {}

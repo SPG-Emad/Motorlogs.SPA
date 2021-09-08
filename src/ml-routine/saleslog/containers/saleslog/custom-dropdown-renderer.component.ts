@@ -39,8 +39,10 @@ export class CustomDropDownRenderer implements OnInit {
             this.viewId = 1;
         }
 
-    //    console.log("params from customdropdownrederer: ", params);
-        this.header = params.colDef.headerName;
+        // console.log("params from customdropdownrederer: ", params);
+        //  console.log("params.colDef: ", params.colDef);
+
+        this.header = params.colDef.colCode;
         this.colDef = params;
         this.rowDate = params.value;
         this.itemsArray = params.data["cellOptions_" + params.colDef.colCode];
