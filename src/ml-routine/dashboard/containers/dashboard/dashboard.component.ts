@@ -198,97 +198,8 @@ export class DashboardComponent implements OnInit {
     isDataList = false;
     searchKeys = ["key", "value"];
     activeRow: any = [];
-    // pivotTab: any =[];
     activeAccrdn: any = 1;
-    pivotTab: any = [
-        // {
-        //     rowId: 1,
-        //     groupHeaderName: "Lennock Hyundai - New Cars",
-        //     field: 'Sales',
-        //     totalOrders: 69,
-        //     totalProfit: 13000,
-        //     row: [
-        //         {
-        //             fieldValue: "Chris Commisso",
-        //             order: 2,
-        //             vehicleProfit: 4000
-        //         },
-        //         {
-        //             fieldValue: "Emily Gill",
-        //             order: 12,
-        //             vehicleProfit: 83000
-        //         },
-        //         {
-        //             fieldValue: "James Overend",
-        //             order: 33,
-        //             vehicleProfit: 6000,
-        //         },
-        //         {
-        //             fieldValue: "Morgan McGuinness",
-        //             order: 22,
-        //             vehicleProfit: 1000,
-        //         }
-        //     ]
-        // },
-        // {
-        //     rowId: 2,
-        //     groupHeaderName: "Lennock Jaguar & Land Rover - New Cars",
-        //     field: 'Sales',
-        //     totalOrders: 77,
-        //     totalProfit: 13000,
-        //     row: [
-        //         {
-        //             fieldValue: "Chris Commisso",
-        //             order: 10,
-        //             vehicleProfit: 4000
-        //         },
-        //         {
-        //             fieldValue: "Emily Gill",
-        //             order: 12,
-        //             vehicleProfit: 83000
-        //         },
-        //         {
-        //             fieldValue: "James Overend",
-        //             order: 33,
-        //             vehicleProfit: 6000,
-        //         },
-        //         {
-        //             fieldValue: "Morgan McGuinness",
-        //             order: 22,
-        //             vehicleProfit: 1000,
-        //         }
-        //     ]
-        // },
-        // {
-        //     rowId: 3,
-        //     groupHeaderName: "Lennock Jaguar & Land Rover - New Cars",
-        //     field: 'Sales',
-        //     totalOrders: 17,
-        //     totalProfit: 14000,
-        //     row: [
-        //         {
-        //             fieldValue: "Chris Commisso",
-        //             order: 5,
-        //             vehicleProfit: 5000
-        //         },
-        //         {
-        //             fieldValue: "Emily Gill",
-        //             order: 33,
-        //             vehicleProfit: 5000
-        //         },
-        //         {
-        //             fieldValue: "James Overend",
-        //             order: 13,
-        //             vehicleProfit: 5000,
-        //         },
-        //         {
-        //             fieldValue: "Morgan McGuinness",
-        //             order: 21,
-        //             vehicleProfit: 6000,
-        //         }
-        //     ]
-        // },
-    ];
+    pivotTab: any = [];
 
     isGroupDashboard = false;
     targetObj: any = {
@@ -383,6 +294,7 @@ export class DashboardComponent implements OnInit {
             TillDate: this.monthFilter, // take this value from calendar and sent to this API
             GroupBy: groupBy, // Take values from first dropdown
             OrderBy: orderBy, // Possible values are Delivered, Covered, Sold
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId
         };
 
         this.dashboardService.generateSalesGraph(param).subscribe(
@@ -743,6 +655,7 @@ export class DashboardComponent implements OnInit {
             // "PastMonths": 1, // it will always be 1
             // "TillDate": "JUN_20", // take this value from calendar and sent to this API
             // "OrderBy": "Delivered" // Possible values are Delivered, Covered, Sold
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId
         };
 
         this.dashboardService.generateSalesPersonGraph(param).subscribe(
@@ -1022,6 +935,7 @@ export class DashboardComponent implements OnInit {
             TillDate: this.monthFilter, // take this value from calendar and sent to this API
             GroupBy: this.filterValue.key, // Take values from first dropdown
             OrderBy: this.defaultOrder.value, // Possible values are Delivered, Covered, Sold
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId
         };
 
         this.dashboardService.generatePivotData(param).subscribe(
@@ -1075,8 +989,8 @@ export class DashboardComponent implements OnInit {
                 );
             }
         } else {
-            this.groupByHeader = this.dataValue.split(" /")[0];
-            this.field = this.dataValue.split(" /")[1];
+            this.groupByHeader = this.dataValue.value.split(" /")[0];
+            this.field = this.dataValue.value.split(" /")[1];
             this.callPivotApi(
                 this.groupByHeader,
                 this.field,
