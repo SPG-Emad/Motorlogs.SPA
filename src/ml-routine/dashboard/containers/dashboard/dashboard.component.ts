@@ -662,6 +662,7 @@ export class DashboardComponent implements OnInit {
             (data) => {
                 if (data && data.users !== null && data.users !== undefined) {
                     this.generateSalesPersonsGraph(data);
+                    // console.log('sales person graph: ', data);
                 } else {
                     this.chartLoader = false;
                 }
@@ -763,25 +764,42 @@ export class DashboardComponent implements OnInit {
                     salesObject["color"] = element.color;
                 }
 
+                console.log('element.graphtype: ', element.graphType);
+                console.log('element.legendName: ', element.legendName);
+
                 if (element.columnData != null) {
                     element.columnData.map((res) => {
                         let date = res.x.split("-");
                         res.x = Date.UTC(date[0], date[1] - 1, date[2]);
-                        // console(res.x);
-                        grandTotalProfit += Number(res.y);
+                        console.log('columnData:::: ', res.x + ' : ' + res.y);
+
+                        if(element.legendName !==  'Target Profit') 
+                        {
+                            grandTotalProfit += Number(res.y);
+                        }
+                        
+                        console.log('grandTotalProfit:::: ', grandTotalProfit);
                     });
                     
+                    // Date + Target Profit
                     salesObject["data"] = element.columnData;
-                } else {
+                } 
+                else {
                     element.splineData.map((res) => {
                         let date = res.x.split("-");
                         res.x = Date.UTC(date[0], date[1] - 1 , date[2]);
-                        // console(res.x);
-                        grandTotalOrders += Number(res.y);
+                        console.log('splineData:::: ', res.x + ' : ' + res.y);
+                        // grandTotalOrders += Number(res.y);
+                        if(element.legendName !==  'Target Order') 
+                        {
+                            grandTotalOrders += Number(res.y);
+                        }
+                        console.log('grandTotalOrders:::: ', grandTotalOrders);
                     });
 
                     salesObject["data"] = element.splineData;
                 }
+
                 if (element.splineStyle != null) {
                     markerObj["lineWidth"] = 2;
                     markerObj["lineColor"] = Highcharts.getOptions().colors[3];

@@ -8,8 +8,10 @@ import {
     Output,
     EventEmitter,
     SimpleChanges,
+    ChangeDetectorRef,
 } from "@angular/core";
 import { MatDialog } from "@angular/material/dialog";
+import { setTimeout } from "timers";
 
 @Component({
     selector: "date-footer",
@@ -57,10 +59,13 @@ export class DateFooterFilterComponent implements OnInit {
 
     constructor(
         private toastHandlerService: ToastHandlerService,
-        public dialog: MatDialog
+        public dialog: MatDialog,
+        private cdr: ChangeDetectorRef
     ) {}
 
+
     ngOnInit() {
+
         this.calculatePreviousMonths();
         this.calculateUpcomingMonths();
 
@@ -92,6 +97,11 @@ export class DateFooterFilterComponent implements OnInit {
         });
     }
 
+    ngAfterViewChecked(){
+        //your code to update the model
+        this.cdr.detectChanges();
+     }
+     
     selctedMonth(index) {
         this.searchDate.map((res, i) => {
             if (i === index) {

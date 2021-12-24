@@ -74,7 +74,8 @@ export class UserProfileService {
                 title: 'Group Dashboard',
                 type: 'item',
                 icon: 'home',
-                url: '/group-overview'
+                url: '/group-overview',
+                openInNewTab: true
             });
 
             const menuGeneration: FuseNavigationItem =
