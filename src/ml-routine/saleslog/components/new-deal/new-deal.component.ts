@@ -52,10 +52,7 @@ export class NewDealComponent implements OnInit {
     departmentID: any;
 
     renderDepartmentNameHeading() {
-        let department =
-            this.LocalStorageHandlerService.getFromStorage(
-                "userObj"
-            ).departmentAccess;
+        let department = this.LocalStorageHandlerService.getFromStorage("userObj").departmentAccess;
         this.departmentIDs = department;
         let count = 0;
         department = department.find((el) => {
@@ -86,10 +83,11 @@ export class NewDealComponent implements OnInit {
             d.getMinutes() - d.getTimezoneOffset()
         ).toISOString();
 
+      
         let params = {
             UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
                 .userId,
-            ViewId: this.viewId, // Always be 1
+            ViewId: this.viewId,
             DeptId: this.decryptedDepartmentId,
             OrderDate: finalDate,
             CustomerName: this.columnForm.get("customerName").value,

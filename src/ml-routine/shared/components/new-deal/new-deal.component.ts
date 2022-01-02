@@ -69,21 +69,20 @@ export class NewDealComponent implements OnInit {
         let finalDate = new Date(
             d.getFullYear(),
             d.getMonth(),
-            d.getDate(),
+            d.getDate() -1 ,
             d.getHours(),
             d.getMinutes() - d.getTimezoneOffset()
         ).toLocaleDateString();
 
-        let params = {
-            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
-                .userId,
+        let params = { 
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
             ViewId: 3, // Always be 1
             DeptId: this.decryptedDepartmentId,
             purchaseDate: finalDate,
             PurchaseFrom: this.arrivingForm.get("purchaseFrom").value,
         };
         
-        // console.log("order date: ", finalDate);
+        console.log("order date: ", finalDate);
         // console.log("params: ", params);
 
         this.saleslogService.postRows(params).subscribe(() => {

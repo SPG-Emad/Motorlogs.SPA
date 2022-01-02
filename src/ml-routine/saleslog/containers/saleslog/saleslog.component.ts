@@ -25,6 +25,7 @@ import { SaleslogService } from "ml-routine/shared/services/saleslog/saleslog.se
 import { LocalStorageHandlerService } from "app/shared/services/local-storage-handler.service";
 import { SharedService } from "ml-setup/shared/services/shared/shared.service";
 import { SignalRService } from "ml-setup/shared/services/signal-r/signal-r.service";
+import { ConfigurationsModule } from "ml-setup/configuration/configuration.module";
 
 declare var $: any;
 @Component({
@@ -162,7 +163,7 @@ export class SaleslogComponent implements OnInit {
     loadingOverlayComponent;
     loadingOverlayComponentParams;
     pageCounter: number = 0;
-    
+
     searchForm: FormGroup = this.fb.group({
         searchbar: [""],
         currentMonth: [true],
@@ -372,7 +373,7 @@ export class SaleslogComponent implements OnInit {
             minWidth: 200,
             // flex: 1,
             // filter: 'customFilter',
-            menuTabs: ["filterMenuTab", "columnsMenuTab", "generalMenuTab"]
+            menuTabs: ["filterMenuTab", "columnsMenuTab", "generalMenuTab"],
             // menuTabs: [ "columnsMenuTab", "generalMenuTab"],
             // cellClassRules: {
             //   boldBorders: this.getCssRules.bind(this),
@@ -474,6 +475,8 @@ export class SaleslogComponent implements OnInit {
             });
             return newObject;
         }
+
+        console.log("on async called", Date.now());
     }
 
     public addBroadcastLiveSheetDataForViewsListener = () => {
@@ -573,9 +576,34 @@ export class SaleslogComponent implements OnInit {
         this.departmentNameRendered = department.departmentName;
     }
 
+    dateConverter(value) {
+        var date = value;
+        var datearray = date.split("/");
+        var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+        console.log("dateConverter: ", newdate);
+        var dateWrapper = new Date(newdate);
+        return dateWrapper;
+    }
+
     isValidDate(value) {
-        var dateWrapper = new Date(value);
-        return !isNaN(dateWrapper.getDate());
+        // var dateWrapper = new Date(value);
+        // var dateWrapper = new Date(moment(value).format("DD/MM/YYYY"));
+        // console.log("value: ", value);
+        // console.log("isValidDate: ", dateWrapper);
+        // console.log("!isNaN(dateWrapper.getDate() 1 ): ",!isNaN(dateWrapper.getDate()));
+        
+        // if (!isNaN(dateWrapper.getDate()) == false) {
+            var date = value;
+            var datearray = date.split("/");
+            var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+            console.log("newdate: ", newdate);
+            var dateWrapper = new Date(newdate);
+            console.log("dateWrapper: ", dateWrapper);
+            console.log("!isNaN(dateWrapper.getDate() 2 ): ",!isNaN(dateWrapper.getDate()));
+            return !isNaN(dateWrapper.getDate());
+        // }
+
+        // return !isNaN(dateWrapper.getDate());
     }
 
     generateGrid(months?, date?) {
@@ -595,7 +623,8 @@ export class SaleslogComponent implements OnInit {
         };
 
         this.renderDepartmentNameHeading();
-
+        this.resetSummaryValues() ;
+        
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
             this.resetSummaryValues();
 
@@ -606,6 +635,7 @@ export class SaleslogComponent implements OnInit {
             this.monthObject.oneMonth = true;
 
             this.salesData.rowData.row.forEach((element, rowIndex) => {
+                console.log("generateGrid rowIndex:", rowIndex);
                 this.cellMap = new Object();
                 let carryOver = element.isCarryOver;
                 let rowIndexId = element.rowId;
@@ -632,31 +662,29 @@ export class SaleslogComponent implements OnInit {
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY");
+                            // this.cellMap[element1.colId] = moment(element1.currentCellValue).format("DD/MM/YYYY");
+                            // this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format("DD/MM/YYYY");
+                            
+                            this.cellMap[element1.colId] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY");
                         }
-                    } 
-                    else if (element1.colType &&element1.colType === "Combo") 
-                    {
+                    } else if (
+                        element1.colType &&
+                        element1.colType === "Combo"
+                    ) {
                         if (
                             element1.currentCellValue &&
                             element1.currentCellValue !== null &&
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
-                        }
-                        else{
+                            this.cellMap[element1.colId] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY hh:mm");
+                        } else {
                             this.cellMap["" + element1.colId + ""] = element1.currentCellValue;
-                            this.cellMap['"' + element1.colCode + '"'] =element1.currentCellValue; 
+                            this.cellMap['"' + element1.colCode + '"'] = element1.currentCellValue;
                         }
-                    } 
-                    else {
+                    } else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] =
@@ -682,39 +710,47 @@ export class SaleslogComponent implements OnInit {
                 let typeArray = [];
                 // means order date month is LESS THAN current month ??
                 // Carry over formula : Orders for previous months which are being delivered in the current month or later
-                var OD_M = moment(this.cellData[0]['"OD"'], 'DD/MM/YYYY').format('M');
-                var ED_M = moment(this.cellData[0]['"ED"'], 'DD/MM/YYYY').format('M');
-                var AD_M = moment(this.cellData[0]['"AD"'], 'DD/MM/YYYY').format('M');
-                var SD_M = moment().format("M");
+                var OD_M = moment(this.cellData[0]['"OD"'],"DD/MM/YYYY").format("M");
+                var ED_M = moment(this.cellData[0]['"ED"'],"DD/MM/YYYY").format("M");
+                var AD_M = moment(this.cellData[0]['"AD"'],"DD/MM/YYYY").format("M");
+                var CD_M = moment().format("M");
 
-                if (OD_M <= SD_M) 
-                {
-                    if(this.cellData[0]['"ED"'] !== undefined) {
-                        let time = SD_M >= ED_M;
-                        
+                if (OD_M <= CD_M) {
+                    if (this.cellData[0]['"ED"'] !== undefined) {
+                        let time = CD_M >= ED_M;
+
                         if (time) {
-                         //   console.log('time: YES');
-                            this.carryOverAmount = 
-                            this.carryOverAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                            //   console.log('time: YES');
+                            this.carryOverAmount =
+                                this.carryOverAmount +
+                                Number(this.cellData[0]['"VEHGRO"']) +
+                                Number(this.cellData[0]['"VEHHOLDB"']);
                             typeArray.push("carryOver");
                         } else {
-                       //     console.log('time: No');
+                            //     console.log('time: No');
                             typeArray.push("sold");
                             this.soldUnits = this.soldUnits + 1;
-                            this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                            this.soldAmount =
+                                this.soldAmount +
+                                Number(this.cellData[0]['"VEHGRO"']) +
+                                Number(this.cellData[0]['"VEHHOLDB"']);
                         }
-                    }
-                    else{
-                     //   console.log('No Estimated Delivery');
+                    } else {
+                        //   console.log('No Estimated Delivery');
                         typeArray.push("sold");
                         this.soldUnits = this.soldUnits + 1;
-                        this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                        this.soldAmount =
+                            this.soldAmount +
+                            Number(this.cellData[0]['"VEHGRO"']) +
+                            Number(this.cellData[0]['"VEHHOLDB"']);
                     }
-                } 
-                else {
+                } else {
                     typeArray.push("sold");
                     this.soldUnits = this.soldUnits + 1;
-                    this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);;
+                    this.soldAmount =
+                        this.soldAmount +
+                        Number(this.cellData[0]['"VEHGRO"']) +
+                        Number(this.cellData[0]['"VEHHOLDB"']);
                 }
 
                 // Covered: Whose Est. Del is not in future months.
@@ -722,12 +758,13 @@ export class SaleslogComponent implements OnInit {
                     this.cellData[0]['"ED"'] !== "" &&
                     this.cellData[0]['"ED"'] !== undefined &&
                     this.cellData[0]['"ED"'] !== null &&
-                    ED_M <= SD_M  
-                    ) 
-                {
+                    ED_M <= CD_M
+                ) {
                     typeArray.push("covered");
                     this.coveredUnits = this.coveredUnits + 1;
-                    this.coveredAmount = this.coveredAmount + Number(this.cellData[0]['"VEHGRO"']);
+                    this.coveredAmount =
+                        this.coveredAmount +
+                        Number(this.cellData[0]['"VEHGRO"']);
                 }
 
                 if (
@@ -737,7 +774,9 @@ export class SaleslogComponent implements OnInit {
                 ) {
                     typeArray.push("delivered");
                     this.deliveredUnits = this.deliveredUnits + 1;
-                    this.deliveredAmount = this.deliveredAmount + Number(this.cellData[0]['"VEHGRO"']);
+                    this.deliveredAmount =
+                        this.deliveredAmount +
+                        Number(this.cellData[0]['"VEHGRO"']);
                 }
                 this.cellData[0]["type"] = typeArray;
                 rows.push(this.cellData[0]);
@@ -807,8 +846,6 @@ export class SaleslogComponent implements OnInit {
                 columnMap["hide"] = !element.display;
                 columnMap["columnType"] = element.type;
                 columnMap["width"] = element.colWidth;
-                
-
 
                 let required = element.required;
                 columnMap["cellStyle"] = function (params) {
@@ -816,30 +853,33 @@ export class SaleslogComponent implements OnInit {
                         return { backgroundColor: "red" };
                     }
 
-                    if (element.type === "Currency" 
-                    && 
-                    (params.value === "" || params.value === null || params.value === undefined)) {
+                    if (
+                        element.type === "Currency" &&
+                        (params.value === "" ||
+                            params.value === null ||
+                            params.value === undefined)
+                    ) {
                         return { color: "#bebebe" };
                     }
 
-                    if (element.type === "Currency" 
-                    && 
-                    (params.value !== "" || params.value !== null || params.value !== undefined)
+                    if (
+                        element.type === "Currency" &&
+                        (params.value !== "" ||
+                            params.value !== null ||
+                            params.value !== undefined)
                     ) {
-                        if(params.value.includes('-')){
-                        return { color: "red" };
-                    }
-                    }
-                    
-                    else {
+                        if (params.value.includes("-")) {
+                            return { color: "red" };
+                        }
+                    } else {
                         return null;
                     }
                 };
 
                 if (element.type === "Currency") {
                     columnMap["valueFormatter"] = formatCurrency;
-                    columnMap["filter"] = 'agNumberColumnFilter';
-                } 
+                    columnMap["filter"] = "agNumberColumnFilter";
+                }
 
                 if (element.type === "Date") {
                     columnMap["cellEditor"] = "dateEditor";
@@ -863,11 +903,10 @@ export class SaleslogComponent implements OnInit {
             this.columnDefs = column;
             this.rowData = rows;
             this.rowResponse = rows;
+            console.log("generate grid rowData :::: ", this.rowData);
             // this.gridApi.sizeColumnsToFit();
         });
     }
-
-    
 
     isoDateValueFormatter(params) {
         // // console.log(params.value);
@@ -896,7 +935,7 @@ export class SaleslogComponent implements OnInit {
                 colId: event.colDef.colId,
                 ColType: event.colDef.columnType, // You need to send the column type
                 Value: event.newValue,
-                OriginalValue: event.newValue
+                OriginalValue: event.newValue,
             };
 
             if (Object.keys(params).length !== 0) {
@@ -929,6 +968,7 @@ export class SaleslogComponent implements OnInit {
                 : null,
         };
 
+        this.resetSummaryValues() ;
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
             this.resetSummaryValues();
 
@@ -940,6 +980,7 @@ export class SaleslogComponent implements OnInit {
             this.monthObject.oneMonth = true;
 
             this.salesData.rowData.row.forEach((element, rowIndex) => {
+                console.log("gridFilter rowIndex:", rowIndex);
                 this.cellMap = new Object();
                 let carryOver = element.isCarryOver;
                 let rowIndexId = element.rowId;
@@ -965,12 +1006,8 @@ export class SaleslogComponent implements OnInit {
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY");
+                            this.cellMap[element1.colId] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY");
                         }
                     } else if (
                         element1.colType &&
@@ -982,15 +1019,15 @@ export class SaleslogComponent implements OnInit {
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
+                            this.cellMap[element1.colId] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY hh:mm");
+                        } else {
+                            this.cellMap["" + element1.colId + ""] =
+                                element1.currentCellValue;
+                            this.cellMap['"' + element1.colCode + '"'] =
+                                element1.currentCellValue;
                         }
-                        else{
-                            this.cellMap["" + element1.colId + ""] = element1.currentCellValue;
-                            this.cellMap['"' + element1.colCode + '"'] =element1.currentCellValue; 
-                        }
-                    } 
-                    else {
+                    } else {
                         this.cellMap["" + element1.colId + ""] =
                             element1.currentCellValue;
                         this.cellMap['"' + element1.colCode + '"'] =
@@ -1014,39 +1051,56 @@ export class SaleslogComponent implements OnInit {
                 });
 
                 let typeArray = [];
-                var OD_M = moment(this.cellData[0]['"OD"'], 'DD/MM/YYYY').format('M');
-                var ED_M = moment(this.cellData[0]['"ED"'], 'DD/MM/YYYY').format('M');
-                var AD_M = moment(this.cellData[0]['"AD"'], 'DD/MM/YYYY').format('M');
-                var SD_M = moment().format("M");
+                var OD_M = moment(
+                    this.cellData[0]['"OD"'],
+                    "DD/MM/YYYY"
+                ).format("M");
+                var ED_M = moment(
+                    this.cellData[0]['"ED"'],
+                    "DD/MM/YYYY"
+                ).format("M");
+                var AD_M = moment(
+                    this.cellData[0]['"AD"'],
+                    "DD/MM/YYYY"
+                ).format("M");
+                var CD_M = moment().format("M");
 
-                if (OD_M <= SD_M) 
-                {
-                    if(this.cellData[0]['"ED"'] !== undefined) {
-                        let time = SD_M >= ED_M;
-                        
+                if (OD_M <= CD_M) {
+                    if (this.cellData[0]['"ED"'] !== undefined) {
+                        let time = CD_M >= ED_M;
+
                         if (time) {
-                         //   console.log('time: YES');
-                            this.carryOverAmount = 
-                            this.carryOverAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                            //   console.log('time: YES');
+                            this.carryOverAmount =
+                                this.carryOverAmount +
+                                Number(this.cellData[0]['"VEHGRO"']) +
+                                Number(this.cellData[0]['"VEHHOLDB"']);
                             typeArray.push("carryOver");
                         } else {
-                       //     console.log('time: No');
+                            //     console.log('time: No');
                             typeArray.push("sold");
                             this.soldUnits = this.soldUnits + 1;
-                            this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                            this.soldAmount =
+                                this.soldAmount +
+                                Number(this.cellData[0]['"VEHGRO"']) +
+                                Number(this.cellData[0]['"VEHHOLDB"']);
                         }
-                    }
-                    else{
-                     //   console.log('No Estimated Delivery');
+                    } else {
+                        //   console.log('No Estimated Delivery');
                         typeArray.push("sold");
                         this.soldUnits = this.soldUnits + 1;
-                        this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);
+                        this.soldAmount =
+                            this.soldAmount +
+                            Number(this.cellData[0]['"VEHGRO"']) +
+                            Number(this.cellData[0]['"VEHHOLDB"']);
                     }
-                } 
-                else {
+                } else {
                     typeArray.push("sold");
                     this.soldUnits = this.soldUnits + 1;
-                    this.soldAmount = this.soldAmount + Number(this.cellData[0]['"VEHGRO"']) + Number(this.cellData[0]['"VEHHOLDB"']);;
+                    this.soldAmount =
+                        this.soldAmount +
+                        Number(this.cellData[0]['"VEHGRO"']) +
+                        Number(this.cellData[0]['"VEHHOLDB"']);
                 }
 
                 // Covered: Whose Est. Del is not in future months.
@@ -1054,12 +1108,13 @@ export class SaleslogComponent implements OnInit {
                     this.cellData[0]['"ED"'] !== "" &&
                     this.cellData[0]['"ED"'] !== undefined &&
                     this.cellData[0]['"ED"'] !== null &&
-                    ED_M <= SD_M  
-                    ) 
-                {
+                    ED_M <= CD_M
+                ) {
                     typeArray.push("covered");
                     this.coveredUnits = this.coveredUnits + 1;
-                    this.coveredAmount = this.coveredAmount + Number(this.cellData[0]['"VEHGRO"']);
+                    this.coveredAmount =
+                        this.coveredAmount +
+                        Number(this.cellData[0]['"VEHGRO"']);
                 }
 
                 if (
@@ -1069,7 +1124,9 @@ export class SaleslogComponent implements OnInit {
                 ) {
                     typeArray.push("delivered");
                     this.deliveredUnits = this.deliveredUnits + 1;
-                    this.deliveredAmount = this.deliveredAmount + Number(this.cellData[0]['"VEHGRO"']);
+                    this.deliveredAmount =
+                        this.deliveredAmount +
+                        Number(this.cellData[0]['"VEHGRO"']);
                 }
                 this.cellData[0]["type"] = typeArray;
                 rows.push(this.cellData[0]);
@@ -1116,8 +1173,8 @@ export class SaleslogComponent implements OnInit {
                         financeManager
                             .toLowerCase()
                             .includes(searchValue.toLowerCase())) ||
-                    (cL && cL.toLowerCase().includes(searchValue.toLowerCase()))
-                    ||
+                    (cL &&
+                        cL.toLowerCase().includes(searchValue.toLowerCase())) ||
                     searchValue == ""
                 );
             });
@@ -1381,10 +1438,8 @@ export class SaleslogComponent implements OnInit {
     }
 
     filterGrid(option) {
-        
         // If filter matches change active state of columns*/
         if (option === 0) {
-            
             let row = this.rowResponse.filter((res) => {
                 return res.carryOver == true;
             });
@@ -1643,8 +1698,6 @@ export class SaleslogComponent implements OnInit {
     cancelMonthModal() {
         this.monthModal = false;
     }
-
-    
 
     formatDate(params) {
         // console.log("formatDate: ", params);
@@ -2130,6 +2183,7 @@ export class SaleslogComponent implements OnInit {
             this.gridApi.hideOverlay();
             this.signalRService.BroadcastLiveSheetData();
             this.gridApi.applyTransaction({ add: newItems });
+            console.log("duplicate row added");
         });
     }
 
@@ -2222,14 +2276,23 @@ export class SaleslogComponent implements OnInit {
             },
         });
         this.dialogRef.afterClosed().subscribe((res) => {
+            console.log("row added", "emad khan");
             if (res) {
-                this.gridApi.applyTransaction({
-                    add: [
-                        {
-                            orderDate: moment(res.date).format("DD-MMM-YY"),
-                        },
-                    ],
-                });
+                console.log("addColumn() ", res);
+
+                // this.gridApi.updateRowData({add: [
+                //     {
+                //         orderDate: moment(res.date).format("DD-MMM-YY"),
+                //     },
+                // ]});
+
+                // this.gridApi.applyTransaction({
+                //     add: [
+                //         {
+                //             orderDate: moment(res.date).format("DD-MMM-YY"),
+                //         },
+                //     ],
+                // });
             }
         });
     }
@@ -2252,6 +2315,7 @@ export class SaleslogComponent implements OnInit {
 
         api.setDomLayout("print");
     }
+
     setNormal(api) {
         let eGridDiv: HTMLElement = document.getElementById(
             "myGrid"
@@ -2264,22 +2328,29 @@ export class SaleslogComponent implements OnInit {
 
     excelExport() {
         var excelParams = {
-            fileName: this.generateFileName()+'.xlsx',
-        }
+            fileName: this.generateFileName() + ".xlsx",
+        };
         this.gridApi.exportDataAsExcel(excelParams);
         // this.openModal(this, ExcelExportComponent, "400px");
     }
 
     csvExport() {
         var csvParams = {
-            fileName: this.generateFileName()+'.csv',
-        }
+            fileName: this.generateFileName() + ".csv",
+        };
         this.gridApi.exportDataAsCsv(csvParams);
         // this.openModal(this, ExcelExportComponent, "400px");
     }
 
     generateFileName() {
-       return this.departmentNameRendered.replace('-','_').replace(' ','_').trim()+'_'+'Saleslog';
+        return (
+            this.departmentNameRendered
+                .replace("-", "_")
+                .replace(" ", "_")
+                .trim() +
+            "_" +
+            "Saleslog"
+        );
     }
 
     columnOption() {
@@ -2326,34 +2397,45 @@ function createFlagImg(flag) {
         '.png"/>'
     );
 }
- 
-  
+
 function formatCurrency(params) {
+    if (
+        params.value === "" ||
+        params.value === null ||
+        params.value === undefined
+    ) {
+        return (
+            "$" +
+            Math.floor(params.value)
+                .toString()
+                .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        );
+    } else {
+        let value = params.value;
+        let addMinus = false;
 
-    if( params.value === "" || params.value === null || params.value === undefined) {
-        return '$' +Math.floor(params.value)
-        .toString()
-        .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
+        if (value.includes("-")) {
+            value = value.replace("-", "");
+            addMinus = true;
+        }
+
+        if (addMinus) {
+            return (
+                "-" +
+                "$" +
+                Math.floor(value)
+                    .toString()
+                    .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+            );
+        }
+
+        return (
+            "$" +
+            Math.floor(value)
+                .toString()
+                .replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,")
+        );
     }
-else{
-    let value = params.value;
-    let addMinus = false;
-
-    if(value.includes('-')){
-        value = value.replace('-','');
-        addMinus = true;
-    }
-
-    if(addMinus) {
-        return '-'+'$' +Math.floor(value)
-          .toString()
-          .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-    }
-
-    return '$' +Math.floor(value)
-      .toString()
-      .replace(/(\d)(?=(\d{3})+(?!\d))/g, '$1,');
-  }
 }
 // This is used to generate order date and other calendar components
 function getDatePicker() {
@@ -2365,6 +2447,8 @@ function getDatePicker() {
         this.eInput.classList.add("ag-input");
         this.eInput.style.height = "100%";
         this.eInput.style.width = "100%";
+
+        console.log("getDatePicker:: ", params.value);
 
         $.datetimepicker.setLocale("en");
         $(this.eInput).datetimepicker({

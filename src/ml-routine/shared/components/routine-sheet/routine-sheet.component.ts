@@ -97,6 +97,7 @@ export class RoutineSheetComponent implements OnInit {
         this.totalAmount = -0;
         this.totalUnits = 0;
         this.totalAvg = 0;
+        this.totalRows = 0;
 
         this.missingAmount = -0;
         this.missingUnits = 0;
@@ -736,9 +737,34 @@ export class RoutineSheetComponent implements OnInit {
 
     renderDepartmentNameHeading() {}
 
+    dateConverter(value) {
+        var date = value;
+        var datearray = date.split("/");
+        var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+        console.log("dateConverter: ", newdate);
+        var dateWrapper = new Date(newdate);
+        return dateWrapper;
+    }
+
     isValidDate(value) {
-        var dateWrapper = new Date(value);
-        return !isNaN(dateWrapper.getDate());
+        // var dateWrapper = new Date(value);
+        // var dateWrapper = new Date(moment(value).format("DD/MM/YYYY"));
+        // console.log("value: ", value);
+        // console.log("isValidDate: ", dateWrapper);
+        // console.log("!isNaN(dateWrapper.getDate() 1 ): ",!isNaN(dateWrapper.getDate()));
+        
+        // if (!isNaN(dateWrapper.getDate()) == false) {
+            var date = value;
+            var datearray = date.split("/");
+            var newdate = datearray[1] + '/' + datearray[0] + '/' + datearray[2];
+            console.log("newdate: ", newdate);
+            var dateWrapper = new Date(newdate);
+            console.log("dateWrapper: ", dateWrapper);
+            console.log("!isNaN(dateWrapper.getDate() 2 ): ",!isNaN(dateWrapper.getDate()));
+            return !isNaN(dateWrapper.getDate());
+        // }
+
+        // return !isNaN(dateWrapper.getDate());
     }
 
     generateGrid(months?, date?) {
@@ -768,14 +794,12 @@ export class RoutineSheetComponent implements OnInit {
         }
 
         let obj = {
-            UserId: this.LocalStorageHandlerService.getFromStorage("userObj")
-                .userId,
-            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj")
-                .roleID,
+            UserId: this.LocalStorageHandlerService.getFromStorage("userObj").userId,
+            RoleId: this.LocalStorageHandlerService.getFromStorage("userObj").roleID,
             ViewId: this.routineSelected,
             DeptId: this.decryptedDepartmentId
-                ? this.decryptedDepartmentId
-                : this.departmentID,
+                    ? this.decryptedDepartmentId
+                    : this.departmentID,
             TillDate: date ? date : moment().format("MMM_YY"),
             PastMonths: months ? months : 1,
             ShowDeleted: null,
@@ -785,6 +809,7 @@ export class RoutineSheetComponent implements OnInit {
 
         this.tradeinUnits = 0;
         this.tradeinAmount = 0;
+        this.resetSummaryValues() ;
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
             this.rowData = [];
@@ -819,8 +844,9 @@ export class RoutineSheetComponent implements OnInit {
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format("DD/MM/YYYY");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format("DD/MM/YYYY");
+                            
+                            this.cellMap[element1.colId] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY");
                         }
                     } else if (
                         element1.colType &&
@@ -833,8 +859,8 @@ export class RoutineSheetComponent implements OnInit {
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(element1.currentCellValue).format("DD/MM/YYYY hh:mm");
+                            this.cellMap[element1.colId] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY hh:mm");
                         }
                     } else {
                         this.cellMap["" + element1.colId + ""] = element1.currentCellValue;
@@ -856,12 +882,16 @@ export class RoutineSheetComponent implements OnInit {
                 var OD_M = moment(this.cellData[0]['"OD"'], 'DD/MM/YYYY').format('M');
                 var ED_M = moment(this.cellData[0]['"ED"'], 'DD/MM/YYYY').format('M');
                 var AD_M = moment(this.cellData[0]['"AD"'], 'DD/MM/YYYY').format('M');
-                var SD_M = moment().format("M");
+                var CD_M = moment().format("M");
 
-                if (OD_M <= SD_M) 
+                console.log("OD_M: ", OD_M, " :: ", moment(this.cellData[0]['"OD"'], 'DD/MM/YYYY').format('M'));
+                console.log("ED_M: ", ED_M, " :: ", moment(this.cellData[0]['"ED"'], 'DD/MM/YYYY').format('M'));
+                console.log("CD_M: ", CD_M);
+
+                if (OD_M <= CD_M) 
                 {
                     if(this.cellData[0]['"ED"'] !== undefined) {
-                        let time = SD_M >= ED_M;
+                        let time = CD_M >= ED_M;
                         
                         if (time) {
                          //   console.log('time: YES');
@@ -893,7 +923,7 @@ export class RoutineSheetComponent implements OnInit {
                     this.cellData[0]['"ED"'] !== "" &&
                     this.cellData[0]['"ED"'] !== undefined &&
                     this.cellData[0]['"ED"'] !== null &&
-                    ED_M <= SD_M  
+                    ED_M <= CD_M  
                     ) 
                 {
                     typeArray.push("covered");
@@ -920,12 +950,13 @@ export class RoutineSheetComponent implements OnInit {
 
                 this.cellData[0]["type"] = typeArray;
                 this.vehicleProfit = this.vehicleProfit + Number(this.cellData[0]['"VEHPRO"']);
+                
                 this.totalRows = this.totalRows + 1;
 
                 rows.push(this.cellData[0]);
 
                 // Estimated del. in this month --ARRIVING Calculation
-                if(ED_M == SD_M) {
+                if(ED_M == CD_M) {
                     this.tradeinUnits++;
                     if (this.cellData[0]['"TRVALU"'] !== null) {
                         this.tradeinAmount = this.tradeinAmount + Number(this.cellData[0]['"TRVALU"']);
@@ -1067,7 +1098,7 @@ export class RoutineSheetComponent implements OnInit {
             this.columnDefs = column;
             this.rowData = rows;
             this.rowResponse = rows;
-            
+          
             // this.gridApi.sizeColumnsToFit();
         });
     }
@@ -1135,6 +1166,7 @@ export class RoutineSheetComponent implements OnInit {
 
         this.tradeinUnits = 0;
         this.tradeinAmount = 0;
+        this.resetSummaryValues() ;
 
         this.saleslog.fetchAllRows(obj).subscribe((res) => {
             this.resetSummaryValues();
@@ -1172,12 +1204,8 @@ export class RoutineSheetComponent implements OnInit {
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY");
+                            this.cellMap[element1.colId] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY");
                         }
                     } else if (
                         element1.colType &&
@@ -1190,12 +1218,8 @@ export class RoutineSheetComponent implements OnInit {
                             element1.currentCellValue !== undefined &&
                             this.isValidDate(element1.currentCellValue)
                         ) {
-                            this.cellMap[element1.colId] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY hh:mm");
-                            this.cellMap['"' + element1.colCode + '"'] = moment(
-                                element1.currentCellValue
-                            ).format("DD/MM/YYYY hh:mm");
+                            this.cellMap[element1.colId] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY hh:mm");
+                            this.cellMap['"' + element1.colCode + '"'] = moment(this.dateConverter(element1.currentCellValue)).format("DD/MM/YYYY hh:mm");
                         }
                     } else {
                         this.cellMap["" + element1.colId + ""] =
@@ -1224,12 +1248,12 @@ export class RoutineSheetComponent implements OnInit {
                 var OD_M = moment(this.cellData[0]['"OD"'], 'DD/MM/YYYY').format('M');
                 var ED_M = moment(this.cellData[0]['"ED"'], 'DD/MM/YYYY').format('M');
                 var AD_M = moment(this.cellData[0]['"AD"'], 'DD/MM/YYYY').format('M');
-                var SD_M = moment().format("M");
+                var CD_M = moment().format("M");
 
-                if (OD_M <= SD_M) 
+                if (OD_M <= CD_M) 
                 {
                     if(this.cellData[0]['"ED"'] !== undefined) {
-                        let time = SD_M >= ED_M;
+                        let time = CD_M >= ED_M;
                         
                         if (time) {
                          //   console.log('time: YES');
@@ -1261,7 +1285,7 @@ export class RoutineSheetComponent implements OnInit {
                     this.cellData[0]['"ED"'] !== "" &&
                     this.cellData[0]['"ED"'] !== undefined &&
                     this.cellData[0]['"ED"'] !== null &&
-                    ED_M <= SD_M  
+                    ED_M <= CD_M  
                     ) 
                 {
                     typeArray.push("covered");
@@ -1296,7 +1320,7 @@ export class RoutineSheetComponent implements OnInit {
                 rows.push(this.cellData[0]);
 
                   // Estimated del. in this month --ARRIVING Calculation
-                  if(ED_M == SD_M) {
+                  if(ED_M == CD_M) {
                     this.tradeinUnits++;
                     if (this.cellData[0]['"TRVALU"'] !== null) {
                         this.tradeinAmount = this.tradeinAmount + Number(this.cellData[0]['"TRVALU"']);
@@ -2479,13 +2503,15 @@ export class RoutineSheetComponent implements OnInit {
         });
         this.dialogRef.afterClosed().subscribe((res) => {
             if (res) {
-                this.gridApi.applyTransaction({
-                    add: [
-                        {
-                            orderDate: moment(res.date).format("DD-MMM-YY"),
-                        },
-                    ],
-                });
+                console.log("addColumn() ", res);
+
+                // this.gridApi.applyTransaction({
+                //     add: [
+                //         {
+                //             orderDate: moment(res.date).format("DD-MMM-YY"),
+                //         },
+                //     ],
+                // });
             }
         });
     }
