@@ -8,7 +8,7 @@ import { SmartSearchListFilterPipe } from './pipe/smart-search-list-filter.pipe'
 import { DeleteConfirmComponent } from './components/delete-confirm/delete-confirm.component';
 import { SidebarContentComponent } from './components/sidebar-content/sidebar-content.component';
 import {MatTooltipModule} from '@angular/material/tooltip';
-import { CustomLoadingOverlayComponent } from './components/custom-loading-overlay/custom-loading-overlay.component';
+// import { CustomLoadingOverlayComponent } from './components/custom-loading-overlay/custom-loading-overlay.component';
 import { MatProgressSpinnerModule } from '@angular/material';
 
 @NgModule({

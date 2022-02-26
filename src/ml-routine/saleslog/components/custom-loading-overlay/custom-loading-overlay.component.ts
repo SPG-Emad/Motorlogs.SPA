@@ -8,7 +8,7 @@ import { ILoadingOverlayAngularComp } from '@ag-grid-community/angular';
 })
 export class CustomLoadingOverlayComponent implements ILoadingOverlayAngularComp {
   private params: any;
-
+// emad
   agInit(params): void {
     this.params = params;
   }

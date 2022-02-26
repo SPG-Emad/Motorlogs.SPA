@@ -1634,7 +1634,7 @@ export class SaleslogComponent implements OnInit {
         }
     }
 
-    previousMonth() {
+    previousMonth(event) {
         if (this.searchForm.get("currentMonth").value === true) {
             this.searchForm.get("currentMonth").setValue(false);
         }

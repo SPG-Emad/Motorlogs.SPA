@@ -150,8 +150,6 @@ export class TargetsSheetComponent implements OnInit {
         this.loadingOverlayComponentParams = {
             loadingMessage: "One moment please...",
         };
-
-      
     }
 
     configSuccess: MatSnackBarConfig = {
@@ -269,7 +267,6 @@ export class TargetsSheetComponent implements OnInit {
 
     ngOnInit() {
         this.getAllDepartmentsByUserId();
-       
     }
 
     ngOnDestroy(): void {
@@ -472,8 +469,6 @@ export class TargetsSheetComponent implements OnInit {
                         node.data[column.userProvidedColDef.field]
                     );
 
-                    // // console.log("value:",value)
-                    // // console.log("value:",isNaN(value))
                     if (value === 0 || isNaN(value)) {
                         this.emptyRows.push(node.data);
                         this.emptyFieldsCount = this.emptyFieldsCount + 1;
@@ -481,8 +476,6 @@ export class TargetsSheetComponent implements OnInit {
                 }
             });
         });
-
-        // // console.log(this.emptyRows);
 
         return this.emptyFieldsCount;
     }
@@ -586,6 +579,10 @@ export class TargetsSheetComponent implements OnInit {
          * to zero for next change.
          * */
 
+        console.log("*****************************");
+        console.log(params, " params in setrowtotalvalue");
+        console.log("*****************************");
+
         if (
             params.data.rowId !== "total_profit" &&
             params.data.rowId !== "total_orders" &&
@@ -597,7 +594,7 @@ export class TargetsSheetComponent implements OnInit {
                     params,
                     "Vehicle Orders",
                     "total_orders",
-                    0
+                    this.targetSelected
                 );
                 this.baseCondtion = 1;
                 this.insertCellData(params);
@@ -606,7 +603,7 @@ export class TargetsSheetComponent implements OnInit {
                     params,
                     "Vehicle Profit",
                     "total_profit",
-                    0
+                    this.targetSelected
                 );
                 this.baseCondtion = 1;
                 this.insertCellData(params);
@@ -683,7 +680,9 @@ export class TargetsSheetComponent implements OnInit {
         rowName: string,
         option?: number
     ) {
-        // console.log("params.colDef", params.colDef);
+        console.log("option from calculateRowDate: ", option);
+        console.log("params from calculateRowDate: ", params);
+        // let columnName = params.column.userProvidedColDef.field;
         let columnName;
 
         if (option === 1) {
@@ -700,20 +699,32 @@ export class TargetsSheetComponent implements OnInit {
         let rowData = this.getAllRows(columnName, targetColumn);
         /*--------------*/
 
+        console.log("*****************************");
+        console.log("option from calculateRowDate: ", option);
+        console.log("params from calculateRowDate: ", params);
+        console.log("rowName from calculateRowDate: ", rowName);
+        console.log("targetColumn from calculateRowDate: ", targetColumn);
+        console.log("columnName from calculateRowDate: ", columnName);
+        console.log("rowData from calculateRowDate: ", rowData);
+        console.log("*****************************");
+
         /*Loop over rows and get calculate total*/
+
         let total = 0;
         rowData.forEach((res) => {
             if (!isNaN(res.data)) {
                 total = total + res.data;
             }
         });
+
+        console.log("total from calculateRowDate: ", total);
+
         /*-----------------------*/
-        // // // console.log(columnName,targetColumn,rowData);
 
         /*Fetch Total orders Node with getRowNode method of gridAPI*/
         var rowNode = this.gridApi.getRowNode(rowName);
+        console.log("rowNode from calculateRowDate: ", rowNode);
         /*----------------------------------------------------*/
-        // // // console.log("rowNode:",rowNode.data)
 
         if (option === 1) {
             if (total && total > 0) {
