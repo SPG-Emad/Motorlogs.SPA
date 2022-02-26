@@ -16,11 +16,11 @@ export class LoggingService {
 
     logError(message: string) {
         // Send errors to server here
-        console.log("LoggingService: " + message);
+        // console.log("LoggingService: " + message);
     }
 
     logAction(model: Log) {
-        console.log('logAction: ', model);
+        // console.log('logAction: ', model);
         this.http.post(GlobalConstants.apiURL + `logs/AddLog`, model).subscribe((res) => console.log('log action response: ', res));
     }
 

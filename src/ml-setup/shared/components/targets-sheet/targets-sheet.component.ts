@@ -197,6 +197,7 @@ export class TargetsSheetComponent implements OnInit {
         // console.log(this.selectedDepartment, " :: ", this.targetSelected);
 
         this.generateGridForcefully();
+        this.dateFilter(this.dateFilters);
     }
 
     generateGridForcefully() {
@@ -275,6 +276,7 @@ export class TargetsSheetComponent implements OnInit {
 
     ngOnChanges(changes: SimpleChanges) {
         for (const propName in changes) {
+            console.log('propName:', propName);
             if (changes.hasOwnProperty(propName)) {
                 switch (propName) {
                     case "dateFilters": {
@@ -396,32 +398,82 @@ export class TargetsSheetComponent implements OnInit {
         this.gridApi.setFilterModel(null);
     }
 
-    getAllRows(currentColumn?: string, targetColumn?: string) {
+    getAllRows(columnName?: any, targetColumn?: string) {
+        console.log("*************** START ***************");
+        console.log("Function: getAllRows");
+        console.log("columnName: ", columnName);
+        console.log("targetColumn: ", targetColumn);
+        
         var rowData = [];
+        
+        if (this.targetSelected === 1 && this.selectedDepartment == "-1") {
+            return rowData;
+        }
+
         let columnData = this.getAllColumn();
         this.gridApi.forEachNode((node) => {
             columnData.forEach((column) => {
                 if (node.data && node.data.rowId) {
-                    if (
-                        node.data &&
-                        node.data.target === targetColumn &&
-                        column.userProvidedColDef.field === currentColumn &&
-                        node.data.rowId !== "total_orders" &&
-                        node.data.rowId !== "total_profit"
-                    ) {
-                        let value = Number(
-                            node.data[column.userProvidedColDef.field]
-                        );
-                        rowData.push({
-                            department: node.data.department,
-                            target: node.data.target,
-                            column: column.userProvidedColDef.field,
-                            data: value,
-                        });
+
+                    // Individual Target == 1 
+                    // Site Target == 0
+
+                    if (this.targetSelected === 1) {
+                        let finalColumnName = typeof columnName === "string" ? columnName : columnName.column.userProvidedColDef.field;
+                       
+                        if (
+                            node.data &&
+                            node.data.target === targetColumn &&
+                            column.userProvidedColDef.field === finalColumnName &&
+                            node.data.rowId !== "total_orders" &&
+                            node.data.rowId !== "total_profit"
+                        ) {
+                            let value = Number(
+                                node.data[column.userProvidedColDef.field]
+                            );
+
+                            rowData.push({
+                                department: node.data.department,
+                                target: node.data.target,
+                                column: column.userProvidedColDef.field,
+                                data: value,
+                            });
+
+                           
+                            console.log("option is 1 and column is: ",column.userProvidedColDef.field);
+                            console.log("node.data: ", node.data);
+                            console.log("node.data.target: ", node.data.target);
+                            console.log("rowData: ", rowData);
+                        }
+                    } else {
+                        if (
+                            node.data &&
+                            node.data.target === targetColumn &&
+                            column.userProvidedColDef.field === columnName &&
+                            node.data.rowId !== "total_orders" &&
+                            node.data.rowId !== "total_profit"
+                        ) {
+                            let value = Number(
+                                node.data[column.userProvidedColDef.field]
+                            );
+                            rowData.push({
+                                department: node.data.department,
+                                target: node.data.target,
+                                column: column.userProvidedColDef.field,
+                                data: value,
+                            });
+
+                            console.log("option is 0 and column is: ",column.userProvidedColDef.field);
+                            console.log("node.data: ", node.data);
+                            console.log("node.data.target: ", node.data.target);
+                            console.log("rowData: ", rowData);
+                        }
                     }
                 }
             });
         });
+
+        console.log("*************** END ***************");
         return rowData;
     }
 
@@ -579,9 +631,9 @@ export class TargetsSheetComponent implements OnInit {
          * to zero for next change.
          * */
 
-        console.log("*****************************");
-        console.log(params, " params in setrowtotalvalue");
-        console.log("*****************************");
+        console.log("*************** START ***************");
+        console.log("Function: setRowTotalValue");
+        console.log("params: ", params);
 
         if (
             params.data.rowId !== "total_profit" &&
@@ -615,9 +667,16 @@ export class TargetsSheetComponent implements OnInit {
 
             /*------------------------------------------------------*/
         }
+
+        console.log("*************** END ***************");
     }
 
     insertCellData(params) {
+
+        console.log('*************** START ***************')
+        console.log("Function: insertCellData");
+        console.log("params: ",params);
+
         if (this.targetSelected === 0) {
             /*Insert data*/
             let apiParams = {
@@ -672,6 +731,8 @@ export class TargetsSheetComponent implements OnInit {
             );
             /*------------*/
         }
+
+        console.log('*************** END ***************')
     }
 
     calculateRowData(
@@ -680,14 +741,23 @@ export class TargetsSheetComponent implements OnInit {
         rowName: string,
         option?: number
     ) {
-        console.log("option from calculateRowDate: ", option);
-        console.log("params from calculateRowDate: ", params);
-        // let columnName = params.column.userProvidedColDef.field;
+
+        const consoleStyle  = 'font-weight: bold; font-size: 15px;color: red; font-family:"exo"';
+        const consoleStyle2 = 'font-weight: bold; font-size: 15px;color: blue; font-family:"exo"';
+        const consoleStyle3 = 'font-weight: bold; font-size: 15px;color: orange; font-family:"exo"';
+
+        console.log('*************** START ***************')
+        console.log('%c Function: calculateRowData!', consoleStyle);
+        console.log("option: ", option);
+        console.log("%c params: ", consoleStyle ,  params);
+
         let columnName;
+
+        let finalColumnName = typeof params === "string" ? params : params.colDef.field;
 
         if (option === 1) {
             /*Fetch All columns*/
-            columnName = params;
+            columnName = finalColumnName;
             /*-----------------*/
         } else {
             /*Fetch All columns*/
@@ -699,14 +769,12 @@ export class TargetsSheetComponent implements OnInit {
         let rowData = this.getAllRows(columnName, targetColumn);
         /*--------------*/
 
-        console.log("*****************************");
-        console.log("option from calculateRowDate: ", option);
-        console.log("params from calculateRowDate: ", params);
-        console.log("rowName from calculateRowDate: ", rowName);
-        console.log("targetColumn from calculateRowDate: ", targetColumn);
-        console.log("columnName from calculateRowDate: ", columnName);
-        console.log("rowData from calculateRowDate: ", rowData);
-        console.log("*****************************");
+
+        console.log("rowName: ", rowName);
+        console.log("targetColumn: ", targetColumn);
+        console.log("columnName: ", columnName);
+        console.log("rowData: ", rowData);
+       
 
         /*Loop over rows and get calculate total*/
 
@@ -717,19 +785,25 @@ export class TargetsSheetComponent implements OnInit {
             }
         });
 
-        console.log("total from calculateRowDate: ", total);
+        console.log("total: ", total);
 
         /*-----------------------*/
 
         /*Fetch Total orders Node with getRowNode method of gridAPI*/
         var rowNode = this.gridApi.getRowNode(rowName);
-        console.log("rowNode from calculateRowDate: ", rowNode);
+        console.log("%c rowNode: ", consoleStyle2, rowNode);
         /*----------------------------------------------------*/
 
         if (option === 1) {
             if (total && total > 0) {
                 /*Set total data calculated of Vehicle Orders */
-                rowNode.setDataValue(params, total);
+
+                setTimeout(() => {
+                    console.log("%c finalColumnName: ", consoleStyle3, finalColumnName);
+                    rowNode.setDataValue(finalColumnName, total);
+                },1000);
+
+             
                 /*---------------------------------------------*/
             }
         } else {
@@ -737,6 +811,8 @@ export class TargetsSheetComponent implements OnInit {
             rowNode.setDataValue(params.colDef.field, total);
             /*---------------------------------------------*/
         }
+
+        console.log('%c *************** END ***************', consoleStyle)
     }
 
     onGridReady(params) {
@@ -787,6 +863,9 @@ export class TargetsSheetComponent implements OnInit {
     }
 
     generateGrid(targetResponse, key) {
+        console.log('*************** START ***************')
+        console.log("Function: generateGrid");
+
         this.gridApi.showLoadingOverlay();
 
         /*Initalize all variables*/
@@ -960,7 +1039,10 @@ export class TargetsSheetComponent implements OnInit {
         this.rowData = departmentRow;
         /*---------------------------*/
 
+        console.log("columnDefs: ",column);
+
         this.calculateTotal(column, 0);
+        console.log('*************** END ***************')
     }
 
     calculateTotal(column, option) {
@@ -1014,13 +1096,12 @@ export class TargetsSheetComponent implements OnInit {
 
     generateColumns(history, current, period) {
         this.fetchHistoryMonths(history);
-
         this.fetchCurrentMonths(current);
-
         this.fetchPeriods(period);
     }
 
     fetchCurrentMonths(column) {
+
         /*Generate Key and value for startFrom Object from momentJs*/
         let month = this.startFrom
             ? moment(this.startFrom).format("MMM YY")
@@ -1062,12 +1143,14 @@ export class TargetsSheetComponent implements OnInit {
     }
 
     fetchPeriods(column) {
+
         for (let i = 1; i <= this.period; i++) {
             /*Generate Key and value for startFrom Object from momentJs*/
             let month = this.startFrom
                 ? moment(this.startFrom).add(i, "months").format("MMM YY")
                 : moment().add(i, "months").format("MMM YY");
             let key = month.toLowerCase().replace(" ", "_");
+
 
             column.push({
                 headerName: month.toUpperCase(),
