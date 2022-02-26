@@ -1,55 +1,151 @@
 <div class="modal-header" style="margin: 10px !important">
-    <h5 class="modal-title">{{modalTitle}}
-    </h5>
+    <h5 class="modal-title">{{ modalTitle }}</h5>
 </div>
+
 <mat-dialog-content class="mat-typography">
     <div class="modal-body" *ngIf="!columnLoader">
-        <div fxlayout="column" style="margin: 0px 0px 20px 0px;flex-direction: column; box-sizing: border-box; display: flex; height:450px;overflow-x: auto;">
-            <table mat-table [dataSource]="dataSource" matSort class="mat-elevation-z8" >
+        <div
+            fxlayout="column"
+            style="
+                margin: 0px 0px 5px 0px;
+                flex-direction: column;
+                box-sizing: border-box;
+                display: flex;
+                overflow-x: auto;
+            "
+        >
+            <mat-form-field>
+                <mat-label>Search Here</mat-label>
+                <input
+                    matInput
+                    (keyup)="applyFilter($event)"
+                    autofocus
+                    placeholder="Search By Column Name ...."
+                    #input
+                />
+            </mat-form-field>
+        </div>
+        <br />
 
+        <div
+            fxlayout="column"
+            style="
+                margin: 0px 0px 20px 0px;
+                flex-direction: column;
+                box-sizing: border-box;
+                display: flex;
+                height: 450px;
+                overflow-x: auto;
+            "
+        >
+            <table
+                mat-table
+                [dataSource]="dataSource"
+                matSort
+                class="mat-elevation-z8"
+            >
                 <!-- Position Column -->
                 <ng-container matColumnDef="columnName">
-                    <th mat-header-cell *matHeaderCellDef mat-sort-header> Column Name </th>
-                    <td mat-cell *matCellDef="let element"> {{element.columnName}} </td>
+                    <th mat-header-cell *matHeaderCellDef mat-sort-header>
+                        Column Name
+                    </th>
+                    <td mat-cell *matCellDef="let element">
+                        {{ element.columnName }}
+                    </td>
                 </ng-container>
-                
+
                 <!-- Name Column -->
                 <ng-container matColumnDef="display">
-                    <th mat-header-cell *matHeaderCellDef> Display </th>
+                    <th mat-header-cell *matHeaderCellDef>Display</th>
                     <td mat-cell *matCellDef="let element">
-                        <mat-slide-toggle *ngIf="!element.disabled;else disable" (change)="setColumnVisibility($event, element, 1)" [checked]="element.display"></mat-slide-toggle>
+                        <mat-slide-toggle
+                            *ngIf="!element.disabled; else disable"
+                            (change)="setColumnVisibility($event, element, 1)"
+                            [checked]="element.display"
+                        ></mat-slide-toggle>
                         <ng-template #disable>
-                            <span class="material-icons" style="color:#D2D2D2">highlight_off</span>
+                            <span class="material-icons" style="color: #d2d2d2"
+                                >highlight_off</span
+                            >
                         </ng-template>
                     </td>
                 </ng-container>
-                
+
                 <!-- printExport Column -->
                 <ng-container matColumnDef="printExport">
-                    <th mat-header-cell *matHeaderCellDef > Print/Export </th>
+                    <th mat-header-cell *matHeaderCellDef>Print/Export</th>
                     <td mat-cell *matCellDef="let element">
-                        <mat-slide-toggle *ngIf="!element.disabled;else disable" (change)="setColumnVisibility($event, element, 2)" [checked]="element.printExport"></mat-slide-toggle>
+                        <mat-slide-toggle
+                            *ngIf="!element.disabled; else disable"
+                            (change)="setColumnVisibility($event, element, 2)"
+                            [checked]="element.printExport"
+                        ></mat-slide-toggle>
                         <ng-template #disable>
-                            <span class="material-icons"  style="color:#D2D2D2">highlight_off</span>
+                            <span class="material-icons" style="color: #d2d2d2"
+                                >highlight_off</span
+                            >
                         </ng-template>
                     </td>
                 </ng-container>
-                                
-                
-                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
-                <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
 
+                <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+                <tr
+                    mat-row
+                    *matRowDef="let row; columns: displayedColumns"
+                ></tr>
             </table>
         </div>
-        <div class="modal-footer" style="flex-direction: row; box-sizing: border-box; display: flex;">
-            <div fxflex="" fxlayoutalign="space-between" style="place-content: stretch space-between; align-items: stretch; flex-direction: row; box-sizing: border-box; display: flex; flex: 1 1 0%;">
+        <div
+            class="modal-footer"
+            style="flex-direction: row; box-sizing: border-box; display: flex"
+        >
+            <div
+                fxflex=""
+                fxlayoutalign="space-between"
+                style="
+                    place-content: stretch space-between;
+                    align-items: stretch;
+                    flex-direction: row;
+                    box-sizing: border-box;
+                    display: flex;
+                    flex: 1 1 0%;
+                "
+            >
                 <div class="reset-button">
-                    <button [disabled]="loader" class="reset reset-btn" style="float: left;" (click)="reset()" type="button">RESET</button>
+                    <button
+                        [disabled]="loader"
+                        class="reset reset-btn"
+                        style="float: left"
+                        (click)="reset()"
+                        type="button"
+                    >
+                        RESET
+                    </button>
                 </div>
                 <div class="reset-button">
-                    <mat-spinner *ngIf="loader" strokeWidth="3" [diameter]="30"></mat-spinner>
-                    <button [disabled]="loader" class="save save-btn" style="margin-right: 10px;" (click)="submit()" type="button">SAVE</button>
-                    <button [disabled]="loader" class="close close-btn"  mat-dialog-close data-dismiss="modal" type="button">CLOSE</button>
+                    <mat-spinner
+                        *ngIf="loader"
+                        strokeWidth="3"
+                        [diameter]="30"
+                    ></mat-spinner>
+                    <button
+                        [disabled]="loader"
+                        class="save save-btn"
+                        style="margin-right: 10px"
+                        (click)="submit()"
+                        type="button"
+                    >
+                        SAVE
+                    </button>
+                    <button
+                        [disabled]="loader"
+                        class="close close-btn"
+                        mat-dialog-close
+                        data-dismiss="modal"
+                        type="button"
+                    >
+                        CLOSE
+                    </button>
                 </div>
             </div>
         </div>
