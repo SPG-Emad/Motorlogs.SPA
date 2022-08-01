@@ -16,12 +16,12 @@ export class SignalRService {
     public startConnection = () => {
         this.hubConnection = new signalR.HubConnectionBuilder()
             .withUrl(LIVE_API)
-            //.withUrl('http://localhost:5000/LiveSheetDataForViews')
+            // .withUrl('http://localhost:5000/LiveSheetDataForViews')
             .build();
 
         this.hubConnection
             .start()
-            .then(() => {console.log('Connection started'); })
+            .then(() => { console.log('Connection started'); })
             .catch(err => console.log('Error while starting connection: ' + err))
     }
 

@@ -51,7 +51,10 @@ export class DashboardService {
     generateSalesGraph(params: any){
         return this._http
             .post<IDashboard[]>(`${DASHBOARD_API}/GenerateSalesGraph`, params)
-            .map(this.extractData);
+            .map((data: any)=>{
+                // console.log('service data: ', data);
+                return this.extractData(data);
+            });
     }
 
     generateSalesPersonGraph(params: any){

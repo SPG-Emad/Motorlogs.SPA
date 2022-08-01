@@ -67,7 +67,6 @@ export interface SalesGraphUserTooltip {
 export class DashboardComponent implements OnInit {
     @ViewChild("container", { static: false }) container;
     @ViewChild("saleperson", { static: false }) saleperson;
-
     @ViewChildren(DashboardComponent) collapses: DashboardComponent[];
 
     vehicleProfit = 0;
@@ -134,7 +133,7 @@ export class DashboardComponent implements OnInit {
     orderOptions = [
         { key: "Order covered", value: "Covered" },
         { key: "Order delivered", value: "Delivered" },
-        { key: "Order sold", value: "Sold" },
+        // { key: "Order sold", value: "Sold" },
     ];
 
     filterList: any[] = [
@@ -239,6 +238,9 @@ export class DashboardComponent implements OnInit {
             this.monthFilter = dateFormat;
             this.currentDate = moment().format("MMM - DD");
 
+            console.log('this.currentDate: ', this.currentDate);
+            console.log('this.dateFormat: ', dateFormat);
+
             for (i = 0; i < coll.length; i++) {
                 coll[i].addEventListener("click", function () {
                     this.classList.toggle("active");
@@ -304,7 +306,6 @@ export class DashboardComponent implements OnInit {
                     data.seriesData !== null &&
                     data.seriesData !== undefined
                 ) {
-                    // console(data.seriesData);
                     this.generateSalesGraph(data);
                 } else {
                     this.chartLoader = false;
@@ -316,7 +317,7 @@ export class DashboardComponent implements OnInit {
         );
     }
 
-    ngOnInit() {}
+    ngOnInit() { }
 
     dateSetting(event) {
         this.monthActive = event.monthActive;
@@ -373,11 +374,11 @@ export class DashboardComponent implements OnInit {
             this.targetObj["vehOrders"]["mtdResult"] = salesObject["vehOrders"]["mtdResult"];
             this.targetObj["vehOrders"]["mtdPercentage"] = salesObject["vehOrders"]["mtdTarget"] &&
                 salesObject["vehOrders"]["mtdResult"] ? (salesObject["vehOrders"]["mtdResult"] /
-                          salesObject["vehOrders"]["mtdTarget"]) * 100 : 0;
+                    salesObject["vehOrders"]["mtdTarget"]) * 100 : 0;
             this.targetObj["vehOrders"]["mtdDifference"] = salesObject["vehOrders"]["mtdTarget"] &&
-                salesObject["vehOrders"]["mtdResult"] 
-                    ? salesObject["vehOrders"]["mtdResult"] - salesObject["vehOrders"]["mtdTarget"]
-                    : 0;
+                salesObject["vehOrders"]["mtdResult"]
+                ? salesObject["vehOrders"]["mtdResult"] - salesObject["vehOrders"]["mtdTarget"]
+                : 0;
 
             /*Vechicle Profit*/
             this.targetObj["vehProfit"]["target"] = salesObject["vehProfit"]["target"];
@@ -385,13 +386,13 @@ export class DashboardComponent implements OnInit {
             this.targetObj["vehProfit"]["mtdResult"] = salesObject["vehProfit"]["mtdResult"];
             this.targetObj["vehProfit"]["mtdPercentage"] = salesObject["vehProfit"]["mtdTarget"] &&
                 salesObject["vehProfit"]["mtdResult"]
-                    ? (salesObject["vehProfit"]["mtdResult"] / salesObject["vehProfit"]["mtdTarget"]) *
-                      100
-                    : 0;
+                ? (salesObject["vehProfit"]["mtdResult"] / salesObject["vehProfit"]["mtdTarget"]) *
+                100
+                : 0;
             this.targetObj["vehProfit"]["mtdDifference"] = salesObject["vehProfit"]["mtdTarget"] &&
                 salesObject["vehProfit"]["mtdResult"]
-                    ? salesObject["vehProfit"]["mtdResult"] - salesObject["vehProfit"]["mtdTarget"]
-                    : 0;
+                ? salesObject["vehProfit"]["mtdResult"] - salesObject["vehProfit"]["mtdTarget"]
+                : 0;
         }
     }
 
@@ -415,6 +416,7 @@ export class DashboardComponent implements OnInit {
         this.seriesData = [];
 
         this.calculateTableData(graphData);
+        console.log("graph date: ", graphData);
 
         graphData.seriesData.forEach((element) => {
             let salesObject: any = new Object();
@@ -482,6 +484,7 @@ export class DashboardComponent implements OnInit {
             }
 
             salesObject["pointInterval"] = element.interval * 3600 * 1000;
+
             if (element.graphType === "column") {
                 valuePrefx["valuePrefix"] = element.tooltip.valuePrefix;
                 salesObject["tooltip"] = valuePrefx;
@@ -491,29 +494,30 @@ export class DashboardComponent implements OnInit {
             if (element.columnData != null) {
                 element.columnData.map((res) => {
                     let date = res.x.split("-");
-
-                    res.x = Date.UTC(date[0], date[1], date[2]);
+                    res.x = Date.UTC(date[0], date[1] - 1, date[2]);
                 });
-
                 salesObject["data"] = element.columnData;
-            } else {
+            }
+            else {
                 element.splineData.map((res) => {
                     let date = res.x.split("-");
-                    res.x = Date.UTC(date[0], date[1], date[2]);
+                    res.x = Date.UTC(date[0], date[1] - 1, date[2]);
                 });
-
                 salesObject["data"] = element.splineData;
             }
+
             if (element.splineStyle != null) {
                 markerObj["lineWidth"] = 2;
                 markerObj["lineColor"] = Highcharts.getOptions().colors[3];
                 markerObj["fillColor"] = "white";
             }
+
             salesObject["marker"] = markerObj;
             this.seriesData.push(salesObject);
 
             legendArray.push(element.legendName);
         });
+
         this.initializeGraph();
     }
 
@@ -572,9 +576,9 @@ export class DashboardComponent implements OnInit {
                         this.points.map((el, i) => {
                             s.push(
                                 el.point.series.name +
-                                    ' : <span style="color:#D31B22;font-weight:bold;">' +
-                                    el.point.y +
-                                    "</span><br>"
+                                ' : <span style="color:#D31B22;font-weight:bold;">' +
+                                el.point.y +
+                                "</span><br>"
                             );
                         });
                         return s;
@@ -689,7 +693,10 @@ export class DashboardComponent implements OnInit {
             let grandTotalOrders = 0;
             let grandTotalProfit = 0;
 
-            // console("data", data);
+            console.log("::::::::::: START :::::::::::");
+            console.log("%c user", "color: blue; font-weight:bold; font-size:14px", data.name);
+            console.log("%c data", "color: red; font-weight:bold; font-size:14px", data);
+            console.log("::::::::::: END :::::::::::");
 
             data.seriesData.forEach((element) => {
                 let salesObject: any = new Object();
@@ -764,37 +771,30 @@ export class DashboardComponent implements OnInit {
                     salesObject["color"] = element.color;
                 }
 
-                console.log('element.graphtype: ', element.graphType);
-                console.log('element.legendName: ', element.legendName);
-
                 if (element.columnData != null) {
+
                     element.columnData.map((res) => {
+
                         let date = res.x.split("-");
                         res.x = Date.UTC(date[0], date[1] - 1, date[2]);
-                        console.log('columnData:::: ', res.x + ' : ' + res.y);
 
-                        if(element.legendName !==  'Target Profit') 
-                        {
+                        if (element.legendName === 'Profit Covered') {
                             grandTotalProfit += Number(res.y);
                         }
-                        
-                        console.log('grandTotalProfit:::: ', grandTotalProfit);
+
                     });
-                    
+
                     // Date + Target Profit
                     salesObject["data"] = element.columnData;
-                } 
+                }
                 else {
                     element.splineData.map((res) => {
                         let date = res.x.split("-");
-                        res.x = Date.UTC(date[0], date[1] - 1 , date[2]);
-                        console.log('splineData:::: ', res.x + ' : ' + res.y);
-                        // grandTotalOrders += Number(res.y);
-                        if(element.legendName !==  'Target Order') 
-                        {
+                        res.x = Date.UTC(date[0], date[1] - 1, date[2]);
+
+                        if (element.legendName === 'Orders Covered') {
                             grandTotalOrders += Number(res.y);
                         }
-                        console.log('grandTotalOrders:::: ', grandTotalOrders);
                     });
 
                     salesObject["data"] = element.splineData;
@@ -812,6 +812,9 @@ export class DashboardComponent implements OnInit {
                     legendArray.push(element.legendName);
                     // console("legendArray", legendArray);
                 }
+
+
+
             });
 
             // console("legendArray -- out loop", legendArray);
@@ -872,9 +875,9 @@ export class DashboardComponent implements OnInit {
                             this.points.map((el, i) => {
                                 s.push(
                                     el.point.series.name +
-                                        ' : <span style="color:#D31B22;font-weight:bold;">' +
-                                        el.point.y +
-                                        "</span><br>"
+                                    ' : <span style="color:#D31B22;font-weight:bold;">' +
+                                    el.point.y +
+                                    "</span><br>"
                                 );
                             });
                             return s;
@@ -936,10 +939,9 @@ export class DashboardComponent implements OnInit {
             data["grandTotalOrders"] = grandTotalOrders;
             data["grandTotalProfit"] = grandTotalProfit;
         }
-        // console("Results Object ::::");
-        // console(result);
 
         this.salepersonArray = result;
+        console.log('result: ',result);
     }
 
     constructPivotTableDD() {

@@ -246,10 +246,7 @@ export class RoutineSheetComponent implements OnInit {
                 );
             // console.log(this.decryptedDepartmentId);
 
-            if (
-                !this.decryptedDepartmentId ||
-                this.decryptedDepartmentId == ""
-            ) {
+            if (!this.decryptedDepartmentId || this.decryptedDepartmentId == "") {
                 this.decryptedDepartmentId = "-2";
             }
 
@@ -464,7 +461,7 @@ export class RoutineSheetComponent implements OnInit {
         this.rowSelection = "single";
 
         this.components = {
-            //     // datePicker: getDatePicker(),
+            // datePicker: getDatePicker(),
             dateEditor: getDatePicker(),
         };
 

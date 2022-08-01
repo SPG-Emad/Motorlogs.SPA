@@ -2,16 +2,14 @@ import { enableProdMode } from '@angular/core';
 import { platformBrowserDynamic } from '@angular/platform-browser-dynamic';
 
 import { AppModule } from './app/app.module';
+
+// if we want to switch to prod mode then we have to change the environment path to environmnet.prod.ts
 import { environment } from './environments/environment';
 import { hmrBootstrap } from 'hmr';
-import {LicenseManager} from "@ag-grid-enterprise/core";
+import { LicenseManager } from "@ag-grid-enterprise/core";
 
 
 LicenseManager.setLicenseKey("CompanyName=Lennock Motors,LicensedApplication=Motorlogs,LicenseType=SingleApplication,LicensedConcurrentDeveloperCount=1,LicensedProductionInstancesCount=0,AssetReference=AG-007418,ExpiryDate=19_March_2021_[v2]_MTYxNjExMjAwMDAwMA==acb550ff06660236f5dfab2f4be98c1a");
-
-
- 
-
 
 if ( environment.production )
 {

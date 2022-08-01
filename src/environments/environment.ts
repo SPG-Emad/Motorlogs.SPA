@@ -1,24 +1,38 @@
-// This file can be replaced during build by using the `fileReplacements` array.
-// `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
-// The list of file replacements can be found in `angular.json`.
+// // This file can be replaced during build by using the `fileReplacements` array.
+// // `ng build --prod` replaces `environment.ts` with `environment.prod.ts`.
+// // The list of file replacements can be found in `angular.json`.
+
+// export const environment = {
+//     production: false,
+//     hmr       : false,
+//     apiURL    : "http://localhost:5000/api/",
+//     liveUrl    : "http://localhost:5000/LiveSheetDataForViews",
+//     apiURL2    : "http://localhost:5000/api/",
+//     sessionTimeout : 6000,
+//     ARRIVING_SITE_VALUE: 'LENNOCK MOTORS',
+//     PARENT_SITE_NAME: 'Lennock Phillip Pty Ltd & Lennock Automation Pt'
+// };
+
+
+// /*
+//  * For easier debugging in development mode, you can import the following file
+//  * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
+//  *
+//  * This import should be commented out in production mode because it will have a negative impact
+//  * on performance if an error is thrown.
+//  */
+// // import 'zone.js/dist/zone-error';  // Included with Angular CLI.
+
 
 export const environment = {
     production: false,
     hmr       : false,
-    apiURL    : "http://localhost:5000/api/",
-    liveUrl    : "http://localhost:5000/LiveSheetDataForViews",
+    apiURL3    : "http://localhost:5000/api/",
     apiURL2    : "http://localhost:5000/api/",
     sessionTimeout : 6000,
     ARRIVING_SITE_VALUE: 'LENNOCK MOTORS',
+    liveUrl    : "http://localhost:5000/LiveSheetDataForViews",
+    liveUrl3    : "/LiveSheetDataForViews",
+    apiURL: 'http://localhost:5000/api/',
     PARENT_SITE_NAME: 'Lennock Phillip Pty Ltd & Lennock Automation Pt'
 };
-
-
-/*
- * For easier debugging in development mode, you can import the following file
- * to ignore zone related error stack frames such as `zone.run`, `zoneDelegate.invokeTask`.
- *
- * This import should be commented out in production mode because it will have a negative impact
- * on performance if an error is thrown.
- */
-// import 'zone.js/dist/zone-error';  // Included with Angular CLI.
