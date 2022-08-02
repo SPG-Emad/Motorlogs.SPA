@@ -65,12 +65,12 @@ export class UserLoginHistoryComponent implements OnInit, OnDestroy {
                     if (loginHistory) {
                         loginHistory.map(res => {
                             const details = JSON.parse(res.details);
-
+                            console.log('details: ' ,details);
                             this.history.push({
                                 login: res.login,
                                 ipAddress: res.ipAddress,
-                                device: details.device,
-                                browser: details.browser,
+                                device: details.device!,
+                                browser: details.browser!,
                             });
                         });
                     }

@@ -34,7 +34,7 @@ export class GeneralComponent implements OnInit, OnDestroy {
     generalForm = this.fb.group({
         picture: [""],
         firstName: ["", [Validators.required, Validators.maxLength(50)]],
-        lastName: ["", [Validators.required, Validators.maxLength(50)]],
+        lastName: ["", [ Validators.maxLength(50)]],
         designation: [{ value: '', disabled: true }, Validators.required],
         mobile: ["", [Validators.maxLength(15)]],
         directPhone: ["", [Validators.maxLength(15)]],
